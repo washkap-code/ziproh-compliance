@@ -1,30 +1,12 @@
 import { createClient } from "@supabase/supabase-js";
 
-// Lazy singleton — client is only created on first use, not at module load
-// time. This prevents "supabaseKey is required" errors during next build.
-let _client: ReturnType<typeof createClient> | null = null;
+// Fallback placeholders prevent `createClient` from throwing "supabaseKey is
+// required" during `next build` when env vars aren't available at build time.
+// At runtime on Vercel the real env vars are always present.
+const supabaseUrl     = process.env.NEXT_PUBLIC_SUPABASE_URL      ?? "https://placeholder.supabase.co";
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "placeholder-anon-key";
 
-function getClient() {
-  if (!_client) {
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    if (!url || !key) {
-      throw new Error(
-        "Missing NEXT_PUBLIC_SUPABASE_URL or NEXT_PUBLIC_SUPABASE_ANON_KEY"
-      );
-    }
-    _client = createClient(url, key);
-  }
-  return _client;
-}
-
-// Proxy so all existing code (`supabase.auth`, `supabase.from(...)`, etc.)
-// continues to work without any changes elsewhere.
-export const supabase = new Proxy({} as ReturnType<typeof createClient>, {
-  get(_target, prop) {
-    return getClient()[prop as keyof ReturnType<typeof createClient>];
-  },
-});
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // ─── Database Types ───────────────────────────────────────────────
 export type Profile = {
