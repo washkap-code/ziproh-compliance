@@ -1,0 +1,209 @@
+/* ================================================================
+   ZIPROH UNIFIED NAVIGATION — WordPress Additional CSS  (v2)
+   ================================================================
+   WHERE TO PASTE:
+     WordPress Admin → Appearance → Customise
+     → Additional CSS → replace any previous version → Publish
+   ================================================================ */
+
+/* ── Brand colours (matching the app exactly) ── */
+/* Primary blue : #2E6FFF                         */
+/* Blue dark    : #1a57e8  (hover state)           */
+/* Dark bg      : #1e293b  (bridge bar background) */
+
+
+/* ══════════════════════════════════════════════════════════════
+   PART 1 — LOG IN BUTTON
+   ══════════════════════════════════════════════════════════════
+   In Appearance → Menus, add a Custom Link:
+     URL:       https://app.ziprohtraining.co.uk/login
+     Label:     Log In
+     CSS Class: zp-login-btn
+   (Enable CSS Classes via Screen Options at the top of the
+    Menus page if the field isn't visible)
+   ══════════════════════════════════════════════════════════════ */
+
+/* The <li> — vertically centred in the nav bar */
+.zp-login-btn {
+  display:     inline-flex !important;
+  align-items: center !important;
+}
+
+/* The <a> — pill button shape */
+.zp-login-btn > a,
+.zp-login-btn > a:link,
+.zp-login-btn > a:visited {
+  display:         inline-flex  !important;
+  align-items:     center       !important;
+  justify-content: center       !important;
+  background:      #2E6FFF      !important;
+  color:           #ffffff      !important;
+  border-radius:   8px          !important;
+  padding:         8px 20px     !important;
+  font-weight:     600          !important;
+  font-size:       0.875rem     !important;
+  line-height:     1            !important;
+  text-decoration: none         !important;
+  white-space:     nowrap       !important;
+  border:          none         !important;
+  outline:         none         !important;
+  transition:      background 0.18s ease !important;
+  box-shadow:      0 1px 6px rgba(46, 111, 255, 0.28) !important;
+}
+
+.zp-login-btn > a:hover,
+.zp-login-btn > a:focus {
+  background: #1a57e8 !important;
+  color:      #ffffff !important;
+}
+
+/* Strip any theme decorations on this item */
+.zp-login-btn > a::before,
+.zp-login-btn > a::after {
+  display: none !important;
+}
+
+/* URL-based fallback (works even without the CSS class) */
+nav     a[href*="app.ziprohtraining.co.uk/login"],
+.menu   a[href*="app.ziprohtraining.co.uk/login"],
+header  a[href*="app.ziprohtraining.co.uk/login"] {
+  display:         inline-flex  !important;
+  align-items:     center       !important;
+  justify-content: center       !important;
+  background:      #2E6FFF      !important;
+  color:           #ffffff      !important;
+  border-radius:   8px          !important;
+  padding:         8px 20px     !important;
+  font-weight:     600          !important;
+  font-size:       0.875rem     !important;
+  line-height:     1            !important;
+  text-decoration: none         !important;
+  white-space:     nowrap       !important;
+  transition:      background 0.18s ease !important;
+}
+nav    a[href*="app.ziprohtraining.co.uk/login"]:hover,
+.menu  a[href*="app.ziprohtraining.co.uk/login"]:hover {
+  background: #1a57e8 !important;
+  color:      #ffffff !important;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   PART 2 — "COMPLIANCE CENTRE" LINK (optional)
+   ══════════════════════════════════════════════════════════════
+   If you also added a link to app.ziprohtraining.co.uk with
+   CSS class zp-app-link, this colours it in brand blue.
+   ══════════════════════════════════════════════════════════════ */
+
+.zp-app-link > a,
+.zp-app-link > a:link,
+.zp-app-link > a:visited {
+  color:       #2E6FFF !important;
+  font-weight: 600     !important;
+}
+.zp-app-link > a:hover {
+  color:           #1a57e8 !important;
+  text-decoration: none    !important;
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   PART 3 — BRIDGE BAR (dark strip above the header)
+   ══════════════════════════════════════════════════════════════
+   Styles the HTML widget you added via WPCode.
+   ══════════════════════════════════════════════════════════════ */
+
+.zp-bridge-bar {
+  background:  #1e293b;
+  width:       100%;
+  margin:      0;
+  padding:     0;
+  box-sizing:  border-box;
+  font-family: inherit;
+}
+
+.zp-bridge-bar__inner {
+  max-width:   1280px;
+  margin:      0 auto;
+  padding:     7px 24px;
+  display:     flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap:   wrap;
+  gap:         8px;
+  box-sizing:  border-box;
+}
+
+.zp-bridge-bar__text {
+  color:       rgba(255, 255, 255, 0.58);
+  font-size:   13px;
+  line-height: 1.4;
+  margin:      0;
+}
+.zp-bridge-bar__text strong {
+  color:       #ffffff;
+  font-weight: 600;
+}
+
+.zp-bridge-bar__cta {
+  display:     flex;
+  align-items: center;
+  gap:         14px;
+  flex-shrink: 0;
+}
+
+/* "Log in to your account" plain link */
+.zp-bridge-bar__cta a.zp-bridge-link {
+  color:           rgba(255, 255, 255, 0.62) !important;
+  font-size:       13px                      !important;
+  text-decoration: none                      !important;
+  transition:      color 0.15s              !important;
+  background:      none                      !important;
+  padding:         0                         !important;
+  border-radius:   0                         !important;
+  border:          none                      !important;
+  box-shadow:      none                      !important;
+  line-height:     1                         !important;
+}
+.zp-bridge-bar__cta a.zp-bridge-link:hover {
+  color: #ffffff !important;
+}
+
+/* "Try Free →" pill button */
+.zp-bridge-bar__cta a.zp-bridge-cta-btn {
+  display:         inline-flex  !important;
+  align-items:     center       !important;
+  justify-content: center       !important;
+  background:      #2E6FFF      !important;
+  color:           #ffffff      !important;
+  font-size:       12px         !important;
+  font-weight:     700          !important;
+  padding:         5px 16px     !important;
+  border-radius:   20px         !important;
+  text-decoration: none         !important;
+  white-space:     nowrap       !important;
+  line-height:     1            !important;
+  transition:      background 0.15s !important;
+  border:          none         !important;
+}
+.zp-bridge-bar__cta a.zp-bridge-cta-btn:hover {
+  background: #1a57e8 !important;
+  color:      #ffffff !important;
+}
+
+/* Separator */
+.zp-bridge-sep {
+  color:    rgba(255, 255, 255, 0.2);
+  font-size: 12px;
+}
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .zp-bridge-bar__inner {
+    flex-direction: column;
+    align-items:    flex-start;
+    padding:        8px 16px;
+    gap:            6px;
+  }
+  .zp-bridge-bar__text { font-size: 12px; }
+}
