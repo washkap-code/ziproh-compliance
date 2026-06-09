@@ -67,6 +67,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <span>{item.label}</span>
             </Link>
           ))}
+          {/* Link back to main marketing site */}
+          <a
+            href="https://ziprohtraining.co.uk"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="sidebar-link"
+            style={{ color: "#6b7280", borderTop: "1px solid #e2e8f0", marginTop: "4px", paddingTop: "12px" }}
+          >
+            <span className="text-base">🌐</span>
+            <span>ziprohtraining.co.uk</span>
+          </a>
           <button
             onClick={() => window.location.href = "/"}
             className="sidebar-link w-full text-red-500 hover:bg-red-50 hover:text-red-600"

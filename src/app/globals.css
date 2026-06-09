@@ -118,3 +118,75 @@ body {
   border-radius: 50%;
   display: inline-block;
 }
+
+/* ══════════════════════════════════════════════════════
+   BRIDGE BAR — connects app to ziprohtraining.co.uk
+   Appears at the very top of the landing page and links
+   users back to all main site sections.
+   ══════════════════════════════════════════════════════ */
+
+.zp-bridge-bar {
+  background: #1e293b;
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.zp-bridge-bar__inner {
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 6px 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.zp-bridge-bar__text {
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 0;
+}
+
+.zp-bridge-bar__text strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.zp-bridge-bar__links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.zp-bridge-bar__link {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 12px;
+  text-decoration: none;
+  transition: color 0.15s;
+  white-space: nowrap;
+}
+.zp-bridge-bar__link:hover { color: rgba(255, 255, 255, 0.9); }
+
+.zp-bridge-bar__sep {
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 11px;
+  user-select: none;
+}
+
+.zp-bridge-bar__home {
+  color: var(--ziproh-blue);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+.zp-bridge-bar__home:hover { color: var(--ziproh-blue-dark); }
+
+@media (max-width: 640px) {
+  .zp-bridge-bar__text { display: none; }
+  .zp-bridge-bar__links { flex-wrap: wrap; gap: 6px; }
+}

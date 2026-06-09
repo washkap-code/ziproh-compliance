@@ -4,6 +4,29 @@ import Image from "next/image";
 export default function LandingPage() {
   return (
     <div className="min-h-screen flex flex-col">
+
+      {/* Bridge Bar — ties this app to ziprohtraining.co.uk */}
+      <div className="zp-bridge-bar">
+        <div className="zp-bridge-bar__inner">
+          <p className="zp-bridge-bar__text">
+            <strong>ziprohtraining.co.uk</strong> — Training, consultancy &amp; compliance support for UK care providers
+          </p>
+          <div className="zp-bridge-bar__links">
+            <a href="https://ziprohtraining.co.uk/courses/"         className="zp-bridge-bar__link">Training</a>
+            <span className="zp-bridge-bar__sep" aria-hidden="true">·</span>
+            <a href="https://ziprohtraining.co.uk/services/"        className="zp-bridge-bar__link">Services</a>
+            <span className="zp-bridge-bar__sep" aria-hidden="true">·</span>
+            <a href="https://ziprohtraining.co.uk/about-us/"        className="zp-bridge-bar__link">About Us</a>
+            <span className="zp-bridge-bar__sep" aria-hidden="true">·</span>
+            <a href="https://ziprohtraining.co.uk/news_and_insights/" className="zp-bridge-bar__link">News</a>
+            <span className="zp-bridge-bar__sep" aria-hidden="true">·</span>
+            <a href="https://ziprohtraining.co.uk/contact/"         className="zp-bridge-bar__link">Contact</a>
+            <span className="zp-bridge-bar__sep" aria-hidden="true">·</span>
+            <a href="https://ziprohtraining.co.uk" className="zp-bridge-bar__home">← Main Website</a>
+          </div>
+        </div>
+      </div>
+
       {/* Nav */}
       <nav style={{ backgroundColor: "white", borderBottom: "1px solid #e2e8f0" }} className="sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
