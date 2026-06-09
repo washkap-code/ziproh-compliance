@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   title: "Ziproh Compliance Centre | The Better Way to Care",
   description: "Ziproh's compliance management platform for UK health and social care providers. Access 340+ auto-updated policies, audit tools, and compliance resources.",
   icons: {
-    icon: "/ziproh-icon.png",
+    icon: "/favicon.ico",
   },
 };
 
