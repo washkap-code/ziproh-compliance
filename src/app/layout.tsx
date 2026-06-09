@@ -7,6 +7,12 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    title: "Ziproh",
+    statusBarStyle: "default",
+  },
 };
 
 export default function RootLayout({

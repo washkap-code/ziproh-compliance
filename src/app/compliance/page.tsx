@@ -1,6 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
+import InstallAppBanner from "@/components/InstallAppBanner";
 import Link from "next/link";
 import { DOCUMENTS, CATEGORIES } from "@/lib/documents";
 
@@ -48,6 +49,9 @@ export default function ComplianceCentrePage() {
 
   return (
     <DashboardLayout>
+      {/* Install app banner — shown once, dismissible */}
+      <InstallAppBanner />
+
       {/* Header */}
       <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
