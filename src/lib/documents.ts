@@ -1,6 +1,12 @@
 // Ziproh Compliance Centre — Document Library
 // Categories aligned to CQC's 5 Key Questions and UK care regulatory frameworks
 
+import { SAFE_CONTENT } from "./policy-content-safe";
+import { EFFECTIVE_CONTENT } from "./policy-content-effective";
+import { CARING_CONTENT } from "./policy-content-caring";
+import { RESPONSIVE_CONTENT } from "./policy-content-responsive";
+import { WELLLED_CONTENT } from "./policy-content-wellled";
+
 export type Document = {
   id: string;
   title: string;
@@ -692,7 +698,8 @@ export const DOCUMENTS: Document[] = [
 ];
 
 // ─── Document content (rich policy body) ──────────────────────────────────
-export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
+// Base content for saf-001, saf-003, wl-001 (kept inline for backwards compatibility)
+const BASE_CONTENT: Record<string, DocumentContent> = {
   "saf-001": {
     purpose: "This policy sets out Ziproh Compliance's commitment to protecting adults at risk from abuse, neglect and exploitation. It ensures all staff understand their individual and collective responsibilities in preventing and responding to safeguarding concerns.",
     scope: "This policy applies to all staff employed by or contracted to the organisation, including bank staff, volunteers, students and agency workers. It covers all service users, including those who access day services, residential care, domiciliary care and supported living.",
@@ -858,6 +865,16 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
       },
     ],
   },
+};
+
+// Merge all content sources — specific imports override BASE_CONTENT
+export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
+  ...BASE_CONTENT,
+  ...SAFE_CONTENT,
+  ...EFFECTIVE_CONTENT,
+  ...CARING_CONTENT,
+  ...RESPONSIVE_CONTENT,
+  ...WELLLED_CONTENT,
 };
 
 export function getDocumentsByCategory(keyQuestion?: string): Document[] {

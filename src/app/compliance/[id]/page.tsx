@@ -1,29 +1,24 @@
-import DashboardLayout from "@/components/DashboardLayout";
-import { DOCUMENTS, DOCUMENT_CONTENT, getDocumentById } from "@/lib/documents";
-import Link from "next/link";
-import { notFound } from "next/navigation";
+"use client";
 
-export function generateStaticParams() {
-  return DOCUMENTS.map((doc) => ({ id: doc.id }));
-}
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import DashboardLayout from "@/components/DashboardLayout";
+import { DOCUMENTS, DOCUMENT_CONTENT, getDocumentById, type DocumentContent } from "@/lib/documents";
+import Link from "next/link";
+import { createBrowserClient } from "@supabase/ssr";
 
 const KQ_COLOR: Record<string, string> = {
   Safe: "#22c55e", Effective: "#2E6FFF", Caring: "#ec4899",
   Responsive: "#f59e0b", "Well-Led": "#8b5cf6",
 };
 
-// Default content for documents without specific content defined
-const DEFAULT_CONTENT = {
-  purpose: "This policy sets out the organisation's commitment and approach to maintaining compliance in accordance with regulatory requirements and best practice guidance. It provides a framework for all staff to follow and ensures consistent, high-quality standards across the service.",
-  scope: "This policy applies to all staff employed by or working on behalf of the organisation, including permanent, temporary, bank and agency staff, volunteers, and students on placement.",
+const DEFAULT_CONTENT: DocumentContent = {
+  purpose: "This policy sets out [ORGANISATION_NAME]'s commitment and approach to maintaining compliance in accordance with regulatory requirements and best practice guidance.",
+  scope: "This policy applies to all staff employed by or working on behalf of [ORGANISATION_NAME], including permanent, temporary, bank and agency staff, volunteers, and students on placement.",
   responsibilities: [
     {
       role: "Registered Manager",
       duties: ["Overall responsibility for implementing and reviewing this policy", "Ensure all staff are trained and that the policy is followed at all times", "Review and update the policy at least annually"],
-    },
-    {
-      role: "Senior Care Staff / Team Leaders",
-      duties: ["Support and supervise staff in applying this policy", "Escalate concerns appropriately", "Lead by example in adhering to policy requirements"],
     },
     {
       role: "All Staff",
@@ -33,7 +28,7 @@ const DEFAULT_CONTENT = {
   keyPoints: [
     "All actions must be taken in the best interests of service users",
     "Records must be maintained accurately and contemporaneously",
-    "Any concerns must be reported using the organisation's incident reporting procedure",
+    "Any concerns must be reported using [ORGANISATION_NAME]'s incident reporting procedure",
     "Training must be completed as required and kept up to date",
     "This policy must be reviewed annually or following any significant change",
   ],
@@ -45,29 +40,129 @@ const DEFAULT_CONTENT = {
     "Data Protection Act 2018 / UK GDPR",
     "Health and Safety at Work etc. Act 1974",
   ],
-  sections: [] as { heading: string; body: string }[],
+  sections: [],
 };
 
-// Get related policies (same key question, different doc)
-function getRelatedPolicies(docId: string, keyQuestion: string) {
-  return DOCUMENTS
-    .filter((d) => d.keyQuestion === keyQuestion && d.id !== docId)
-    .slice(0, 4);
+function substituteOrgName(text: string, orgName: string): string {
+  return text.replace(/\[ORGANISATION_NAME\]/g, orgName);
 }
 
-export default async function DocumentPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const doc = getDocumentById(id);
-  if (!doc) notFound();
+function applyOrgName(content: DocumentContent, orgName: string): DocumentContent {
+  return {
+    purpose: substituteOrgName(content.purpose, orgName),
+    scope: substituteOrgName(content.scope, orgName),
+    responsibilities: content.responsibilities.map((r) => ({
+      role: r.role,
+      duties: r.duties.map((d) => substituteOrgName(d, orgName)),
+    })),
+    keyPoints: content.keyPoints.map((kp) => substituteOrgName(kp, orgName)),
+    legislation: content.legislation,
+    sections: content.sections.map((s) => ({
+      heading: s.heading,
+      body: substituteOrgName(s.body, orgName),
+    })),
+  };
+}
 
-  const content = DOCUMENT_CONTENT[id] ?? DEFAULT_CONTENT;
+function getRelatedPolicies(docId: string, keyQuestion: string) {
+  return DOCUMENTS.filter((d) => d.keyQuestion === keyQuestion && d.id !== docId).slice(0, 4);
+}
+
+export default function DocumentPage() {
+  const params = useParams<{ id: string }>();
+  const id = params?.id ?? "";
+
+  const [orgName, setOrgName] = useState("Your Organisation");
+  const [orgLoaded, setOrgLoaded] = useState(false);
+
+  useEffect(() => {
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) { setOrgLoaded(true); return; }
+      const { data } = await supabase
+        .from("profiles")
+        .select("org_name")
+        .eq("id", user.id)
+        .single();
+      if (data?.org_name) setOrgName(data.org_name);
+      setOrgLoaded(true);
+    });
+  }, []);
+
+  const doc = getDocumentById(id);
+  if (!doc) {
+    return (
+      <DashboardLayout>
+        <div className="text-center py-20">
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Policy not found</h1>
+          <Link href="/compliance" className="text-blue-600 hover:underline">← Back to Compliance Centre</Link>
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  const rawContent = DOCUMENT_CONTENT[id] ?? DEFAULT_CONTENT;
+  const content = orgLoaded ? applyOrgName(rawContent, orgName) : rawContent;
   const color = KQ_COLOR[doc.keyQuestion] || "#2E6FFF";
   const related = getRelatedPolicies(id, doc.keyQuestion);
 
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const formattedDate = new Date(doc.lastUpdated).toLocaleDateString("en-GB", {
+    day: "numeric", month: "long", year: "numeric",
+  });
+
   return (
     <DashboardLayout>
+      {/* Print styles */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media print {
+          body * { visibility: hidden; }
+          #policy-print-area, #policy-print-area * { visibility: visible; }
+          #policy-print-area {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%;
+            padding: 20mm 20mm 20mm 20mm;
+            font-family: Georgia, serif;
+          }
+          .no-print { display: none !important; }
+          .print-header {
+            display: flex !important;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+            border-bottom: 2px solid #2E6FFF;
+          }
+          .print-org-name {
+            font-size: 18pt;
+            font-weight: 700;
+            color: #2E6FFF;
+          }
+          .print-meta {
+            font-size: 8pt;
+            color: #666;
+            text-align: right;
+          }
+          h1 { font-size: 16pt; margin-bottom: 4pt; }
+          h2 { font-size: 12pt; margin-top: 12pt; margin-bottom: 6pt; }
+          p, li { font-size: 10pt; line-height: 1.5; }
+          .page-break-before { page-break-before: always; }
+          a { text-decoration: none; color: inherit; }
+        }
+        @media screen {
+          .print-header { display: none; }
+        }
+      `}} />
+
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
+      <div className="flex items-center gap-2 text-sm text-gray-400 mb-6 no-print">
         <Link href="/dashboard" className="hover:text-gray-600">Dashboard</Link>
         <span>›</span>
         <Link href="/compliance" className="hover:text-gray-600">Compliance Centre</Link>
@@ -75,7 +170,21 @@ export default async function DocumentPage({ params }: { params: Promise<{ id: s
         <span className="text-gray-700 font-medium truncate max-w-xs">{doc.title}</span>
       </div>
 
-      <div className="grid lg:grid-cols-4 gap-6">
+      <div className="grid lg:grid-cols-4 gap-6" id="policy-print-area">
+        {/* Print header (visible on print only) */}
+        <div className="print-header lg:col-span-4">
+          <div>
+            <div className="print-org-name">{orgName}</div>
+            <div style={{ fontSize: "10pt", color: "#444", marginTop: "4pt" }}>Policy Document</div>
+          </div>
+          <div className="print-meta">
+            <div>Version {doc.version}</div>
+            <div>Last Updated: {formattedDate}</div>
+            <div>ID: {doc.id.toUpperCase()}</div>
+            <div style={{ marginTop: "4pt", color: "#2E6FFF", fontWeight: 600 }}>CONFIDENTIAL</div>
+          </div>
+        </div>
+
         {/* Main document */}
         <div className="lg:col-span-3 space-y-5">
           {/* Document header */}
@@ -98,23 +207,34 @@ export default async function DocumentPage({ params }: { params: Promise<{ id: s
                 </div>
                 <h1 className="text-2xl font-bold text-gray-900 mb-2">{doc.title}</h1>
                 <p className="text-gray-500 text-sm leading-relaxed">{doc.summary}</p>
+
+                {/* Org branding badge */}
+                <div className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium"
+                  style={{ backgroundColor: `${color}10`, color, border: `1px solid ${color}25` }}>
+                  🏢 Adapted for: <span className="font-semibold">{orgLoaded ? orgName : "Loading…"}</span>
+                </div>
               </div>
             </div>
 
             <div className="flex flex-wrap gap-4 text-xs text-gray-400 pt-4 border-t border-gray-50">
               <span>📋 Version {doc.version}</span>
-              <span>📅 Updated {new Date(doc.lastUpdated).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}</span>
+              <span>📅 Updated {formattedDate}</span>
               <span>⏱ ~{doc.readTime} min read</span>
               <span>🌍 {doc.regulators.join(", ")}</span>
             </div>
           </div>
 
           {/* Action bar */}
-          <div className="card flex flex-wrap gap-3" style={{ padding: "1rem 1.25rem" }}>
+          <div className="card flex flex-wrap gap-3 no-print" style={{ padding: "1rem 1.25rem" }}>
             <button className="btn-primary text-sm py-2">✓ Mark as Read</button>
-            <button className="btn-secondary text-sm py-2">📥 Download PDF</button>
+            <button
+              onClick={handlePrint}
+              className="btn-secondary text-sm py-2"
+            >
+              📥 Download PDF
+            </button>
             <button className="btn-secondary text-sm py-2">📚 Add to Reading List</button>
-            <button className="btn-secondary text-sm py-2">🖨 Print</button>
+            <button onClick={handlePrint} className="btn-secondary text-sm py-2">🖨 Print</button>
             <div className="ml-auto flex items-center gap-2 text-xs text-gray-400">
               <span className="w-2 h-2 rounded-full bg-green-400 inline-block"></span>
               Current &amp; compliant
@@ -165,7 +285,7 @@ export default async function DocumentPage({ params }: { params: Promise<{ id: s
               </div>
             </div>
 
-            {/* Additional sections (document-specific) */}
+            {/* Additional sections */}
             {content.sections && content.sections.length > 0 && content.sections.map((section, i) => (
               <div key={section.heading} className="pt-5 border-t border-gray-50">
                 <h2 className="text-lg font-bold text-gray-900 mb-3 flex items-center gap-2">
@@ -214,7 +334,7 @@ export default async function DocumentPage({ params }: { params: Promise<{ id: s
             </div>
 
             {/* Acknowledgement */}
-            <div className="pt-5 border-t border-gray-50">
+            <div className="pt-5 border-t border-gray-50 no-print">
               <div className="rounded-xl p-5" style={{ backgroundColor: `${color}08`, border: `1px solid ${color}20` }}>
                 <h2 className="text-base font-bold text-gray-900 mb-1">Staff Acknowledgement</h2>
                 <p className="text-sm text-gray-500 mb-4">
@@ -225,13 +345,19 @@ export default async function DocumentPage({ params }: { params: Promise<{ id: s
                 </button>
               </div>
             </div>
+
+            {/* Print footer */}
+            <div style={{ display: "none" }} className="print-footer">
+              <p style={{ fontSize: "8pt", color: "#888", borderTop: "1px solid #ddd", paddingTop: "8pt", marginTop: "16pt" }}>
+                This policy has been adapted for {orgName}. Policy ID: {doc.id.toUpperCase()} | Version {doc.version} | {formattedDate} | Powered by Ziproh Compliance Centre
+              </p>
+            </div>
           </div>
 
           {/* Tags */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 no-print">
             {doc.tags.map((tag) => (
-              <span key={tag}
-                className="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-500">
+              <span key={tag} className="text-xs px-2.5 py-1 rounded-full bg-gray-100 text-gray-500">
                 #{tag}
               </span>
             ))}
@@ -239,7 +365,7 @@ export default async function DocumentPage({ params }: { params: Promise<{ id: s
         </div>
 
         {/* Sidebar */}
-        <div className="space-y-4">
+        <div className="space-y-4 no-print">
           {/* Document info */}
           <div className="card">
             <h3 className="font-bold text-gray-900 mb-4 text-sm">Document Info</h3>
@@ -299,30 +425,6 @@ export default async function DocumentPage({ params }: { params: Promise<{ id: s
               </div>
             </div>
           )}
-
-          {/* Reading history */}
-          <div className="card">
-            <h3 className="font-bold text-gray-900 mb-3 text-sm">Reading History</h3>
-            <div className="space-y-2">
-              {[
-                { name: "Washington", date: "Today", initials: "W", color: "#2E6FFF" },
-                { name: "Sarah K.", date: "3 days ago", initials: "S", color: "#8b5cf6" },
-                { name: "Marcus T.", date: "1 week ago", initials: "M", color: "#22c55e" },
-              ].map((reader) => (
-                <div key={reader.name} className="flex items-center gap-2">
-                  <div className="w-6 h-6 rounded-full flex items-center justify-center text-xs text-white font-bold flex-shrink-0"
-                    style={{ backgroundColor: reader.color }}>
-                    {reader.initials}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs font-medium text-gray-700">{reader.name}</div>
-                    <div className="text-xs text-gray-400">{reader.date}</div>
-                  </div>
-                  <span className="text-green-500 text-xs">✓</span>
-                </div>
-              ))}
-            </div>
-          </div>
 
           {/* Ziproh AI */}
           <div className="card p-4 text-center" style={{ background: "linear-gradient(135deg, #2E6FFF10, #8b5cf610)", border: "1px solid #2E6FFF20" }}>
