@@ -91,7 +91,7 @@ export async function GET(
     const safeTitle = doc.title.replace(/[^a-z0-9]/gi, "-").toLowerCase();
     const filename  = `${doc.id}-${safeTitle}.pdf`;
 
-    return new NextResponse(buffer, {
+    return new NextResponse(new Uint8Array(buffer), {
       status: 200,
       headers: {
         "Content-Type":        "application/pdf",
