@@ -76,9 +76,19 @@ export async function GET(
     || user.email?.split("@")[0]
     || "Learner";
   const orgName      = profileRes.data?.org_name   || "Care Organisation";
-  const completedAt  = completionRes.data?.completed_at
-    ? new Date(completionRes.data.completed_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
-    : new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+
+  // Completion date + 12-month expiry (training must be renewed annually)
+  const completedDate = completionRes.data?.completed_at
+    ? new Date(completionRes.data.completed_at)
+    : new Date();
+  const expiryDate = new Date(completedDate);
+  expiryDate.setFullYear(expiryDate.getFullYear() + 1);
+
+  const fmt = (d: Date) =>
+    d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+  const completedAt = fmt(completedDate);
+  const validUntil  = fmt(expiryDate);
+
   const certRef      = completionRes.data?.certificate_ref
     || `ZT-${new Date().getFullYear()}-${Math.floor(10000 + Math.random() * 90000)}`;
   const cpdHours     = (mod.duration / 60).toFixed(2).replace(/\.?0+$/, "") + " CPD Hours";
@@ -247,22 +257,24 @@ export async function GET(
     doc.fontSize(19).font("Helvetica-Bold").fillColor(C.brand);
     doc.text(mod.title, cx, courseY, { width: cw, align: "center", lineBreak: true });
 
-    // Pill details
+    // Pill details — 4 pills incl. 12-month expiry
     const pillsY = courseY + 58;
-    function pill(label: string, value: string, px: number) {
-      const pw = 145, ph = 36, pr = 8;
-      doc.roundedRect(px, pillsY, pw, ph, pr).fill(C.goldLt);
-      doc.roundedRect(px, pillsY, 4, ph, pr).fill(C.gold);
-      doc.fontSize(7).font("Helvetica-Bold").fillColor(C.gold);
-      doc.text(label.toUpperCase(), px + 12, pillsY + 6, { lineBreak: false });
-      doc.fontSize(10).font("Helvetica-Bold").fillColor(C.dark);
-      doc.text(value, px + 12, pillsY + 17, { lineBreak: false });
+    const PILL_W = 128, PILL_GAP = 13;
+    function pill(label: string, value: string, px: number, accent = "#C8922A") {
+      const ph = 36, pr = 8;
+      doc.roundedRect(px, pillsY, PILL_W, ph, pr).fill(C.goldLt);
+      doc.roundedRect(px, pillsY, 4, ph, pr).fill(accent);
+      doc.fontSize(6.5).font("Helvetica-Bold").fillColor(accent);
+      doc.text(label.toUpperCase(), px + 11, pillsY + 6, { lineBreak: false });
+      doc.fontSize(9.5).font("Helvetica-Bold").fillColor(C.dark);
+      doc.text(value, px + 11, pillsY + 17, { lineBreak: false });
     }
-    const totalPillW = 3 * 145 + 2 * 14;
+    const totalPillW = 4 * PILL_W + 3 * PILL_GAP;
     const pillStartX = cx + (cw - totalPillW) / 2;
     pill("Date Completed", completedAt,                pillStartX);
-    pill("Duration",       `${mod.duration} minutes`,  pillStartX + 159);
-    pill("CPD",            cpdHours,                   pillStartX + 318);
+    pill("Duration",       `${mod.duration} minutes`,  pillStartX + (PILL_W + PILL_GAP));
+    pill("CPD",            cpdHours,                   pillStartX + (PILL_W + PILL_GAP) * 2);
+    pill("Valid Until",    validUntil,                 pillStartX + (PILL_W + PILL_GAP) * 3, "#DC2626");
 
     // ── Verification row (between pills and footer) ──
     const verifyRowY = pillsY + 64;
@@ -277,6 +289,13 @@ export async function GET(
     );
     doc.fontSize(8.5).font("Helvetica-Bold").fillColor(C.brand);
     doc.text(verifyUrl.replace(/^https?:\/\//, ""), cx, verifyRowY + 38, { width: cw - 220, lineBreak: false });
+
+    // Renewal notice
+    doc.fontSize(7.5).font("Helvetica-Oblique").fillColor(C.muted);
+    doc.text(
+      `This certificate is valid for 12 months from the date of completion and expires on ${validUntil}. Training must be renewed annually.`,
+      cx, verifyRowY + 56, { width: cw - 220 },
+    );
 
     // Right: verification seal (Ziproh icon in gold rings)
     const sealX = cx + cw - 160;

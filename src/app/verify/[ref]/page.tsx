@@ -46,11 +46,20 @@ export default async function VerifyPage({
   const decodedRef = decodeURIComponent(ref);
   const cert = await lookupCertificate(decodedRef);
 
-  const formattedDate = cert
-    ? new Date(cert.completed_at).toLocaleDateString("en-GB", {
-        day: "numeric", month: "long", year: "numeric",
-      })
-    : null;
+  // Training certificates are valid for 12 months from completion
+  const fmt = (d: Date) =>
+    d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });
+  let formattedDate: string | null = null;
+  let formattedExpiry: string | null = null;
+  let isExpired = false;
+  if (cert) {
+    const completed = new Date(cert.completed_at);
+    const expiry = new Date(completed);
+    expiry.setFullYear(expiry.getFullYear() + 1);
+    formattedDate   = fmt(completed);
+    formattedExpiry = fmt(expiry);
+    isExpired = expiry.getTime() < Date.now();
+  }
 
   return (
     <div className="min-h-screen flex flex-col items-center px-4 py-12" style={{ backgroundColor: "#f8faff" }}>
@@ -62,18 +71,33 @@ export default async function VerifyPage({
       <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
         {cert ? (
           <>
-            {/* Verified banner */}
-            <div className="px-6 py-5 flex items-center gap-3" style={{ backgroundColor: "#D1FAE5" }}>
-              <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xl font-bold flex-shrink-0" style={{ backgroundColor: "#10B981" }}>
-                ✓
-              </div>
-              <div>
-                <div className="text-base font-bold" style={{ color: "#064E3B" }}>Certificate verified</div>
-                <div className="text-xs" style={{ color: "#065F46" }}>
-                  This certificate is genuine and is recorded in the Ziproh Training registry.
+            {/* Verified / expired banner */}
+            {isExpired ? (
+              <div className="px-6 py-5 flex items-center gap-3" style={{ backgroundColor: "#FEF3C7" }}>
+                <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xl font-bold flex-shrink-0" style={{ backgroundColor: "#F59E0B" }}>
+                  !
+                </div>
+                <div>
+                  <div className="text-base font-bold" style={{ color: "#78350F" }}>Genuine certificate — training expired</div>
+                  <div className="text-xs" style={{ color: "#92400E" }}>
+                    This certificate is recorded in the Ziproh Training registry, but it expired on {formattedExpiry}.
+                    Training must be renewed every 12 months.
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="px-6 py-5 flex items-center gap-3" style={{ backgroundColor: "#D1FAE5" }}>
+                <div className="w-10 h-10 rounded-full flex items-center justify-center text-white text-xl font-bold flex-shrink-0" style={{ backgroundColor: "#10B981" }}>
+                  ✓
+                </div>
+                <div>
+                  <div className="text-base font-bold" style={{ color: "#064E3B" }}>Certificate verified</div>
+                  <div className="text-xs" style={{ color: "#065F46" }}>
+                    This certificate is genuine, current, and recorded in the Ziproh Training registry.
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Certificate details */}
             <div className="px-6 py-6 space-y-4">
@@ -82,7 +106,11 @@ export default async function VerifyPage({
               <Detail label="Organisation"   value={cert.org_name} />
               <Detail label="Training"       value={cert.training_name} />
               <Detail label="Completed on"   value={formattedDate ?? cert.completed_at} />
+              <Detail label="Valid until"    value={`${formattedExpiry}${isExpired ? " — EXPIRED" : ""}`} />
               <Detail label="Issued by"      value={cert.provider} />
+              <p className="text-xs text-gray-400 pt-1">
+                Ziproh training certificates are valid for 12 months from the date of completion and must be renewed annually.
+              </p>
             </div>
           </>
         ) : (
