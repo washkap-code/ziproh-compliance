@@ -292,7 +292,7 @@ export default function MyPoliciesPage() {
           <div>
             <h1 className="text-2xl font-bold text-gray-900">My Adopted Policies</h1>
             <p className="mt-1 text-sm text-gray-500">
-              Your organisation's formal policy portfolio — adopted, reviewed, and ready for inspection.
+              Your organisation&apos;s formal policy portfolio — adopted, reviewed, and ready for inspection.
             </p>
           </div>
           <button

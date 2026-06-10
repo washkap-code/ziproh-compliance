@@ -513,7 +513,7 @@ export default function DocumentPage() {
       link.download  = `${id}-${doc.title.replace(/[^a-z0-9]/gi, "-").toLowerCase()}.pdf`;
       link.click();
       URL.revokeObjectURL(objUrl);
-    } catch (e) {
+    } catch {
       alert("PDF download failed — please try again.");
     } finally {
       setPdfLoading(false);

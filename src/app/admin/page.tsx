@@ -212,8 +212,8 @@ export default function AdminPage() {
       return matchSearch && matchPlan && matchStatus;
     })
     .sort((a, b) => {
-      let av: string = a[sortKey] ?? "";
-      let bv: string = b[sortKey] ?? "";
+      const av: string = a[sortKey] ?? "";
+      const bv: string = b[sortKey] ?? "";
       return sortAsc ? av.localeCompare(bv) : bv.localeCompare(av);
     });
 
