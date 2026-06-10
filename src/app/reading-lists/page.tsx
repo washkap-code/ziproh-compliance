@@ -9,10 +9,18 @@ type ReadingList = {
   name: string;
   description: string | null;
   document_ids: string[];
+  assigned_to: string[];
   due_date: string | null;
   created_at: string;
   org_id: string;
   created_by: string;
+};
+
+type StaffOption = {
+  userId: string;
+  name: string;
+  email: string;
+  initials: string;
 };
 
 function supabase() {
@@ -36,14 +44,22 @@ export default function ReadingListsPage() {
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [activeList, setActiveList] = useState<ReadingList | null>(null);
+  const [isManager, setIsManager] = useState(false);
+  const [staffOptions, setStaffOptions] = useState<StaffOption[]>([]);
 
   // New list form state
   const [newName, setNewName] = useState("");
   const [newDesc, setNewDesc] = useState("");
   const [newDue, setNewDue] = useState("");
   const [selectedDocIds, setSelectedDocIds] = useState<string[]>([]);
+  const [selectedAssignees, setSelectedAssignees] = useState<string[]>([]);
   const [docSearch, setDocSearch] = useState("");
   const [saving, setSaving] = useState(false);
+
+  // Assign modal state
+  const [assigningList, setAssigningList] = useState<ReadingList | null>(null);
+  const [assignIds, setAssignIds] = useState<string[]>([]);
+  const [assigning, setAssigning] = useState(false);
 
   const sb = supabase();
 
@@ -55,19 +71,46 @@ export default function ReadingListsPage() {
     setLoading(true);
     const { data: { user } } = await sb.auth.getUser();
     if (!user) {
-      // Fallback: show demo data for unauthenticated preview
       setLists(DEMO_LISTS);
       setLoading(false);
       return;
     }
 
-    const [listsRes, readsRes] = await Promise.all([
-      sb.from("reading_lists").select("*").eq("org_id", user.id).order("created_at", { ascending: false }),
-      sb.from("read_records").select("document_id").eq("user_id", user.id),
+    // Check if user is an org owner (has their own staff) or a staff member
+    const [profileRes, staffCheckRes] = await Promise.all([
+      sb.from("profiles").select("id").eq("id", user.id).single(),
+      sb.from("staff_members").select("org_id").eq("user_id", user.id).limit(1),
     ]);
 
-    setLists(listsRes.data ?? []);
-    setReadDocIds(new Set((readsRes.data ?? []).map((r) => r.document_id)));
+    const staffRow = staffCheckRes.data?.[0];
+    const orgId = staffRow ? staffRow.org_id : user.id;
+    const isOrgOwner = !staffRow;
+    setIsManager(isOrgOwner);
+
+    // Fetch reading lists — org owners see all, staff see only assigned
+    const listsQuery = isOrgOwner
+      ? sb.from("reading_lists").select("*").eq("org_id", orgId).order("created_at", { ascending: false })
+      : sb.from("reading_lists").select("*").eq("org_id", orgId)
+          .contains("assigned_to", [user.id]).order("created_at", { ascending: false });
+
+    const [listsRes, readsRes, staffRes] = await Promise.all([
+      listsQuery,
+      sb.from("read_records").select("document_id").eq("user_id", user.id),
+      isOrgOwner
+        ? sb.from("staff_members").select("user_id, email, first_name, last_name")
+            .eq("org_id", user.id).eq("status", "active").not("user_id", "is", null)
+        : Promise.resolve({ data: [] }),
+    ]);
+
+    setLists((listsRes.data ?? []) as ReadingList[]);
+    setReadDocIds(new Set((readsRes.data ?? []).map((r: { document_id: string }) => r.document_id)));
+
+    const options: StaffOption[] = (staffRes.data ?? []).map((r: { user_id: string; email: string; first_name: string | null; last_name: string | null }) => {
+      const name = [r.first_name, r.last_name].filter(Boolean).join(" ") || r.email;
+      const initials = name.split(" ").map((n: string) => n[0] ?? "").join("").toUpperCase().slice(0, 2);
+      return { userId: r.user_id, name, email: r.email, initials };
+    });
+    setStaffOptions(options);
     setLoading(false);
   }
 
@@ -77,12 +120,12 @@ export default function ReadingListsPage() {
 
     const { data: { user } } = await sb.auth.getUser();
     if (!user) {
-      // Demo mode: add locally
       const demo: ReadingList = {
         id: `demo-${Date.now()}`,
         name: newName,
         description: newDesc || null,
         document_ids: selectedDocIds,
+        assigned_to: selectedAssignees,
         due_date: newDue || null,
         created_at: new Date().toISOString(),
         org_id: "demo",
@@ -98,16 +141,31 @@ export default function ReadingListsPage() {
       name: newName,
       description: newDesc || null,
       document_ids: selectedDocIds,
+      assigned_to: selectedAssignees,
       due_date: newDue || null,
       org_id: user.id,
       created_by: user.id,
     }).select().single();
 
     if (!error && data) {
-      setLists((prev) => [data, ...prev]);
+      setLists((prev) => [data as ReadingList, ...prev]);
     }
     resetForm();
     setSaving(false);
+  }
+
+  async function saveAssignment() {
+    if (!assigningList) return;
+    setAssigning(true);
+    await sb.from("reading_lists").update({ assigned_to: assignIds }).eq("id", assigningList.id);
+    setLists(prev => prev.map(l => l.id === assigningList.id ? { ...l, assigned_to: assignIds } : l));
+    setAssigningList(null);
+    setAssigning(false);
+  }
+
+  function openAssignModal(list: ReadingList) {
+    setAssignIds(list.assigned_to ?? []);
+    setAssigningList(list);
   }
 
   function resetForm() {
@@ -115,6 +173,7 @@ export default function ReadingListsPage() {
     setNewDesc("");
     setNewDue("");
     setSelectedDocIds([]);
+    setSelectedAssignees([]);
     setDocSearch("");
     setShowCreate(false);
   }
@@ -288,6 +347,40 @@ export default function ReadingListsPage() {
                   ))}
                 </div>
               </div>
+              {/* Assign to staff — only shown if there are active staff */}
+              {staffOptions.length > 0 && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Assign to Staff ({selectedAssignees.length === 0 ? "all staff can see" : `${selectedAssignees.length} selected`})
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {staffOptions.map(s => {
+                      const sel = selectedAssignees.includes(s.userId);
+                      return (
+                        <button
+                          key={s.userId}
+                          type="button"
+                          onClick={() => setSelectedAssignees(prev => sel ? prev.filter(id => id !== s.userId) : [...prev, s.userId])}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold transition-all"
+                          style={{
+                            backgroundColor: sel ? "#2E6FFF" : "#f3f4f6",
+                            color: sel ? "white" : "#374151",
+                            border: `1px solid ${sel ? "#2E6FFF" : "#e2e8f0"}`,
+                          }}
+                        >
+                          <span className="w-5 h-5 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                            style={{ backgroundColor: sel ? "rgba(255,255,255,0.3)" : "#94a3b8" }}>
+                            {s.initials}
+                          </span>
+                          {s.name}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <p className="text-xs text-gray-400 mt-1">Leave all unselected to make visible to everyone.</p>
+                </div>
+              )}
+
               <div className="flex gap-3 pt-2">
                 <button onClick={resetForm} className="btn-secondary flex-1">Cancel</button>
                 <button
@@ -351,9 +444,107 @@ export default function ReadingListsPage() {
                       <span>{readCount}/{docs.length} read</span>
                     )}
                   </div>
+
+                  {/* Assigned staff avatars + assign button */}
+                  <div className="mt-3 pt-3 border-t flex items-center justify-between" style={{ borderColor: "#f3f4f6" }}>
+                    <div className="flex items-center gap-1">
+                      {(list.assigned_to ?? []).length === 0 ? (
+                        <span className="text-xs text-gray-300">Everyone</span>
+                      ) : (
+                        <>
+                          {(list.assigned_to ?? []).slice(0, 4).map(uid => {
+                            const s = staffOptions.find(o => o.userId === uid);
+                            return s ? (
+                              <div key={uid}
+                                className="w-6 h-6 rounded-full flex items-center justify-center text-white text-xs font-bold -ml-1 first:ml-0 border-2 border-white"
+                                style={{ backgroundColor: "#2E6FFF" }}
+                                title={s.name}
+                              >
+                                {s.initials}
+                              </div>
+                            ) : null;
+                          })}
+                          {(list.assigned_to ?? []).length > 4 && (
+                            <span className="text-xs text-gray-400 ml-1">+{(list.assigned_to ?? []).length - 4}</span>
+                          )}
+                        </>
+                      )}
+                    </div>
+                    {isManager && (
+                      <button
+                        onClick={(e) => { e.stopPropagation(); openAssignModal(list); }}
+                        className="text-xs font-semibold px-2.5 py-1 rounded-lg border transition-all hover:bg-blue-50 hover:border-blue-300 hover:text-blue-600"
+                        style={{ borderColor: "#e2e8f0", color: "#6b7280" }}
+                      >
+                        Assign →
+                      </button>
+                    )}
+                  </div>
                 </div>
               );
             })}
+          </div>
+        )}
+
+        {/* Assign modal */}
+        {assigningList && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="fixed inset-0 bg-black/40" onClick={() => setAssigningList(null)} />
+            <div className="relative bg-white rounded-2xl shadow-2xl p-6 w-full max-w-sm z-10">
+              <h2 className="font-bold text-gray-900 mb-1">Assign Reading List</h2>
+              <p className="text-sm text-gray-500 mb-4">
+                &ldquo;{assigningList.name}&rdquo; — choose who this is assigned to.
+              </p>
+
+              {staffOptions.length === 0 ? (
+                <p className="text-sm text-gray-400 py-4 text-center">No active staff members yet.</p>
+              ) : (
+                <div className="space-y-2 max-h-64 overflow-y-auto mb-4">
+                  {staffOptions.map(s => {
+                    const sel = assignIds.includes(s.userId);
+                    return (
+                      <label key={s.userId}
+                        className="flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all"
+                        style={{
+                          backgroundColor: sel ? "#eff6ff" : "#f9fafb",
+                          border: `1px solid ${sel ? "#93c5fd" : "#e2e8f0"}`,
+                        }}
+                      >
+                        <input type="checkbox" checked={sel}
+                          onChange={() => setAssignIds(prev => sel ? prev.filter(id => id !== s.userId) : [...prev, s.userId])}
+                          className="rounded" style={{ accentColor: "#2E6FFF" }} />
+                        <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                          style={{ backgroundColor: "#2E6FFF" }}>
+                          {s.initials}
+                        </div>
+                        <div>
+                          <div className="text-sm font-semibold text-gray-900">{s.name}</div>
+                          <div className="text-xs text-gray-400">{s.email}</div>
+                        </div>
+                      </label>
+                    );
+                  })}
+                </div>
+              )}
+
+              <p className="text-xs text-gray-400 mb-4">
+                {assignIds.length === 0
+                  ? "No one selected — this list will be visible to all staff."
+                  : `Assigned to ${assignIds.length} staff member${assignIds.length === 1 ? "" : "s"}.`}
+              </p>
+
+              <div className="flex gap-2">
+                <button onClick={() => setAssigningList(null)} className="btn-secondary flex-1">Cancel</button>
+                <button
+                  onClick={saveAssignment}
+                  disabled={assigning}
+                  className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-all"
+                  style={{ backgroundColor: "#2E6FFF", opacity: assigning ? 0.7 : 1 }}
+                >
+                  {assigning ? "Saving…" : "Save Assignment"}
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>
@@ -368,6 +559,7 @@ const DEMO_LISTS: ReadingList[] = [
     name: "New Starter Mandatory Reading",
     description: "All new staff must complete within first 2 weeks",
     document_ids: ["saf-001", "saf-005", "saf-003", "car-001", "wl-004"],
+    assigned_to: [],
     due_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
     created_at: new Date().toISOString(),
     org_id: "demo",
@@ -378,6 +570,7 @@ const DEMO_LISTS: ReadingList[] = [
     name: "CQC Inspection Prep Pack",
     description: "Key policies to review before an inspection visit",
     document_ids: ["wl-001", "saf-006", "eff-001", "res-001", "wl-002"],
+    assigned_to: [],
     due_date: null,
     created_at: new Date().toISOString(),
     org_id: "demo",

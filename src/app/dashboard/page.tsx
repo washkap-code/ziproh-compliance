@@ -113,6 +113,10 @@ function GettingStarted({ steps, onDismiss }: { steps: CheckStep[]; onDismiss: (
 
 // ─────────────────────────────────────────────────────────────────────────────
 
+// ── Team compliance types ──────────────────────────────────────────────────────
+type TeamMemberStat = { name: string; initials: string; colour: string; pct: number; read: number };
+const TEAM_COLOURS = ["#2E6FFF", "#8b5cf6", "#22c55e", "#ec4899", "#f59e0b", "#06b6d4", "#f97316"];
+
 export default function DashboardPage() {
   const [loading,    setLoading]    = useState(true);
   const [firstName,  setFirstName]  = useState("there");
@@ -123,6 +127,7 @@ export default function DashboardPage() {
   const [readingListCount, setReadingListCount] = useState(0);
   const [staffCount,     setStaffCount]     = useState(0);
   const [showOnboarding, setShowOnboarding] = useState(false);
+  const [teamStats,      setTeamStats]      = useState<TeamMemberStat[]>([]);
 
   useEffect(() => {
     // Check dismissal from localStorage
@@ -144,7 +149,11 @@ export default function DashboardPage() {
         supabase.from("read_records").select("document_id, read_at").eq("user_id", user.id).order("read_at", { ascending: false }),
         supabase.from("audits").select("id", { count: "exact", head: true }).eq("org_id", user.id),
         supabase.from("reading_lists").select("id", { count: "exact", head: true }).eq("org_id", user.id),
-        supabase.from("staff_members").select("id", { count: "exact", head: true }).eq("org_id", user.id),
+        supabase.from("staff_members")
+          .select("user_id, email, first_name, last_name, status")
+          .eq("org_id", user.id)
+          .eq("status", "active")
+          .not("user_id", "is", null),
       ]);
 
       if (profileRes.data) {
@@ -156,7 +165,30 @@ export default function DashboardPage() {
       if (recordsRes.data) setReadRecords(recordsRes.data as ReadRecord[]);
       setAuditCount(auditsRes.count ?? 0);
       setReadingListCount(listsRes.count ?? 0);
-      setStaffCount(staffRes.count ?? 0);
+
+      const activeStaff = staffRes.data ?? [];
+      setStaffCount(activeStaff.length);
+
+      // Fetch team read counts for org-level compliance section
+      if (activeStaff.length > 0) {
+        const userIds = activeStaff.map((s: { user_id: string }) => s.user_id);
+        const { data: teamReads } = await supabase
+          .from("read_records")
+          .select("user_id")
+          .in("user_id", userIds);
+
+        const counts: Record<string, number> = {};
+        for (const r of teamReads ?? []) counts[r.user_id] = (counts[r.user_id] ?? 0) + 1;
+
+        const stats: TeamMemberStat[] = activeStaff.map((s: { user_id: string; email: string; first_name: string | null; last_name: string | null }, i: number) => {
+          const name = [s.first_name, s.last_name].filter(Boolean).join(" ") || s.email;
+          const initials = name.split(" ").map((n: string) => n[0] ?? "").join("").toUpperCase().slice(0, 2);
+          const read = counts[s.user_id] ?? 0;
+          return { name, initials, colour: TEAM_COLOURS[i % TEAM_COLOURS.length], pct: Math.min(100, Math.round((read / DOCUMENTS.length) * 100)), read };
+        });
+        setTeamStats(stats.sort((a, b) => b.pct - a.pct));
+      }
+
       setLoading(false);
     })();
   }, []);
@@ -332,6 +364,84 @@ export default function DashboardPage() {
           </div>
         ))}
       </div>
+
+      {/* ── Team Compliance Overview (managers only) ──────────────────────────── */}
+      {!loading && teamStats.length > 0 && (
+        <div className="card mb-8">
+          <div className="flex items-center justify-between mb-5">
+            <div>
+              <h2 className="font-bold text-gray-900">Team Compliance</h2>
+              <p className="text-xs text-gray-400 mt-0.5">Active staff — policy acknowledgement rates</p>
+            </div>
+            <div className="flex gap-2">
+              <Link href="/staff/matrix" className="text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all hover:bg-blue-50 hover:border-blue-300 hover:text-blue-600"
+                style={{ borderColor: "#e2e8f0", color: "#6b7280" }}>
+                Full Matrix →
+              </Link>
+              <Link href="/staff" className="text-xs font-semibold px-3 py-1.5 rounded-lg border transition-all hover:bg-gray-50"
+                style={{ borderColor: "#e2e8f0", color: "#6b7280" }}>
+                Manage Staff →
+              </Link>
+            </div>
+          </div>
+
+          {/* Team average */}
+          <div className="grid grid-cols-3 gap-4 mb-5 p-4 rounded-xl" style={{ backgroundColor: "#f8faff", border: "1px solid #e8f0ff" }}>
+            {(() => {
+              const avg = Math.round(teamStats.reduce((s, m) => s + m.pct, 0) / teamStats.length);
+              const above80 = teamStats.filter(m => m.pct >= 80).length;
+              const below50 = teamStats.filter(m => m.pct < 50).length;
+              return (
+                <>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold" style={{ color: avg >= 80 ? "#22c55e" : avg >= 50 ? "#f59e0b" : "#ef4444" }}>{avg}%</div>
+                    <div className="text-xs text-gray-500 mt-0.5">Team average</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-600">{above80}</div>
+                    <div className="text-xs text-gray-500 mt-0.5">Above 80%</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold" style={{ color: below50 > 0 ? "#ef4444" : "#22c55e" }}>{below50}</div>
+                    <div className="text-xs text-gray-500 mt-0.5">Below 50%</div>
+                  </div>
+                </>
+              );
+            })()}
+          </div>
+
+          {/* Per-member bars */}
+          <div className="space-y-3">
+            {teamStats.slice(0, 6).map(member => (
+              <div key={member.name} className="flex items-center gap-3">
+                <div className="w-7 h-7 rounded-full flex-shrink-0 flex items-center justify-center text-white text-xs font-bold"
+                  style={{ backgroundColor: member.colour }}>
+                  {member.initials}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-medium text-gray-700 truncate">{member.name}</span>
+                    <span className="text-xs font-bold ml-2 flex-shrink-0"
+                      style={{ color: member.pct >= 80 ? "#22c55e" : member.pct >= 50 ? "#f59e0b" : "#ef4444" }}>
+                      {member.pct}%
+                    </span>
+                  </div>
+                  <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="h-full rounded-full transition-all"
+                      style={{ width: `${member.pct}%`, backgroundColor: member.pct >= 80 ? "#22c55e" : member.pct >= 50 ? "#f59e0b" : "#ef4444" }} />
+                  </div>
+                </div>
+                <span className="text-xs text-gray-400 w-12 text-right flex-shrink-0">{member.read}/{DOCUMENTS.length}</span>
+              </div>
+            ))}
+            {teamStats.length > 6 && (
+              <Link href="/staff/matrix" className="block text-center text-xs font-semibold text-blue-500 hover:text-blue-700 pt-1">
+                +{teamStats.length - 6} more staff — view full matrix
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="grid lg:grid-cols-3 gap-6">
 

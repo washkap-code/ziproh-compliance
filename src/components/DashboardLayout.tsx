@@ -219,7 +219,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           icon: "📋",
           title: `${updatedUnread.length} polic${updatedUnread.length === 1 ? "y has" : "ies have"} been updated`,
           body: "Acknowledge them to keep your compliance record current.",
-          href: "/compliance?filter=updated",
+          href: "/compliance?filter=attention",
           urgency: "high",
         });
       }
