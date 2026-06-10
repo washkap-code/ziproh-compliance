@@ -1,254 +1,309 @@
+"use client";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { createBrowserClient } from "@supabase/ssr";
+
+const sb = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 const PLANS = [
   {
-    id: "starter",
-    name: "Starter",
-    subtitle: "For new or small providers",
-    monthly: 49,
-    annual: 39,
-    stripePriceIdMonthly: "price_starter_monthly",
-    stripePriceIdAnnual: "price_starter_annual",
-    features: [
-      "62 policies & procedures",
-      "CQC England aligned",
-      "2 user accounts",
-      "Full policy search & filtering",
-      "Branded PDF download",
-      "Email support",
-    ],
-    notIncluded: ["Audit Centre", "Reading List tracking", "Upload your own docs", "Multiple regulators"],
-    color: "#6b7280",
-  },
-  {
     id: "professional",
     name: "Professional",
-    subtitle: "Most popular for single-site providers",
-    monthly: 99,
-    annual: 79,
-    stripePriceIdMonthly: "price_professional_monthly",
-    stripePriceIdAnnual: "price_professional_annual",
+    subtitle: "For single-site care providers",
+    monthly: 49,
+    color: "#2E6FFF",
     popular: true,
     features: [
-      "62 policies & procedures",
-      "All 4 UK regulators (CQC, CI, CIW, RQIA)",
-      "10 user accounts",
+      "All 62 policies & procedures",
+      "Auto-updated to match CQC, CI, CIW & RQIA",
+      "Unlimited user accounts",
       "Full Audit Centre",
-      "Staff reading lists & tracking",
-      "Upload your own documents",
-      "Auto policy updates",
-      "Priority email & chat support",
-      "Mobile app access",
+      "Staff reading lists & acknowledgement tracking",
+      "CQC inspection readiness tools",
+      "Branded PDF policy downloads",
+      "Ziproh AI compliance assistant",
+      "Policy review tracker",
+      "Feedback surveys",
+      "Mobile-friendly — works on any device",
+      "Priority email support",
     ],
-    notIncluded: ["Learning Centre", "Feedback Surveys", "API access"],
-    color: "#2E6FFF",
+    notIncluded: [],
   },
   {
     id: "enterprise",
     name: "Enterprise",
     subtitle: "For multi-site care groups",
-    monthly: 199,
-    annual: 159,
-    stripePriceIdMonthly: "price_enterprise_monthly",
-    stripePriceIdAnnual: "price_enterprise_annual",
+    monthly: 149,
+    color: "#7c3aed",
+    popular: false,
     features: [
       "Everything in Professional",
-      "Unlimited user accounts",
-      "Multiple service locations",
-      "Learning Centre & CPD record tracking",
-      "Feedback Surveys module",
-      "Mock Inspection tools",
+      "Multi-site management",
+      "Custom policy branding",
+      "Bespoke policy additions",
       "Dedicated account manager",
       "Phone support",
       "API access",
-      "Custom policy uploads (unlimited)",
-      "Advanced reporting & analytics",
+      "SAML SSO",
+      "SLA & uptime guarantee",
     ],
     notIncluded: [],
-    color: "#8b5cf6",
   },
 ];
 
 const FAQS = [
   {
-    q: "Is there really a free trial?",
-    a: "Yes — all plans include a 14-day free trial. No credit card required to start. You'll only be asked for payment details at the end of your trial.",
+    q: "Is there a free trial?",
+    a: "Yes — all plans include a 14-day free trial. No credit card required to start. You get full access to every feature from day one.",
   },
   {
-    q: "Can I change plans later?",
-    a: "Absolutely. You can upgrade or downgrade at any time from your account settings. Changes take effect immediately and are prorated.",
+    q: "How are policies kept up to date?",
+    a: "Ziproh monitors regulatory guidance from CQC, Care Inspectorate, CIW and RQIA. When guidance changes, we update the affected policies and notify your team.",
   },
   {
-    q: "How many staff can access the system?",
-    a: "Starter allows 2 users. Professional allows 10. Enterprise has unlimited user accounts across all your locations.",
+    q: "Can I add multiple staff members?",
+    a: "Yes. All plans include unlimited staff accounts. Each team member gets their own login and compliance record.",
   },
   {
-    q: "Are policies personalised to my service?",
-    a: "Yes. When you register, you tell us your service type and regulator. All policies are automatically aligned and personalised to your specific situation.",
+    q: "What happens if I cancel?",
+    a: "You can cancel at any time. Your data is retained for 30 days so you can export it. Email hello@ziprohtraining.co.uk to cancel.",
   },
   {
-    q: "What regulators are supported?",
-    a: "Professional and Enterprise plans cover all four UK care regulators: CQC (England), Care Inspectorate (Scotland), CIW (Wales), and RQIA (Northern Ireland).",
+    q: "Do you cover all four UK regulators?",
+    a: "Yes — policies are aligned to CQC (England), Care Inspectorate (Scotland), CIW (Wales), and RQIA (Northern Ireland).",
   },
   {
-    q: "How do auto-updates work?",
-    a: "Our compliance team monitors all four UK regulators 24/7. When regulations change, we update the relevant policies and push them to your account automatically — you don't need to do anything.",
+    q: "What if I need more than the standard policies?",
+    a: "Enterprise customers can request bespoke policy additions and custom branding. Contact us to discuss your requirements.",
   },
 ];
 
 export default function PricingPage() {
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
+
+  async function handleStart(planId: string) {
+    setLoadingPlan(planId);
+    try {
+      const { data: { user } } = await sb.auth.getUser();
+
+      if (!user) {
+        // Not logged in — go to register (trial starts there)
+        window.location.href = `/register?plan=${planId}`;
+        return;
+      }
+
+      // Already logged in — try Stripe checkout
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          planId,
+          billing: "monthly",
+          customerEmail: user.email,
+          userId: user.id,
+        }),
+      });
+
+      if (res.ok) {
+        const { url } = await res.json();
+        if (url) { window.location.href = url; return; }
+      }
+
+      // Stripe not configured — fall back to upgrade page
+      window.location.href = "/upgrade";
+    } catch {
+      window.location.href = `/register?plan=${planId}`;
+    } finally {
+      setLoadingPlan(null);
+    }
+  }
+
   return (
-    <div className="min-h-screen" style={{ backgroundColor: "#f8faff" }}>
+    <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f8faff" }}>
+
       {/* Nav */}
-      <nav style={{ backgroundColor: "white", borderBottom: "1px solid #e2e8f0" }}>
+      <nav className="bg-white border-b sticky top-0 z-50" style={{ borderColor: "#e2e8f0" }}>
         <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link href="/">
-            <Image src="/ziproh-logo.png" alt="Ziproh" width={120} height={35} style={{ objectFit: "contain" }} />
+            <Image src="/ziproh-logo.png" alt="Ziproh" width={120} height={34} style={{ objectFit: "contain" }} />
           </Link>
           <div className="flex items-center gap-3">
-            <Link href="/login" className="text-sm font-semibold text-gray-600 hover:text-gray-900 px-4 py-2">Log in</Link>
-            <Link href="/register" className="btn-primary text-sm">Start Free Trial</Link>
+            <Link href="/login" className="text-sm font-semibold text-gray-600 hover:text-[#2E6FFF] px-4 py-2 transition-colors">
+              Log in
+            </Link>
+            <Link href="/register" className="btn-primary text-sm">
+              Start Free Trial
+            </Link>
           </div>
         </div>
       </nav>
 
-      {/* Hero */}
-      <div className="text-center py-16 px-6">
-        <h1 className="text-5xl font-bold text-gray-900 mb-4">Simple, transparent pricing</h1>
-        <p className="text-xl text-gray-500 mb-2">
-          All plans include a 14-day free trial. No credit card required.
-        </p>
-        <p className="text-sm text-gray-400">Save up to 20% with annual billing</p>
-      </div>
+      <main className="flex-1">
 
-      {/* Plans */}
-      <div className="max-w-6xl mx-auto px-6 pb-16">
-        <div className="grid md:grid-cols-3 gap-6">
-          {PLANS.map((plan) => (
-            <div
-              key={plan.id}
-              className="card relative flex flex-col"
-              style={{
-                border: plan.popular ? `2px solid ${plan.color}` : "1px solid #e2e8f0",
-              }}
-            >
-              {plan.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                  <span className="px-4 py-1 rounded-full text-sm font-bold text-white"
-                    style={{ backgroundColor: plan.color }}>
-                    Most Popular
-                  </span>
-                </div>
-              )}
+        {/* Hero */}
+        <section className="py-20 px-6 text-center">
+          <div className="max-w-2xl mx-auto">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold mb-6"
+              style={{ backgroundColor: "#e8f0ff", color: "#2E6FFF" }}>
+              ✓ 14-day free trial — no credit card required
+            </div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">Simple, transparent pricing</h1>
+            <p className="text-xl text-gray-500">
+              One plan covers everything your care service needs to stay compliant and inspection-ready.
+            </p>
+          </div>
+        </section>
 
-              <div className="mb-6">
-                <h2 className="text-xl font-bold text-gray-900">{plan.name}</h2>
-                <p className="text-gray-500 text-sm mt-1">{plan.subtitle}</p>
-              </div>
-
-              <div className="mb-6">
-                <div className="flex items-baseline gap-1">
-                  <span className="text-5xl font-bold text-gray-900">£{plan.monthly}</span>
-                  <span className="text-gray-400 text-sm">/month</span>
-                </div>
-                <div className="text-sm text-gray-400 mt-1">
-                  or <span className="font-semibold" style={{ color: plan.color }}>£{plan.annual}/mo</span> billed annually
-                </div>
-                <div className="text-xs text-gray-400 mt-0.5">+ VAT</div>
-              </div>
-
-              <Link
-                href={`/register?plan=${plan.id}`}
-                className="w-full py-3 rounded-lg font-semibold text-sm text-center block mb-6 transition-opacity hover:opacity-90"
+        {/* Plans */}
+        <section className="pb-20 px-6">
+          <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8">
+            {PLANS.map((plan) => (
+              <div
+                key={plan.id}
+                className="bg-white rounded-2xl p-8 flex flex-col relative"
                 style={{
-                  backgroundColor: plan.popular ? plan.color : "transparent",
-                  color: plan.popular ? "white" : plan.color,
-                  border: plan.popular ? "none" : `2px solid ${plan.color}`,
+                  border: plan.popular ? `2px solid ${plan.color}` : "1px solid #e2e8f0",
+                  boxShadow: plan.popular ? `0 8px 40px ${plan.color}18` : "0 1px 8px rgba(0,0,0,0.05)",
                 }}
               >
-                Start Free Trial
-              </Link>
+                {plan.popular && (
+                  <div
+                    className="absolute -top-3.5 left-1/2 -translate-x-1/2 text-xs font-bold px-4 py-1 rounded-full text-white"
+                    style={{ backgroundColor: plan.color }}
+                  >
+                    Most Popular
+                  </div>
+                )}
 
-              <div className="flex-1">
-                <div className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">What&apos;s included</div>
-                <ul className="space-y-2.5 mb-4">
+                <div className="mb-6">
+                  <div className="text-xl font-bold text-gray-900 mb-1">{plan.name}</div>
+                  <div className="text-sm text-gray-500">{plan.subtitle}</div>
+                </div>
+
+                <div className="flex items-end gap-1 mb-2">
+                  <span className="text-5xl font-extrabold text-gray-900">£{plan.monthly}</span>
+                  <span className="text-gray-400 text-sm mb-1.5">/month</span>
+                </div>
+                <p className="text-xs text-gray-400 mb-8">Billed monthly. Cancel anytime.</p>
+
+                <button
+                  onClick={() => handleStart(plan.id)}
+                  disabled={loadingPlan !== null}
+                  className="w-full py-3.5 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-60 mb-8"
+                  style={{ backgroundColor: plan.color }}
+                >
+                  {loadingPlan === plan.id ? "Redirecting…" : "Start Free 14-Day Trial"}
+                </button>
+
+                <ul className="space-y-3 flex-1">
                   {plan.features.map((f) => (
-                    <li key={f} className="flex items-start gap-2 text-sm text-gray-700">
-                      <span className="flex-shrink-0 font-bold" style={{ color: plan.color }}>✓</span>
+                    <li key={f} className="flex items-start gap-2.5 text-sm text-gray-600">
+                      <span className="flex-shrink-0 font-bold mt-0.5" style={{ color: plan.color }}>✓</span>
                       {f}
                     </li>
                   ))}
                 </ul>
-                {plan.notIncluded.length > 0 && (
-                  <>
-                    <div className="text-xs font-bold text-gray-400 uppercase tracking-wide mb-3 mt-4">Not included</div>
-                    <ul className="space-y-2">
-                      {plan.notIncluded.map((f) => (
-                        <li key={f} className="flex items-start gap-2 text-sm text-gray-400">
-                          <span className="flex-shrink-0">✕</span>
-                          {f}
-                        </li>
-                      ))}
-                    </ul>
-                  </>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Enterprise CTA */}
-        <div className="mt-8 rounded-2xl p-8 text-center" style={{ backgroundColor: "#1e293b" }}>
-          <h3 className="text-2xl font-bold text-white mb-2">Managing multiple locations?</h3>
-          <p className="text-gray-400 mb-6">
-            Enterprise plans can be customised for large care groups with 13+ sites. Talk to us about volume pricing.
-          </p>
-          <a href="mailto:hello@ziprohtraining.co.uk"
-            className="btn-primary text-sm px-8 py-3">
-            Contact Us for Group Pricing
-          </a>
-        </div>
-
-        {/* Trust badges */}
-        <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { icon: "🔒", title: "Secure & GDPR compliant", desc: "UK data hosting" },
-            { icon: "🔄", title: "Auto policy updates", desc: "No manual effort" },
-            { icon: "📱", title: "Any device", desc: "Web & mobile app" },
-            { icon: "💬", title: "Expert support", desc: "Mon–Fri 9am–5pm" },
-          ].map((badge) => (
-            <div key={badge.title} className="card text-center">
-              <div className="text-2xl mb-2">{badge.icon}</div>
-              <div className="text-sm font-semibold text-gray-900">{badge.title}</div>
-              <div className="text-xs text-gray-400 mt-0.5">{badge.desc}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* FAQs */}
-        <div className="mt-16">
-          <h2 className="text-3xl font-bold text-gray-900 text-center mb-10">Frequently asked questions</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            {FAQS.map((faq) => (
-              <div key={faq.q} className="card">
-                <h3 className="font-bold text-gray-900 mb-2 text-sm">{faq.q}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">{faq.a}</p>
               </div>
             ))}
           </div>
-        </div>
-      </div>
 
-      {/* Footer CTA */}
-      <div style={{ backgroundColor: "#2E6FFF" }} className="py-16 px-6 text-center">
-        <h2 className="text-3xl font-bold text-white mb-4">Ready to stay compliant?</h2>
-        <p className="text-blue-100 mb-8">Start your 14-day free trial today. No credit card required.</p>
-        <Link href="/register" className="bg-white font-bold px-10 py-4 rounded-xl text-sm inline-block"
-          style={{ color: "#2E6FFF" }}>
-          Start Free Trial →
-        </Link>
-      </div>
+          {/* Trial callout */}
+          <div className="max-w-4xl mx-auto mt-8 rounded-2xl p-6 text-center"
+            style={{ backgroundColor: "#f0f6ff", border: "1px solid #c7d9ff" }}>
+            <p className="text-sm font-semibold text-blue-900 mb-1">
+              🎉 Both plans include a full 14-day free trial
+            </p>
+            <p className="text-xs text-blue-700">
+              Full access to every feature. No credit card needed. Cancel before day 14 and you won&apos;t be charged.
+            </p>
+          </div>
+        </section>
+
+        {/* Feature comparison — simple */}
+        <section className="py-16 px-6 bg-white">
+          <div className="max-w-4xl mx-auto">
+            <h2 className="text-2xl font-bold text-gray-900 text-center mb-10">Everything you get</h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                { icon: "📋", title: "62 Policies", desc: "Auto-updated to match current CQC, CI, CIW and RQIA guidance. Download any policy as a branded PDF." },
+                { icon: "🤖", title: "Ziproh AI", desc: "Ask any compliance question and get an expert answer with direct links to the relevant policy." },
+                { icon: "🔍", title: "Audit Centre", desc: "Run internal audits, score each area, and build an evidence trail for inspectors." },
+                { icon: "🏛️", title: "Inspection Prep", desc: "Know exactly where you stand before a CQC visit. Per-Key-Question readiness scores and checklists." },
+                { icon: "📚", title: "Reading Lists", desc: "Assign policies for staff to read and acknowledge. Track team compliance at a glance." },
+                { icon: "📅", title: "Policy Reviews", desc: "Formally sign off policies annually and generate a compliance evidence report." },
+              ].map((f) => (
+                <div key={f.title} className="flex gap-3">
+                  <span className="text-2xl flex-shrink-0">{f.icon}</span>
+                  <div>
+                    <div className="font-semibold text-gray-900 text-sm mb-1">{f.title}</div>
+                    <p className="text-xs text-gray-500 leading-relaxed">{f.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* FAQs */}
+        <section className="py-16 px-6" style={{ backgroundColor: "#f8faff" }}>
+          <div className="max-w-2xl mx-auto">
+            <h2 className="text-2xl font-bold text-gray-900 text-center mb-10">Frequently asked questions</h2>
+            <div className="space-y-3">
+              {FAQS.map((faq, i) => (
+                <div key={i} className="bg-white rounded-xl overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
+                  <button
+                    onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                    className="w-full text-left px-5 py-4 flex items-center justify-between text-sm font-semibold text-gray-900 hover:bg-gray-50 transition-colors"
+                  >
+                    {faq.q}
+                    <span className="ml-4 flex-shrink-0 text-gray-400">{openFaq === i ? "−" : "+"}</span>
+                  </button>
+                  {openFaq === i && (
+                    <div className="px-5 pb-4 text-sm text-gray-500 leading-relaxed border-t" style={{ borderColor: "#f3f4f6" }}>
+                      {faq.a}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section className="py-16 px-6 bg-white text-center">
+          <div className="max-w-xl mx-auto">
+            <h2 className="text-2xl font-bold text-gray-900 mb-3">Ready to get started?</h2>
+            <p className="text-gray-500 mb-8 text-sm">
+              14-day free trial, no card required. Full access from day one.
+            </p>
+            <Link href="/register" className="btn-primary text-sm px-8 py-3 inline-block">
+              Start Free Trial →
+            </Link>
+            <p className="mt-4 text-xs text-gray-400">
+              Have a question?{" "}
+              <a href="mailto:hello@ziprohtraining.co.uk" className="text-blue-500 hover:underline">
+                Email us
+              </a>
+            </p>
+          </div>
+        </section>
+
+      </main>
+
+      {/* Footer */}
+      <footer className="py-8 px-6 bg-white border-t text-center text-xs text-gray-400" style={{ borderColor: "#e2e8f0" }}>
+        <p>© 2026 Ziproh Digital Care · Part of <a href="https://ziprohtraining.co.uk" className="hover:text-gray-600">ziprohtraining.co.uk</a></p>
+        <div className="mt-2 flex justify-center gap-4">
+          <Link href="/privacy" className="hover:text-gray-600">Privacy Policy</Link>
+          <Link href="/terms" className="hover:text-gray-600">Terms</Link>
+          <a href="mailto:hello@ziprohtraining.co.uk" className="hover:text-gray-600">Contact</a>
+        </div>
+      </footer>
     </div>
   );
 }

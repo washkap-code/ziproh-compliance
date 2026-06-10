@@ -55,7 +55,7 @@ export default function LandingPage() {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold mb-6"
               style={{ backgroundColor: "#e8f0ff", color: "#2E6FFF" }}>
-              ✓ Trusted by 1,000+ care providers across the UK
+              ✓ Built for UK care providers — 14-day free trial
             </div>
             <h1 className="text-5xl font-bold text-gray-900 leading-tight mb-6">
               Run Your Care Service<br />
@@ -258,7 +258,8 @@ export default function LandingPage() {
         <div className="max-w-2xl mx-auto">
           <h2 className="text-4xl font-bold text-gray-900 mb-4">Ready to stay compliant?</h2>
           <p className="text-xl text-gray-500 mb-10">
-            Join thousands of care providers who trust Ziproh to manage their compliance, policies, and audits.
+            Start your 14-day free trial today. No credit card required.
+            All 62 policies, audit tools, and AI compliance assistant — included from day one.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/register" className="btn-primary text-base px-10 py-4">
