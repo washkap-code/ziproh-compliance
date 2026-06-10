@@ -58,6 +58,11 @@ export default function AccountPage() {
   // Billing portal
   const [portalLoading, setPortalLoading] = useState(false);
 
+  // Logo upload
+  const [logoUrl,       setLogoUrl]       = useState<string | null>(null);
+  const [logoUploading, setLogoUploading] = useState(false);
+  const [logoRemoving,  setLogoRemoving]  = useState(false);
+
   async function openBillingPortal() {
     setPortalLoading(true);
     try {
@@ -95,6 +100,7 @@ export default function AccountPage() {
         setOrgName(p.org_name ?? "");
         setServiceType(p.service_type ?? "");
         setRegulator(p.regulator ?? "");
+        setLogoUrl(p.logo_url ?? null);
       }
       setLoading(false);
     }
@@ -138,6 +144,42 @@ export default function AccountPage() {
     setPwSaving(false);
     if (error) showToast("Failed to update password.", false);
     else { showToast("Password changed successfully."); setPwCurrent(""); setPwNew(""); setPwConfirm(""); }
+  }
+
+  // ── Logo upload ──────────────────────────────────────────────────────────────
+  async function handleLogoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setLogoUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/upload/logo", { method: "POST", body: fd });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? "Upload failed");
+      setLogoUrl(json.logoUrl);
+      showToast("Organisation logo updated.");
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : "Logo upload failed.", false);
+    } finally {
+      setLogoUploading(false);
+      // Reset input so same file can be re-selected
+      e.target.value = "";
+    }
+  }
+
+  async function handleLogoRemove() {
+    setLogoRemoving(true);
+    try {
+      const res = await fetch("/api/upload/logo", { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to remove logo");
+      setLogoUrl(null);
+      showToast("Logo removed.");
+    } catch {
+      showToast("Failed to remove logo.", false);
+    } finally {
+      setLogoRemoving(false);
+    }
   }
 
   // ── Sign out ─────────────────────────────────────────────────────────────────
@@ -284,6 +326,73 @@ export default function AccountPage() {
               </button>
             </div>
           </form>
+
+          {/* ── Organisation Logo ── */}
+          <div className="card space-y-5">
+            <div className="pb-3" style={{ borderBottom: "1px solid #f3f4f6" }}>
+              <h2 className="text-base font-bold text-gray-900">Organisation Logo</h2>
+              <p className="text-xs text-gray-500 mt-1">Your logo will appear on the cover page of all downloaded policy PDFs. Accepted: PNG, JPEG, WebP, SVG — max 2 MB.</p>
+            </div>
+
+            <div className="flex items-start gap-5">
+              {/* Preview */}
+              <div
+                className="flex-shrink-0 w-28 h-20 rounded-xl border-2 border-dashed flex items-center justify-center overflow-hidden"
+                style={{ borderColor: logoUrl ? "#2E6FFF40" : "#e2e8f0", backgroundColor: logoUrl ? "white" : "#f9fafb" }}
+              >
+                {logoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={logoUrl} alt="Org logo" className="max-w-full max-h-full object-contain p-2" />
+                ) : (
+                  <span className="text-gray-300 text-3xl">🏢</span>
+                )}
+              </div>
+
+              {/* Upload controls */}
+              <div className="flex-1 space-y-3">
+                <label className="block">
+                  <input
+                    type="file"
+                    accept="image/png,image/jpeg,image/jpg,image/webp,image/gif,image/svg+xml"
+                    onChange={handleLogoUpload}
+                    disabled={logoUploading}
+                    className="sr-only"
+                    id="logo-upload-input"
+                  />
+                  <span
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold cursor-pointer transition-all select-none"
+                    style={{
+                      backgroundColor: logoUploading ? "#f3f4f6" : "#2E6FFF",
+                      color: logoUploading ? "#9ca3af" : "white",
+                      pointerEvents: logoUploading ? "none" : "auto",
+                    }}
+                    onClick={() => document.getElementById("logo-upload-input")?.click()}
+                  >
+                    {logoUploading ? (
+                      <><span className="w-4 h-4 border-2 border-gray-300 border-t-transparent rounded-full animate-spin" /> Uploading…</>
+                    ) : (
+                      <>📤 {logoUrl ? "Replace Logo" : "Upload Logo"}</>
+                    )}
+                  </span>
+                </label>
+
+                {logoUrl && (
+                  <button
+                    type="button"
+                    onClick={handleLogoRemove}
+                    disabled={logoRemoving}
+                    className="block text-xs text-red-500 hover:text-red-700 underline disabled:opacity-50"
+                  >
+                    {logoRemoving ? "Removing…" : "Remove logo"}
+                  </button>
+                )}
+
+                <p className="text-xs text-gray-400">
+                  {logoUrl ? "Logo saved — it will appear on all future PDF downloads." : "No logo uploaded yet. PDFs will show your organisation name instead."}
+                </p>
+              </div>
+            </div>
+          </div>
 
           {/* Change password */}
           <form onSubmit={changePassword} className="card space-y-5">

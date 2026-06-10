@@ -100,6 +100,54 @@ export default function AdminPage() {
   const [planFilter, setPlanFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
 
+  // PDF password management
+  const [pdfEmail,     setPdfEmail]     = useState("");
+  const [pdfLookup,    setPdfLookup]    = useState<{ orgId: string; orgName: string; email: string; hasPassword: boolean } | null>(null);
+  const [pdfLookupErr, setPdfLookupErr] = useState<string | null>(null);
+  const [pdfLooking,   setPdfLooking]   = useState(false);
+  const [pdfPassword,  setPdfPassword]  = useState("");
+  const [pdfSaving,    setPdfSaving]    = useState(false);
+  const [pdfMsg,       setPdfMsg]       = useState<{ text: string; ok: boolean } | null>(null);
+
+  async function lookupOrgForPdf() {
+    if (!pdfEmail.trim()) return;
+    setPdfLooking(true);
+    setPdfLookup(null);
+    setPdfLookupErr(null);
+    try {
+      const res = await fetch(`/api/admin/pdf-password?email=${encodeURIComponent(pdfEmail.trim())}`);
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? "Not found");
+      setPdfLookup(json);
+    } catch (e) {
+      setPdfLookupErr(e instanceof Error ? e.message : "Lookup failed");
+    } finally {
+      setPdfLooking(false);
+    }
+  }
+
+  async function savePdfPassword(clear = false) {
+    if (!pdfLookup) return;
+    setPdfSaving(true);
+    setPdfMsg(null);
+    try {
+      const res = await fetch("/api/admin/pdf-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orgId: pdfLookup.orgId, password: clear ? null : pdfPassword.trim() || null }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? "Failed");
+      setPdfMsg({ text: json.message, ok: true });
+      setPdfLookup(prev => prev ? { ...prev, hasPassword: !clear && !!pdfPassword.trim() } : null);
+      if (!clear) setPdfPassword("");
+    } catch (e) {
+      setPdfMsg({ text: e instanceof Error ? e.message : "Error", ok: false });
+    } finally {
+      setPdfSaving(false);
+    }
+  }
+
   // ── Auth guard ──────────────────────────────────────────────────────────────
   useEffect(() => {
     async function checkAuth() {
@@ -392,6 +440,104 @@ export default function AdminPage() {
                   })}
                 </tbody>
               </table>
+            </div>
+          )}
+        </div>
+
+        {/* ── PDF Security Management ── */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mt-6">
+          <h2 className="text-base font-bold text-gray-900 mb-1">🔐 PDF Security — Per-Org Unlock Password</h2>
+          <p className="text-sm text-gray-500 mb-5">
+            All policy PDFs are encrypted with an owner password. By default, the platform default is used.
+            Set a per-org password here when a customer needs to unlock their PDF (e.g. to print unrestricted or edit a template).
+            This password is never shown to the customer — you share it manually.
+          </p>
+
+          {/* Lookup form */}
+          <div className="flex gap-3 mb-4">
+            <input
+              type="email"
+              value={pdfEmail}
+              onChange={e => setPdfEmail(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && lookupOrgForPdf()}
+              placeholder="Customer email address"
+              className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              onClick={lookupOrgForPdf}
+              disabled={pdfLooking || !pdfEmail.trim()}
+              className="px-5 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold disabled:opacity-50 whitespace-nowrap"
+            >
+              {pdfLooking ? "Looking up…" : "Look Up Org"}
+            </button>
+          </div>
+
+          {pdfLookupErr && (
+            <div className="p-3 rounded-xl bg-red-50 text-sm text-red-600 mb-4">{pdfLookupErr}</div>
+          )}
+
+          {pdfLookup && (
+            <div className="rounded-xl border border-gray-200 p-4 space-y-4">
+              {/* Org info */}
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm font-bold text-gray-900">{pdfLookup.orgName}</p>
+                  <p className="text-xs text-gray-500">{pdfLookup.email}</p>
+                </div>
+                <span
+                  className="px-3 py-1 rounded-full text-xs font-bold"
+                  style={pdfLookup.hasPassword
+                    ? { backgroundColor: "#d1fae5", color: "#065f46" }
+                    : { backgroundColor: "#f3f4f6", color: "#6b7280" }}
+                >
+                  {pdfLookup.hasPassword ? "Custom password set" : "Using platform default"}
+                </span>
+              </div>
+
+              {/* Set password */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1.5 uppercase tracking-wide">
+                  New Unlock Password
+                </label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={pdfPassword}
+                    onChange={e => setPdfPassword(e.target.value)}
+                    placeholder="Enter a strong password (shared manually with customer)"
+                    className="flex-1 px-3.5 py-2 rounded-xl border border-gray-200 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                  <button
+                    onClick={() => savePdfPassword(false)}
+                    disabled={pdfSaving || !pdfPassword.trim()}
+                    className="px-4 py-2 rounded-xl bg-blue-600 text-white text-sm font-semibold disabled:opacity-50"
+                  >
+                    {pdfSaving ? "Saving…" : "Set Password"}
+                  </button>
+                </div>
+              </div>
+
+              {pdfLookup.hasPassword && (
+                <button
+                  onClick={() => savePdfPassword(true)}
+                  disabled={pdfSaving}
+                  className="text-sm text-red-500 hover:text-red-700 underline disabled:opacity-50"
+                >
+                  Clear custom password (revert to platform default)
+                </button>
+              )}
+
+              {pdfMsg && (
+                <div
+                  className="p-3 rounded-xl text-sm"
+                  style={{
+                    backgroundColor: pdfMsg.ok ? "#d1fae5" : "#fee2e2",
+                    color: pdfMsg.ok ? "#065f46" : "#b91c1c",
+                  }}
+                >
+                  {pdfMsg.ok ? "✓" : "✕"} {pdfMsg.text}
+                </div>
+              )}
             </div>
           )}
         </div>

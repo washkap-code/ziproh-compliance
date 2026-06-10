@@ -23,6 +23,18 @@ export type Profile = {
   subscription_status: "trialing" | "active" | "past_due" | "canceled";
   trial_ends_at: string;
   created_at: string;
+  logo_url?: string;              // URL of org logo in Supabase Storage
+  pdf_unlock_password?: string;   // Admin-set per-org PDF owner password override
+};
+
+export type PolicyAdoption = {
+  id: string;
+  org_id: string;
+  document_id: string;
+  reviewer_name: string;
+  reviewer_role: string;
+  adopted_at: string;   // ISO date string (YYYY-MM-DD)
+  created_at: string;
 };
 
 export type ReadRecord = {

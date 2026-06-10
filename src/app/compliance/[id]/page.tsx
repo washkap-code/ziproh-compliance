@@ -299,6 +299,17 @@ export default function DocumentPage() {
   const [rlLoading,    setRlLoading]    = useState(false);
   const [rlSaving,     setRlSaving]     = useState<string | null>(null); // list id being saved
 
+  // Policy adoption state
+  type Adoption = { reviewerName: string; reviewerRole: string; adoptedAt: string } | null;
+  const [adoption,          setAdoption]          = useState<Adoption>(null);
+  const [adoptionLoaded,    setAdoptionLoaded]    = useState(false);
+  const [adoptOpen,         setAdoptOpen]         = useState(false);
+  const [adoptName,         setAdoptName]         = useState("");
+  const [adoptRole,         setAdoptRole]         = useState("");
+  const [adoptDate,         setAdoptDate]         = useState(new Date().toISOString().split("T")[0]);
+  const [adoptSaving,       setAdoptSaving]       = useState(false);
+  const [adoptError,        setAdoptError]        = useState<string | null>(null);
+
   async function openReadingListModal() {
     if (!userId) return;
     setRlOpen(true);
@@ -357,17 +368,32 @@ export default function DocumentPage() {
       if (!user) { setOrgLoaded(true); return; }
       setUserId(user.id);
 
-      const [profileRes, ackRes] = await Promise.all([
+      const [profileRes, ackRes, adoptRes] = await Promise.all([
         supabase.from("profiles").select("org_name").eq("id", user.id).single(),
         supabase.from("read_records")
           .select("read_at")
           .eq("user_id", user.id)
           .eq("document_id", id)
           .maybeSingle(),
+        supabase.from("policy_adoptions")
+          .select("reviewer_name, reviewer_role, adopted_at")
+          .eq("org_id", user.id)
+          .eq("document_id", id)
+          .maybeSingle(),
       ]);
 
       if (profileRes.data?.org_name) setOrgName(profileRes.data.org_name);
       if (ackRes.data?.read_at) setAcknowledgedAt(ackRes.data.read_at);
+      if (adoptRes.data) {
+        setAdoption({
+          reviewerName: adoptRes.data.reviewer_name,
+          reviewerRole: adoptRes.data.reviewer_role,
+          adoptedAt:    adoptRes.data.adopted_at,
+        });
+        setAdoptName(adoptRes.data.reviewer_name);
+        setAdoptRole(adoptRes.data.reviewer_role);
+      }
+      setAdoptionLoaded(true);
       setOrgLoaded(true);
     });
   }, [id]);
@@ -438,12 +464,46 @@ export default function DocumentPage() {
     day: "numeric", month: "long", year: "numeric",
   });
 
+  // Save policy adoption record
+  async function saveAdoption() {
+    if (!adoptName.trim() || !adoptRole.trim() || !adoptDate) {
+      setAdoptError("Please fill in all fields.");
+      return;
+    }
+    setAdoptSaving(true);
+    setAdoptError(null);
+    try {
+      const res = await fetch("/api/policies/adopt", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          documentId:   id,
+          reviewerName: adoptName.trim(),
+          reviewerRole: adoptRole.trim(),
+          adoptedAt:    adoptDate,
+        }),
+      });
+      if (!res.ok) {
+        const j = await res.json();
+        throw new Error(j.error ?? "Failed to save adoption");
+      }
+      setAdoption({ reviewerName: adoptName.trim(), reviewerRole: adoptRole.trim(), adoptedAt: adoptDate });
+      setAdoptOpen(false);
+      // Immediately trigger PDF download after adoption
+      await handleDownloadPDF();
+    } catch (e) {
+      setAdoptError(e instanceof Error ? e.message : "Unknown error");
+    } finally {
+      setAdoptSaving(false);
+    }
+  }
+
   // Download proper PDF via API route
   const handleDownloadPDF = async () => {
     if (pdfLoading) return;
     setPdfLoading(true);
     try {
-      const url  = `/api/policy-pdf/${id}?org=${encodeURIComponent(orgName)}`;
+      const url  = `/api/policy-pdf/${id}`;
       const resp = await fetch(url);
       if (!resp.ok) throw new Error("PDF generation failed");
       const blob     = await resp.blob();
@@ -575,24 +635,80 @@ export default function DocumentPage() {
             </div>
           )}
 
+          {/* ── Adoption status badge ── */}
+          {adoptionLoaded && adoption && (() => {
+            const needsReAdopt = doc.status === "updated";
+            return (
+              <div className={`flex items-center gap-3 px-4 py-3 rounded-xl border ${needsReAdopt ? "bg-amber-50 border-amber-200" : "bg-emerald-50 border-emerald-200"}`}>
+                <span className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-white text-sm font-bold ${needsReAdopt ? "bg-amber-500" : "bg-emerald-500"}`}>
+                  {needsReAdopt ? "⚠" : "✓"}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p className={`text-sm font-semibold ${needsReAdopt ? "text-amber-800" : "text-emerald-800"}`}>
+                    {needsReAdopt
+                      ? `Policy updated since adoption by ${orgName} — re-review required`
+                      : `Policy adopted by ${orgName}`}
+                  </p>
+                  <p className={`text-xs ${needsReAdopt ? "text-amber-600" : "text-emerald-600"}`}>
+                    Reviewed by {adoption.reviewerName}, {adoption.reviewerRole} &nbsp;·&nbsp; Adopted{" "}
+                    {new Date(adoption.adoptedAt).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
+                  </p>
+                </div>
+                <button
+                  onClick={() => { setAdoptDate(new Date().toISOString().split("T")[0]); setAdoptOpen(true); }}
+                  className={`text-xs underline whitespace-nowrap ${needsReAdopt ? "text-amber-600 hover:text-amber-800" : "text-emerald-600 hover:text-emerald-800"}`}
+                >
+                  {needsReAdopt ? "Re-Adopt" : "Edit"}
+                </button>
+              </div>
+            );
+          })()}
+
           {/* ── Action bar ── */}
           <div className="card" style={{ padding: "0.875rem 1.25rem" }}>
             <div className="flex flex-wrap items-center gap-3">
-              <button
-                onClick={handleDownloadPDF}
-                disabled={pdfLoading || !orgLoaded}
-                className="inline-flex items-center gap-2 text-sm font-semibold py-2.5 px-5 rounded-xl text-white transition-all disabled:opacity-50"
-                style={{ backgroundColor: color }}
-              >
-                {pdfLoading ? (
-                  <>
-                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    Generating PDF…
-                  </>
+              {/* Download button — shows "Adopt & Download" if not yet adopted */}
+              {adoption ? (
+                doc.status === "updated" ? (
+                  // Policy updated after adoption — prompt re-adoption
+                  <button
+                    onClick={() => { setAdoptDate(new Date().toISOString().split("T")[0]); setAdoptOpen(true); }}
+                    disabled={!orgLoaded}
+                    className="inline-flex items-center gap-2 text-sm font-semibold py-2.5 px-5 rounded-xl text-white transition-all disabled:opacity-50 bg-amber-500 hover:bg-amber-600"
+                  >
+                    🔄 Re-Adopt &amp; Download
+                  </button>
                 ) : (
-                  <>📥 Download PDF</>
-                )}
-              </button>
+                  <button
+                    onClick={handleDownloadPDF}
+                    disabled={pdfLoading || !orgLoaded}
+                    className="inline-flex items-center gap-2 text-sm font-semibold py-2.5 px-5 rounded-xl text-white transition-all disabled:opacity-50"
+                    style={{ backgroundColor: color }}
+                  >
+                    {pdfLoading ? (
+                      <>
+                        <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        Generating PDF…
+                      </>
+                    ) : (
+                      <>🔒 Download Secure PDF</>
+                    )}
+                  </button>
+                )
+              ) : (
+                <button
+                  onClick={() => setAdoptOpen(true)}
+                  disabled={!orgLoaded || !adoptionLoaded}
+                  className="inline-flex items-center gap-2 text-sm font-semibold py-2.5 px-5 rounded-xl text-white transition-all disabled:opacity-50"
+                  style={{ backgroundColor: color }}
+                >
+                  {!adoptionLoaded ? (
+                    <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Loading…</>
+                  ) : (
+                    <>📋 Adopt &amp; Download PDF</>
+                  )}
+                </button>
+              )}
 
               <button
                 onClick={() => setTocOpen(!tocOpen)}
@@ -617,8 +733,12 @@ export default function DocumentPage() {
               </button>
             </div>
             <div className="flex items-center gap-2 text-xs text-gray-400 mt-2">
-              <span className="w-2 h-2 rounded-full bg-green-400 inline-block" />
-              Current &amp; compliant
+              <span className={`w-2 h-2 rounded-full inline-block ${adoption && doc.status === "updated" ? "bg-amber-400" : adoption ? "bg-green-400" : "bg-gray-300"}`} />
+              {adoption && doc.status === "updated"
+                ? "Policy updated — re-adopt to keep your compliance record current"
+                : adoption
+                ? "Adopted & secured — PDF is encrypted for your organisation"
+                : "Adopt this policy to generate your secured, branded PDF"}
             </div>
           </div>
 
@@ -1276,6 +1396,109 @@ export default function DocumentPage() {
                 className="text-xs font-medium px-4 py-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
               >
                 Done
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ══ POLICY ADOPTION MODAL ════════════════════════════════════════════════ */}
+      {adoptOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => { setAdoptOpen(false); setAdoptError(null); }} />
+          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 z-10">
+            {/* Header */}
+            <div className="flex items-start justify-between mb-1">
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">{adoption ? "Re-Adopt Policy" : "Adopt Policy"}</h3>
+                <p className="text-sm text-gray-500 mt-0.5">{doc?.title}</p>
+              </div>
+              <button
+                onClick={() => { setAdoptOpen(false); setAdoptError(null); }}
+                className="text-gray-400 hover:text-gray-600 text-xl leading-none"
+              >×</button>
+            </div>
+
+            {/* Info box */}
+            <div className="mt-4 p-3 rounded-xl bg-blue-50 border border-blue-100 text-sm text-blue-700">
+              By adopting this policy, {orgName} formally claims it as your own policy document.
+              The reviewer&rsquo;s details and adoption date will appear on the PDF cover page.
+            </div>
+
+            {/* Form */}
+            <div className="mt-5 space-y-4">
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1.5 tracking-wide uppercase">
+                  Reviewer Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={adoptName}
+                  onChange={(e) => setAdoptName(e.target.value)}
+                  placeholder="e.g. Jane Smith"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1.5 tracking-wide uppercase">
+                  Reviewer Role / Title <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="text"
+                  value={adoptRole}
+                  onChange={(e) => setAdoptRole(e.target.value)}
+                  placeholder="e.g. Registered Manager"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-semibold text-gray-600 mb-1.5 tracking-wide uppercase">
+                  Adoption Date <span className="text-red-500">*</span>
+                </label>
+                <input
+                  type="date"
+                  value={adoptDate}
+                  onChange={(e) => setAdoptDate(e.target.value)}
+                  max={new Date().toISOString().split("T")[0]}
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            {/* Security notice */}
+            <div className="mt-4 p-3 rounded-xl bg-gray-50 border border-gray-100 flex items-start gap-2 text-xs text-gray-500">
+              <span className="text-gray-400 mt-0.5">🔒</span>
+              <span>Your PDF will be encrypted. No one can copy, edit, or modify it without an admin-issued unlock password.</span>
+            </div>
+
+            {adoptError && (
+              <div className="mt-3 p-3 rounded-xl bg-red-50 border border-red-100 text-sm text-red-600">
+                {adoptError}
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="mt-5 flex gap-3">
+              <button
+                onClick={() => { setAdoptOpen(false); setAdoptError(null); }}
+                className="flex-1 py-2.5 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={saveAdoption}
+                disabled={adoptSaving || !adoptName.trim() || !adoptRole.trim() || !adoptDate}
+                className="flex-1 py-2.5 rounded-xl text-sm font-semibold text-white transition-all disabled:opacity-50"
+                style={{ backgroundColor: color }}
+              >
+                {adoptSaving ? (
+                  <span className="flex items-center justify-center gap-2">
+                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Adopting…
+                  </span>
+                ) : (
+                  "✓ Adopt & Download PDF"
+                )}
               </button>
             </div>
           </div>

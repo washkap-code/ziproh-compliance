@@ -19,6 +19,7 @@ const NAV_GROUPS: NavGroup[] = [
     group: "Compliance",
     items: [
       { href: "/compliance",        label: "Policy Library",   icon: "📋" },
+      { href: "/my-policies",       label: "My Policies",      icon: "✅" },
       { href: "/my-record",         label: "My Record",        icon: "📜" },
     ],
   },
