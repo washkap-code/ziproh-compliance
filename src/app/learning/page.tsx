@@ -125,6 +125,7 @@ export default function LearningPage() {
   const [logNotes, setLogNotes]       = useState("");
   const [saving, setSaving]           = useState(false);
   const [saveError, setSaveError]     = useState("");
+  const [certLoading, setCertLoading] = useState(false);
 
   // Load completions
   useEffect(() => {
@@ -204,6 +205,25 @@ export default function LearningPage() {
 
     // If we were on the module detail, go back to show ✓ Done badge
     // (activeModule state is still set — re-render picks up new completedIds)
+  }
+
+  async function downloadCertificate(moduleId: string, title: string) {
+    setCertLoading(true);
+    try {
+      const res = await fetch(`/api/certificate/${moduleId}`);
+      if (!res.ok) throw new Error("Failed to generate certificate");
+      const blob = await res.blob();
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement("a");
+      a.href     = url;
+      a.download = `ziproh-certificate-${title.replace(/[^a-z0-9]/gi, "-").toLowerCase()}.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      alert("Could not generate certificate. Please try again.");
+    } finally {
+      setCertLoading(false);
+    }
   }
 
   async function deleteCompletion(id: string) {
@@ -337,6 +357,26 @@ export default function LearningPage() {
               </button>
             </div>
           </div>
+
+          {/* Download certificate — only when completed and module awards a cert */}
+          {isDone && activeModule.certificate && (
+            <div className="card p-5 mb-4" style={{ background: "linear-gradient(135deg, #2E6FFF08, #22c55e08)", border: "1px solid #22c55e30" }}>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-lg flex-shrink-0">🎓</div>
+                <div className="flex-1">
+                  <p className="text-sm font-semibold text-gray-900">Your Certificate is Ready</p>
+                  <p className="text-xs text-gray-500">Download your personalised certificate of completion for your CPD portfolio.</p>
+                </div>
+                <button
+                  onClick={() => downloadCertificate(activeModule.id, activeModule.title)}
+                  disabled={certLoading}
+                  className="btn-primary text-sm flex items-center gap-2 flex-shrink-0"
+                  style={{ opacity: certLoading ? 0.7 : 1 }}>
+                  {certLoading ? "Generating…" : "⬇ Download Certificate"}
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Completion history for this module */}
           {moduleCompletions.length > 0 && (
