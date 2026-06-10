@@ -1,9 +1,10 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { createBrowserClient } from "@supabase/ssr";
+import { DOCUMENTS } from "@/lib/documents";
 
 type NavItem  = { href: string; label: string; icon: string };
 type NavGroup = { group?: string; items: NavItem[] };
@@ -67,6 +68,15 @@ type SidebarProfile = {
   regulator: string;
   subscription_status: string;
   trial_ends_at: string;
+};
+
+type Notification = {
+  id: string;
+  icon: string;
+  title: string;
+  body: string;
+  href: string;
+  urgency: "high" | "medium" | "low";
 };
 
 function SidebarContents({
@@ -172,6 +182,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const path = usePathname();
   const [profile, setProfile] = useState<SidebarProfile | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
+  const notifRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const sb = createBrowserClient(
@@ -181,13 +194,93 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     (async () => {
       const { data: { user } } = await sb.auth.getUser();
       if (!user) return;
-      const { data } = await sb
-        .from("profiles")
-        .select("first_name, org_name, plan, regulator, subscription_status, trial_ends_at")
-        .eq("id", user.id)
-        .single();
-      if (data) setProfile(data as SidebarProfile);
+
+      const [profileRes, readRes, auditRes, staffRes] = await Promise.all([
+        sb.from("profiles")
+          .select("first_name, org_name, plan, regulator, subscription_status, trial_ends_at")
+          .eq("id", user.id).single(),
+        sb.from("read_records").select("document_id").eq("user_id", user.id),
+        sb.from("audits").select("conducted_at").eq("org_id", user.id)
+          .order("conducted_at", { ascending: false }).limit(1),
+        sb.from("staff_members").select("status").eq("org_id", user.id),
+      ]);
+
+      if (profileRes.data) setProfile(profileRes.data as SidebarProfile);
+
+      // ── Derive notifications from data ──────────────────────────────────────
+      const notifs: Notification[] = [];
+      const readIds = new Set((readRes.data ?? []).map((r: { document_id: string }) => r.document_id));
+
+      // 1. Updated policies not yet acknowledged
+      const updatedUnread = DOCUMENTS.filter(d => d.status === "updated" && !readIds.has(d.id));
+      if (updatedUnread.length > 0) {
+        notifs.push({
+          id: "updated-policies",
+          icon: "📋",
+          title: `${updatedUnread.length} polic${updatedUnread.length === 1 ? "y has" : "ies have"} been updated`,
+          body: "Acknowledge them to keep your compliance record current.",
+          href: "/compliance?filter=updated",
+          urgency: "high",
+        });
+      }
+
+      // 2. Audit overdue (no audit in last 90 days)
+      const lastAudit = auditRes.data?.[0]?.conducted_at;
+      const daysSinceAudit = lastAudit
+        ? Math.floor((Date.now() - new Date(lastAudit).getTime()) / 86_400_000)
+        : 999;
+      if (daysSinceAudit > 90) {
+        notifs.push({
+          id: "audit-overdue",
+          icon: "🔍",
+          title: daysSinceAudit > 300 ? "No audits completed yet" : `Last audit was ${daysSinceAudit} days ago`,
+          body: "CQC expects regular internal audits. Run one now.",
+          href: "/audit",
+          urgency: daysSinceAudit > 180 ? "high" : "medium",
+        });
+      }
+
+      // 3. Pending staff invites
+      const pendingStaff = (staffRes.data ?? []).filter((s: { status: string }) => s.status === "invited").length;
+      if (pendingStaff > 0) {
+        notifs.push({
+          id: "pending-invites",
+          icon: "👥",
+          title: `${pendingStaff} staff member${pendingStaff === 1 ? "" : "s"} haven't registered yet`,
+          body: "Resend their invite link from the My Staff page.",
+          href: "/staff",
+          urgency: "low",
+        });
+      }
+
+      // 4. Low overall compliance
+      const totalRead = readIds.size;
+      const total = DOCUMENTS.length;
+      const pct = total > 0 ? Math.round((totalRead / total) * 100) : 0;
+      if (pct < 25 && totalRead > 0) {
+        notifs.push({
+          id: "low-compliance",
+          icon: "📊",
+          title: `Compliance score is ${pct}%`,
+          body: "Read and acknowledge more policies to improve your score before an inspection.",
+          href: "/compliance",
+          urgency: "medium",
+        });
+      }
+
+      setNotifications(notifs);
     })();
+  }, []);
+
+  // Close notification panel on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setNotifOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
   // Close mobile menu on route change
@@ -311,10 +404,73 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
           {/* Right side */}
           <div className="flex items-center gap-3">
-            <button className="relative p-2 rounded-lg hover:bg-gray-50">
-              <span className="text-gray-500 text-lg">🔔</span>
-              <span className="absolute top-1 right-1 w-2 h-2 rounded-full" style={{ backgroundColor: "#2E6FFF" }}></span>
-            </button>
+
+            {/* Notification bell + dropdown */}
+            <div className="relative" ref={notifRef}>
+              <button
+                className="relative p-2 rounded-lg hover:bg-gray-50"
+                onClick={() => setNotifOpen(o => !o)}
+                aria-label="Notifications"
+              >
+                <span className="text-gray-500 text-lg">🔔</span>
+                {notifications.length > 0 && (
+                  <span
+                    className="absolute top-1 right-1 w-4 h-4 rounded-full flex items-center justify-center text-white"
+                    style={{ backgroundColor: notifications.some(n => n.urgency === "high") ? "#ef4444" : "#2E6FFF", fontSize: "9px", fontWeight: 700 }}
+                  >
+                    {notifications.length}
+                  </span>
+                )}
+              </button>
+
+              {notifOpen && (
+                <div
+                  className="absolute right-0 mt-2 w-80 rounded-2xl shadow-2xl overflow-hidden bg-white z-50"
+                  style={{ border: "1px solid #e2e8f0", top: "100%" }}
+                >
+                  <div className="px-4 py-3 border-b" style={{ borderColor: "#f3f4f6" }}>
+                    <div className="text-sm font-bold text-gray-900">Notifications</div>
+                    {notifications.length === 0 && (
+                      <div className="text-xs text-gray-400 mt-0.5">You&apos;re all caught up ✓</div>
+                    )}
+                  </div>
+                  {notifications.length === 0 ? (
+                    <div className="px-4 py-6 text-center">
+                      <div className="text-3xl mb-2">✅</div>
+                      <div className="text-sm text-gray-500">No action needed right now.</div>
+                    </div>
+                  ) : (
+                    <div className="divide-y divide-gray-50">
+                      {notifications.map(n => (
+                        <Link
+                          key={n.id}
+                          href={n.href}
+                          onClick={() => setNotifOpen(false)}
+                          className="flex gap-3 px-4 py-3 hover:bg-gray-50 transition-colors"
+                        >
+                          <span className="text-xl flex-shrink-0 mt-0.5">{n.icon}</span>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="text-sm font-semibold text-gray-900 leading-tight">{n.title}</div>
+                              <span
+                                className="flex-shrink-0 text-xs px-1.5 py-0.5 rounded-full font-semibold"
+                                style={{
+                                  backgroundColor: n.urgency === "high" ? "#fee2e2" : n.urgency === "medium" ? "#fef9c3" : "#f0f6ff",
+                                  color: n.urgency === "high" ? "#dc2626" : n.urgency === "medium" ? "#92400e" : "#2E6FFF",
+                                }}
+                              >
+                                {n.urgency}
+                              </span>
+                            </div>
+                            <div className="text-xs text-gray-500 mt-0.5 leading-relaxed">{n.body}</div>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-full flex items-center justify-center text-white text-sm font-bold"
                 style={{ backgroundColor: "#2E6FFF" }}>

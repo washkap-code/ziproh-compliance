@@ -342,9 +342,18 @@ export default function StaffPage() {
               {orgName ? `Manage staff for ${orgName}` : "Manage staff access and track compliance"}
             </p>
           </div>
-          <button onClick={() => { setShowInvite(true); setInviteError(""); }} className="btn-primary flex items-center gap-2">
-            <span>＋</span> Invite Staff
-          </button>
+          <div className="flex gap-2">
+            <Link
+              href="/staff/matrix"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold border transition-all hover:bg-gray-50"
+              style={{ borderColor: "#e2e8f0", color: "#374151" }}
+            >
+              📊 Compliance Matrix
+            </Link>
+            <button onClick={() => { setShowInvite(true); setInviteError(""); }} className="btn-primary flex items-center gap-2">
+              <span>＋</span> Invite Staff
+            </button>
+          </div>
         </div>
 
         {/* Invite link modal — shown after adding a staff member */}

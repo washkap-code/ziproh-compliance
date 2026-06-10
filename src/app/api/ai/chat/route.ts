@@ -1,5 +1,31 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { createServerClient } from "@supabase/ssr";
 import Anthropic from "@anthropic-ai/sdk";
+
+// ── In-memory rate limiter ────────────────────────────────────────────────────
+// 30 requests per user per hour. Works across warm serverless instances;
+// a cold instance resets the counter (acceptable trade-off without Redis).
+const RATE_LIMIT = 30;
+const WINDOW_MS = 60 * 60 * 1000; // 1 hour
+
+const requestLog = new Map<string, number[]>();
+
+function isRateLimited(userId: string): { limited: boolean; remaining: number; resetAt: number } {
+  const now = Date.now();
+  const windowStart = now - WINDOW_MS;
+  const timestamps = (requestLog.get(userId) ?? []).filter(t => t > windowStart);
+  const remaining = Math.max(0, RATE_LIMIT - timestamps.length);
+  const resetAt = timestamps.length > 0 ? timestamps[0] + WINDOW_MS : now + WINDOW_MS;
+
+  if (timestamps.length >= RATE_LIMIT) {
+    return { limited: true, remaining: 0, resetAt };
+  }
+
+  timestamps.push(now);
+  requestLog.set(userId, timestamps);
+  return { limited: false, remaining: remaining - 1, resetAt };
+}
 
 const client = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -159,6 +185,42 @@ You are the resident compliance expert — authoritative, practical, and always 
 
 export async function POST(req: Request) {
   try {
+    // ── Auth check ────────────────────────────────────────────────────────────
+    const cookieStore = await cookies();
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() { return cookieStore.getAll(); },
+          setAll() { /* read-only in route handlers */ },
+        },
+      }
+    );
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorised" }, { status: 401 });
+    }
+
+    // ── Rate limit ────────────────────────────────────────────────────────────
+    const { limited, remaining, resetAt } = isRateLimited(user.id);
+    if (limited) {
+      const retryAfterSecs = Math.ceil((resetAt - Date.now()) / 1000);
+      return NextResponse.json(
+        { error: `Rate limit reached. You can send ${RATE_LIMIT} messages per hour. Try again in ${Math.ceil(retryAfterSecs / 60)} minute${Math.ceil(retryAfterSecs / 60) === 1 ? "" : "s"}.` },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(retryAfterSecs),
+            "X-RateLimit-Limit": String(RATE_LIMIT),
+            "X-RateLimit-Remaining": "0",
+            "X-RateLimit-Reset": String(Math.ceil(resetAt / 1000)),
+          },
+        }
+      );
+    }
+
+    // ── Parse body ────────────────────────────────────────────────────────────
     const { messages } = await req.json();
 
     if (!messages || !Array.isArray(messages)) {
@@ -177,7 +239,12 @@ export async function POST(req: Request) {
 
     const text = response.content[0].type === "text" ? response.content[0].text : "";
 
-    return NextResponse.json({ content: text });
+    return NextResponse.json({ content: text }, {
+      headers: {
+        "X-RateLimit-Limit": String(RATE_LIMIT),
+        "X-RateLimit-Remaining": String(remaining),
+      },
+    });
   } catch (error) {
     console.error("AI chat error:", error);
     return NextResponse.json(
