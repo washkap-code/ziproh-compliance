@@ -56,6 +56,7 @@ export type PolicySection = {
     title?: string;
     body?: string;
     steps?: string[];
+    procedure?: string[];
     bulletPoints?: string[];
     warningBox?: string;
     practiceBox?: string;
