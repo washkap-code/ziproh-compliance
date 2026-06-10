@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import Link from "next/link";
 import DashboardLayout from "@/components/DashboardLayout";
 
 type Message = {
@@ -10,27 +11,65 @@ type Message = {
 };
 
 const SUGGESTED_QUESTIONS = [
-  "What are the CQC 5 Key Questions?",
-  "How do I conduct a medication audit?",
-  "What does the Mental Capacity Act say about best interests decisions?",
-  "How often should care plans be reviewed?",
-  "What are the safeguarding reporting duties under the Care Act?",
-  "How should I handle a complaint from a service user's family?",
+  "What does a CQC inspector look for under 'Safe'?",
+  "Show me all our medication policies",
+  "What are the key safeguarding duties under the Care Act 2014?",
+  "How do I prepare evidence for a Well-Led inspection?",
+  "What should a MCA capacity assessment include?",
+  "Which policies are most critical to have acknowledged before a CQC visit?",
+  "What are our obligations when a service user makes a complaint?",
+  "How often do policies need to be formally reviewed?",
 ];
 
+// Render a line of text, converting /compliance/xxx paths and **bold** to React elements
+function renderInline(line: string, key: number) {
+  // Split on policy paths like /compliance/saf-001 or /inspection-prep etc.
+  const parts = line.split(/(\/(?:compliance\/[\w-]+|inspection-prep|policy-reviews|compliance-report|audit|reading-lists|ai-assistant|learning|staff|my-record|dashboard))/g);
+  if (parts.length === 1) {
+    // No path — process bold inline
+    return renderBold(line, key);
+  }
+  return (
+    <span key={key}>
+      {parts.map((part, j) => {
+        if (part.match(/^\/(compliance\/[\w-]+|inspection-prep|policy-reviews|compliance-report|audit|reading-lists|ai-assistant|learning|staff|my-record|dashboard)/)) {
+          return (
+            <Link key={j} href={part}
+              className="inline-flex items-center gap-1 font-semibold underline underline-offset-2"
+              style={{ color: "#2E6FFF" }}>
+              {part}
+            </Link>
+          );
+        }
+        return <span key={j}>{part}</span>;
+      })}
+    </span>
+  );
+}
+
+function renderBold(text: string, key: number) {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
+  if (parts.length === 1) return <span key={key}>{text}</span>;
+  return (
+    <span key={key}>
+      {parts.map((p, j) =>
+        p.startsWith("**") && p.endsWith("**")
+          ? <strong key={j}>{p.slice(2, -2)}</strong>
+          : <span key={j}>{p}</span>
+      )}
+    </span>
+  );
+}
+
 function formatMessage(text: string) {
-  // Simple markdown-like formatting
-  return text
-    .split("\n")
-    .map((line, i) => {
-      if (line.startsWith("## ")) return <h3 key={i} className="font-bold text-gray-900 mt-3 mb-1">{line.slice(3)}</h3>;
-      if (line.startsWith("# ")) return <h2 key={i} className="font-bold text-gray-900 text-lg mt-3 mb-1">{line.slice(2)}</h2>;
-      if (line.startsWith("**") && line.endsWith("**")) return <p key={i} className="font-semibold text-gray-900">{line.slice(2, -2)}</p>;
-      if (line.startsWith("- ") || line.startsWith("• ")) return <li key={i} className="ml-4 list-disc text-gray-700">{line.slice(2)}</li>;
-      if (line.match(/^\d+\. /)) return <li key={i} className="ml-4 list-decimal text-gray-700">{line.replace(/^\d+\. /, "")}</li>;
-      if (line === "") return <br key={i} />;
-      return <p key={i} className="text-gray-700">{line}</p>;
-    });
+  return text.split("\n").map((line, i) => {
+    if (line.startsWith("## ")) return <h3 key={i} className="font-bold text-gray-900 mt-3 mb-1 text-sm">{line.slice(3)}</h3>;
+    if (line.startsWith("# ")) return <h2 key={i} className="font-bold text-gray-900 text-base mt-3 mb-1">{line.slice(2)}</h2>;
+    if (line.startsWith("- ") || line.startsWith("• ")) return <li key={i} className="ml-4 list-disc text-gray-700">{renderInline(line.slice(2), i)}</li>;
+    if (line.match(/^\d+\. /)) return <li key={i} className="ml-4 list-decimal text-gray-700">{renderInline(line.replace(/^\d+\. /, ""), i)}</li>;
+    if (line === "") return <br key={i} />;
+    return <p key={i} className="text-gray-700">{renderInline(line, i)}</p>;
+  });
 }
 
 export default function AIAssistantPage() {
@@ -38,7 +77,7 @@ export default function AIAssistantPage() {
     {
       id: "welcome",
       role: "assistant",
-      content: "Hello! I'm Ziproh AI, your compliance assistant. I can help you understand CQC regulations, interpret your policies, navigate complex care legislation, and answer compliance questions. What would you like to know?",
+      content: "Hello! I'm Ziproh AI, your 24/7 compliance assistant. I know all 62 policies in your Compliance Centre and can point you directly to the right one. I can help you:\n\n- Interpret CQC regulations and the 5 Key Questions\n- Navigate UK care legislation (Care Act, MCA, HSCA Regulations)\n- Find specific Ziproh policies (e.g. \"show me the medication policies\")\n- Prepare for CQC inspections — try asking about /inspection-prep\n- Answer safeguarding, HR, and governance questions\n\nWhat would you like to know?",
       timestamp: new Date(),
     },
   ]);
@@ -235,14 +274,16 @@ export default function AIAssistantPage() {
             <div className="bg-white rounded-2xl border border-gray-100 p-4">
               <h3 className="text-sm font-semibold text-gray-700 mb-2">⚡ Capabilities</h3>
               <ul className="space-y-1.5 text-xs text-gray-500">
+                <li>✓ Knows all 62 Ziproh policies</li>
+                <li>✓ Links directly to specific policies</li>
                 <li>✓ CQC regulation interpretation</li>
-                <li>✓ Policy guidance & advice</li>
-                <li>✓ Safeguarding queries</li>
-                <li>✓ MCA & DoLS / LPS questions</li>
-                <li>✓ Audit preparation support</li>
-                <li>✓ Complaints process guidance</li>
-                <li>✓ HR & workforce queries</li>
+                <li>✓ Inspection prep guidance</li>
+                <li>✓ Safeguarding (Care Act & Children Act)</li>
+                <li>✓ MCA, DoLS & LPS questions</li>
+                <li>✓ Medication management queries</li>
+                <li>✓ HR, recruitment & workforce</li>
                 <li>✓ GDPR & data protection</li>
+                <li>✓ Complaints & complaints process</li>
               </ul>
             </div>
 

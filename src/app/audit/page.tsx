@@ -1,61 +1,18 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import DashboardLayout from "@/components/DashboardLayout";
+import { createBrowserClient } from "@supabase/ssr";
 
-type AuditRecord = {
+type AuditRow = {
   id: string;
   title: string;
-  type: string;
-  keyQuestion: string;
+  audit_type: string;
   status: "draft" | "in_progress" | "completed";
   score: number | null;
-  date: string;
-  conductedBy: string;
+  conducted_at: string | null;
+  created_at: string;
 };
-
-const SAMPLE_AUDITS: AuditRecord[] = [
-  {
-    id: "aud-001",
-    title: "Quarterly Medication Audit",
-    type: "Internal",
-    keyQuestion: "Safe",
-    status: "completed",
-    score: 87,
-    date: "2026-05-28",
-    conductedBy: "Sarah Johnson",
-  },
-  {
-    id: "aud-002",
-    title: "Infection Prevention & Control Audit",
-    type: "Internal",
-    keyQuestion: "Safe",
-    status: "completed",
-    score: 92,
-    date: "2026-05-15",
-    conductedBy: "Mark Williams",
-  },
-  {
-    id: "aud-003",
-    title: "Care Planning Audit Q2",
-    type: "Internal",
-    keyQuestion: "Effective",
-    status: "in_progress",
-    score: null,
-    date: "2026-06-01",
-    conductedBy: "Washington Admin",
-  },
-  {
-    id: "aud-004",
-    title: "Governance & Quality Review",
-    type: "Self-Assessment",
-    keyQuestion: "Well-Led",
-    status: "draft",
-    score: null,
-    date: "2026-06-05",
-    conductedBy: "Washington Admin",
-  },
-];
 
 const AUDIT_TEMPLATES = [
   {
@@ -128,20 +85,47 @@ function scoreLabel(score: number) {
   return "Inadequate";
 }
 
+function statusBadgeStyle(status: string) {
+  if (status === "completed") return { backgroundColor: "#dcfce7", color: "#166534" };
+  if (status === "in_progress") return { backgroundColor: "#dbeafe", color: "#1e40af" };
+  return { backgroundColor: "#f3f4f6", color: "#374151" };
+}
+
+function statusLabel(status: string) {
+  if (status === "in_progress") return "In Progress";
+  return status.charAt(0).toUpperCase() + status.slice(1);
+}
+
 export default function AuditPage() {
   const [tab, setTab] = useState<"overview" | "templates">("overview");
-  const [filter, setFilter] = useState("All");
+  const [audits, setAudits] = useState<AuditRow[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const KQ_FILTERS = ["All", "Safe", "Effective", "Caring", "Responsive", "Well-Led"];
+  useEffect(() => {
+    const sb = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+    (async () => {
+      const { data: { user } } = await sb.auth.getUser();
+      if (!user) { setLoading(false); return; }
 
-  const filtered = filter === "All"
-    ? SAMPLE_AUDITS
-    : SAMPLE_AUDITS.filter((a) => a.keyQuestion === filter);
+      const { data } = await sb
+        .from("audits")
+        .select("id, title, audit_type, status, score, conducted_at, created_at")
+        .eq("org_id", user.id)
+        .order("created_at", { ascending: false });
 
-  const completed = SAMPLE_AUDITS.filter((a) => a.status === "completed");
+      setAudits((data as AuditRow[]) ?? []);
+      setLoading(false);
+    })();
+  }, []);
+
+  const completed = audits.filter((a) => a.status === "completed");
+  const inProgress = audits.filter((a) => a.status === "in_progress");
   const avgScore = completed.length > 0
     ? Math.round(completed.reduce((s, a) => s + (a.score ?? 0), 0) / completed.length)
-    : 0;
+    : null;
 
   return (
     <DashboardLayout>
@@ -152,10 +136,7 @@ export default function AuditPage() {
             <h1 className="text-2xl font-bold text-gray-900">Audit Centre</h1>
             <p className="text-sm text-gray-500 mt-0.5">Conduct internal audits and track your compliance performance</p>
           </div>
-          <Link
-            href="/audit/new"
-            className="btn-primary flex items-center gap-2"
-          >
+          <Link href="/audit/new" className="btn-primary flex items-center gap-2">
             <span>＋</span> New Audit
           </Link>
         </div>
@@ -163,10 +144,10 @@ export default function AuditPage() {
         {/* Stats row */}
         <div className="grid grid-cols-4 gap-4 mb-6">
           {[
-            { label: "Total Audits", value: SAMPLE_AUDITS.length.toString(), icon: "📊" },
-            { label: "Completed", value: completed.length.toString(), icon: "✅" },
-            { label: "In Progress", value: SAMPLE_AUDITS.filter((a) => a.status === "in_progress").length.toString(), icon: "🔄" },
-            { label: "Avg Score", value: avgScore ? `${avgScore}%` : "—", icon: "⭐" },
+            { label: "Total Audits",  value: loading ? "…" : audits.length.toString(),     icon: "📊" },
+            { label: "Completed",     value: loading ? "…" : completed.length.toString(),  icon: "✅" },
+            { label: "In Progress",   value: loading ? "…" : inProgress.length.toString(), icon: "🔄" },
+            { label: "Avg Score",     value: loading ? "…" : avgScore ? `${avgScore}%` : "—", icon: "⭐" },
           ].map((s) => (
             <div key={s.label} className="card p-4">
               <div className="flex items-center gap-2 mb-1">
@@ -198,82 +179,88 @@ export default function AuditPage() {
 
         {tab === "overview" && (
           <>
-            {/* Filters */}
-            <div className="flex gap-2 mb-4 flex-wrap">
-              {KQ_FILTERS.map((f) => (
-                <button
-                  key={f}
-                  onClick={() => setFilter(f)}
-                  className="px-3 py-1.5 rounded-full text-xs font-medium transition-all border"
-                  style={{
-                    backgroundColor: filter === f ? "#2E6FFF" : "white",
-                    color: filter === f ? "white" : "#374151",
-                    borderColor: filter === f ? "#2E6FFF" : "#e5e7eb",
-                  }}
-                >
-                  {f}
-                </button>
-              ))}
-            </div>
-
-            {/* Audit list */}
-            <div className="space-y-3">
-              {filtered.map((audit) => (
-                <div key={audit.id} className="card p-5 flex items-center gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold text-gray-900">{audit.title}</h3>
-                      <span className="badge text-xs px-2 py-0.5 rounded-full"
-                        style={{
-                          backgroundColor: audit.status === "completed" ? "#dcfce7" : audit.status === "in_progress" ? "#dbeafe" : "#f3f4f6",
-                          color: audit.status === "completed" ? "#166534" : audit.status === "in_progress" ? "#1e40af" : "#374151",
-                        }}>
-                        {audit.status === "in_progress" ? "In Progress" : audit.status.charAt(0).toUpperCase() + audit.status.slice(1)}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-3 text-xs text-gray-500">
-                      <span>{audit.type}</span>
-                      <span>·</span>
-                      <span>{audit.keyQuestion}</span>
-                      <span>·</span>
-                      <span>{new Date(audit.date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</span>
-                      <span>·</span>
-                      <span>By {audit.conductedBy}</span>
-                    </div>
-                  </div>
-
-                  {audit.score !== null && (
-                    <div className="text-center px-4">
-                      <div className="text-2xl font-bold" style={{ color: scoreColour(audit.score) }}>
-                        {audit.score}%
-                      </div>
-                      <div className="text-xs" style={{ color: scoreColour(audit.score) }}>
-                        {scoreLabel(audit.score)}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="flex gap-2">
-                    {audit.status === "draft" || audit.status === "in_progress" ? (
-                      <Link
-                        href={`/audit/${audit.id}`}
-                        className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white"
-                        style={{ backgroundColor: "#2E6FFF" }}
-                      >
-                        Continue
-                      </Link>
-                    ) : (
-                      <Link
-                        href={`/audit/${audit.id}`}
-                        className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-gray-200 text-gray-600 hover:bg-gray-50"
-                      >
-                        View Report
-                      </Link>
-                    )}
-                  </div>
+            {loading ? (
+              <div className="text-center py-16 text-gray-400 text-sm">Loading audits…</div>
+            ) : audits.length === 0 ? (
+              /* Empty state */
+              <div className="card p-12 text-center">
+                <div className="text-5xl mb-4">🔍</div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">No audits yet</h3>
+                <p className="text-sm text-gray-500 mb-6 max-w-sm mx-auto">
+                  Run your first internal audit to start building your compliance evidence trail.
+                  Choose a template to get started quickly.
+                </p>
+                <div className="flex justify-center gap-3">
+                  <Link href="/audit/new" className="btn-primary">
+                    Start New Audit
+                  </Link>
+                  <button
+                    onClick={() => setTab("templates")}
+                    className="btn-secondary"
+                  >
+                    Browse Templates
+                  </button>
                 </div>
-              ))}
-            </div>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {audits.map((audit) => {
+                  const displayDate = audit.conducted_at ?? audit.created_at;
+                  return (
+                    <div key={audit.id} className="card p-5 flex items-center gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h3 className="font-semibold text-gray-900">{audit.title}</h3>
+                          <span
+                            className="text-xs px-2 py-0.5 rounded-full font-medium"
+                            style={statusBadgeStyle(audit.status)}
+                          >
+                            {statusLabel(audit.status)}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3 text-xs text-gray-500">
+                          <span>{audit.audit_type}</span>
+                          <span>·</span>
+                          <span>
+                            {new Date(displayDate).toLocaleDateString("en-GB", {
+                              day: "numeric", month: "short", year: "numeric",
+                            })}
+                          </span>
+                        </div>
+                      </div>
+
+                      {audit.score !== null && (
+                        <div className="text-center px-4">
+                          <div className="text-2xl font-bold" style={{ color: scoreColour(audit.score) }}>
+                            {audit.score}%
+                          </div>
+                          <div className="text-xs" style={{ color: scoreColour(audit.score) }}>
+                            {scoreLabel(audit.score)}
+                          </div>
+                        </div>
+                      )}
+
+                      {audit.status === "completed" ? (
+                        <Link
+                          href={`/audit/${audit.id}`}
+                          className="px-3 py-1.5 rounded-lg text-xs font-semibold border border-gray-200 text-gray-600 hover:bg-gray-50 flex-shrink-0"
+                        >
+                          View Report
+                        </Link>
+                      ) : (
+                        <Link
+                          href="/audit/new"
+                          className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white flex-shrink-0"
+                          style={{ backgroundColor: "#2E6FFF" }}
+                        >
+                          Continue
+                        </Link>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </>
         )}
 
@@ -282,8 +269,10 @@ export default function AuditPage() {
             {AUDIT_TEMPLATES.map((tmpl) => (
               <div key={tmpl.id} className="card p-5 hover:shadow-md transition-shadow">
                 <div className="flex items-start gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
-                    style={{ backgroundColor: tmpl.color + "20" }}>
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
+                    style={{ backgroundColor: tmpl.color + "20" }}
+                  >
                     {tmpl.icon}
                   </div>
                   <div>

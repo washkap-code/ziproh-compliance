@@ -1,28 +1,69 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
+import { createBrowserClient } from "@supabase/ssr";
+
+// Isolated so useSearchParams is inside a Suspense boundary
+function ParamsReader({
+  setError,
+  setRedirectTo,
+}: {
+  setError: (msg: string) => void;
+  setRedirectTo: (path: string) => void;
+}) {
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const err = searchParams.get("error");
+    if (err === "missing_code") setError("The confirmation link is invalid or has expired. Please try again.");
+    else if (err) setError(decodeURIComponent(err));
+
+    const redirect = searchParams.get("redirectTo");
+    if (redirect) setRedirectTo(redirect);
+  }, [searchParams, setError, setRedirectTo]);
+  return null;
+}
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [email,      setEmail]      = useState("");
+  const [password,   setPassword]   = useState("");
+  const [loading,    setLoading]    = useState(false);
+  const [error,      setError]      = useState("");
+  const [redirectTo, setRedirectTo] = useState("/dashboard");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-    // Supabase auth will go here
-    // const { error } = await supabase.auth.signInWithPassword({ email, password });
-    // For now, redirect to dashboard
-    setTimeout(() => {
-      window.location.href = "/dashboard";
-    }, 800);
+
+    const supabase = createBrowserClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+    );
+
+    const { error: signInError } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (signInError) {
+      setError(
+        signInError.message === "Invalid login credentials"
+          ? "Incorrect email or password. Please try again."
+          : signInError.message
+      );
+      setLoading(false);
+      return;
+    }
+
+    window.location.href = redirectTo;
   };
 
   return (
     <div className="min-h-screen flex" style={{ backgroundColor: "#f8faff" }}>
+      {/* Reads ?error= and ?redirectTo= from URL params */}
+      <Suspense fallback={null}>
+        <ParamsReader setError={setError} setRedirectTo={setRedirectTo} />
+      </Suspense>
+
       {/* Left panel */}
       <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center p-16"
         style={{ backgroundColor: "#2E6FFF" }}>
@@ -33,7 +74,7 @@ export default function LoginPage() {
             Stay Compliant.<br />Stay Confident.
           </h2>
           <p className="text-blue-100 text-lg leading-relaxed mb-10">
-            Access 340+ auto-updated policies, audit tools, reading lists, and compliance resources — all in one place.
+            Access 62+ auto-updated policies, audit tools, reading lists, and compliance resources — all in one place.
           </p>
           <div className="space-y-4">
             {[
@@ -78,15 +119,14 @@ export default function LoginPage() {
                   Email address
                 </label>
                 <input
-                  type="email"
-                  required
+                  type="email" required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@yourcare.org.uk"
                   className="w-full px-4 py-2.5 rounded-lg text-sm text-gray-900 outline-none transition-all"
                   style={{ border: "1.5px solid #e2e8f0" }}
-                  onFocus={(e) => e.target.style.borderColor = "#2E6FFF"}
-                  onBlur={(e) => e.target.style.borderColor = "#e2e8f0"}
+                  onFocus={(e) => (e.target.style.borderColor = "#2E6FFF")}
+                  onBlur={(e)  => (e.target.style.borderColor = "#e2e8f0")}
                 />
               </div>
               <div>
@@ -97,15 +137,14 @@ export default function LoginPage() {
                   </Link>
                 </div>
                 <input
-                  type="password"
-                  required
+                  type="password" required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   className="w-full px-4 py-2.5 rounded-lg text-sm text-gray-900 outline-none transition-all"
                   style={{ border: "1.5px solid #e2e8f0" }}
-                  onFocus={(e) => e.target.style.borderColor = "#2E6FFF"}
-                  onBlur={(e) => e.target.style.borderColor = "#e2e8f0"}
+                  onFocus={(e) => (e.target.style.borderColor = "#2E6FFF")}
+                  onBlur={(e)  => (e.target.style.borderColor = "#e2e8f0")}
                 />
               </div>
               <button

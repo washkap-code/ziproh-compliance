@@ -62,8 +62,8 @@ export default function LandingPage() {
               <span style={{ color: "#2E6FFF" }}>With Confidence</span>
             </h1>
             <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-              Ziproh brings everything your team needs into one place — 340+ auto-updated policies,
-              compliance tools, audit management, and more. Stay inspection-ready, every day.
+              Ziproh brings everything your team needs into one place — 62 auto-updated policies,
+              an AI compliance assistant, inspection prep tools, and more. Stay inspection-ready, every day.
             </p>
             <div className="flex flex-wrap gap-4">
               <Link href="/register" className="btn-primary text-base px-8 py-3">
@@ -97,7 +97,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <div className="text-sm font-bold text-gray-900">Compliance Centre</div>
-                    <div className="text-xs text-gray-500">340 policies • All up to date</div>
+                    <div className="text-xs text-gray-500">62 policies • All up to date</div>
                   </div>
                   <div className="ml-auto badge badge-green">✓ Compliant</div>
                 </div>
@@ -131,10 +131,10 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
-              { value: "340+", label: "Policies & Procedures" },
+              { value: "62", label: "Policies & Procedures" },
               { value: "24/7", label: "Access on Any Device" },
               { value: "4", label: "UK Regulators Covered" },
-              { value: "Auto", label: "Policy Updates" },
+              { value: "AI", label: "Compliance Assistant" },
             ].map((stat) => (
               <div key={stat.label}>
                 <div className="text-4xl font-bold mb-1" style={{ color: "#2E6FFF" }}>{stat.value}</div>
@@ -150,45 +150,45 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">Everything in one platform</h2>
-            <p className="text-xl text-gray-500">Built for UK care providers. Aligned to CQC, Care Inspectorate, CIW and RQIA.</p>
+            <p className="text-xl text-gray-500">Built for UK care providers. Fully aligned to CQC — with support for Care Inspectorate, CIW and RQIA.</p>
           </div>
           <div className="grid md:grid-cols-3 gap-6">
             {[
               {
                 icon: "📋",
                 title: "Compliance Centre",
-                desc: "340+ auto-updated policies and procedures, personalised to your service type and regulator.",
+                desc: "62 auto-updated policies and procedures aligned to CQC's 5 Key Questions. Download any policy as a branded PDF instantly.",
                 badge: "Core Feature",
+              },
+              {
+                icon: "🤖",
+                title: "Ziproh AI",
+                desc: "Ask any compliance question and get an expert answer — with direct links to the relevant policy. Available 24/7.",
+                badge: "Included",
+              },
+              {
+                icon: "🏛️",
+                title: "Inspection Prep",
+                desc: "Know exactly where you stand before a CQC visit. Per-Key-Question readiness scores, inspector focus areas, and a pre-inspection checklist.",
+                badge: "Included",
               },
               {
                 icon: "🔍",
                 title: "Audit Centre",
-                desc: "Run audits, track actions, and stay inspection-ready with regulator-aligned audit templates.",
+                desc: "Run internal audits, track improvement actions, and build an evidence trail aligned to CQC Fundamental Standards.",
+                badge: "Included",
+              },
+              {
+                icon: "📅",
+                title: "Policy Reviews",
+                desc: "Formally sign off policies on an annual cycle. Track review outcomes and generate a compliance evidence report for inspectors.",
                 badge: "Included",
               },
               {
                 icon: "📚",
-                title: "Learning Centre",
-                desc: "eLearning courses for care staff, CPD-accredited and endorsed by Skills for Care.",
-                badge: "Included",
-              },
-              {
-                icon: "📊",
                 title: "Staff Reading Lists",
-                desc: "Assign policies for staff to read and acknowledge. Track completion across your team.",
+                desc: "Assign priority policies for staff to read and acknowledge. Monitor team-wide compliance at a glance.",
                 badge: "Included",
-              },
-              {
-                icon: "⬆️",
-                title: "Upload Your Own Docs",
-                desc: "Add your own policies and documents alongside Ziproh's library for a personalised toolkit.",
-                badge: "Included",
-              },
-              {
-                icon: "💬",
-                title: "Feedback Surveys",
-                desc: "Collect, analyse and act on feedback from service users and staff, aligned to CQC standards.",
-                badge: "Pro",
               },
             ].map((feature) => (
               <div key={feature.title} className="card hover:shadow-md transition-shadow">

@@ -6,6 +6,26 @@ import { EFFECTIVE_CONTENT } from "./policy-content-effective";
 import { CARING_CONTENT } from "./policy-content-caring";
 import { RESPONSIVE_CONTENT } from "./policy-content-responsive";
 import { WELLLED_CONTENT } from "./policy-content-wellled";
+import { SAF001_COMPREHENSIVE } from "./policy-flagship-saf001";
+import { WL004_CONTENT, SAF006_CONTENT, WL002_CONTENT, WL003_CONTENT, SAF015_CONTENT } from "./policy-medium-depth";
+import { EFF005_CONTENT, SAF009_CONTENT, WL009_CONTENT, SAF012_CONTENT, CAR002_CONTENT } from "./policy-medium-depth-2";
+import { SAF002_CONTENT, SAF008_CONTENT, WL006_CONTENT, SAF007_CONTENT, EFF003_CONTENT } from "./policy-medium-depth-3";
+import { SAF004_CONTENT, SAF010_CONTENT, SAF014_CONTENT, EFF011_CONTENT, WL017_CONTENT } from "./policy-medium-depth-4";
+import { SAF013_CONTENT, SAF011_CONTENT, WL008_CONTENT, WL013_CONTENT, EFF007_CONTENT } from "./policy-medium-depth-5";
+import { EFF010_CONTENT, SAF016_CONTENT, WL010_CONTENT, EFF012_CONTENT, WL014_CONTENT } from "./policy-medium-depth-6";
+import { EFF013_CONTENT, WL007_CONTENT, CAR003_CONTENT, EFF008_CONTENT, WL018_CONTENT } from "./policy-medium-depth-7";
+import { SAF017_CONTENT, SAF018_CONTENT, WL011_CONTENT, WL012_CONTENT, CAR008_CONTENT } from "./policy-medium-depth-8";
+import { EFF006_CONTENT, EFF009_CONTENT, CAR006_CONTENT, CAR007_CONTENT, WL016_CONTENT } from "./policy-medium-depth-9";
+import { CAR004_CONTENT, CAR005_CONTENT, RES002_CONTENT, RES003_CONTENT, RES004_CONTENT, RES005_CONTENT, WL015_CONTENT } from "./policy-medium-depth-10";
+import { EFF002_COMPREHENSIVE } from "./policy-flagship-eff002";
+import { SAF003_COMPREHENSIVE } from "./policy-flagship-saf003";
+import { EFF001_COMPREHENSIVE } from "./policy-flagship-eff001";
+import { EFF004_COMPREHENSIVE } from "./policy-flagship-eff004";
+import { RES001_COMPREHENSIVE } from "./policy-flagship-res001";
+import { SAF005_COMPREHENSIVE } from "./policy-flagship-saf005";
+import { WL005_COMPREHENSIVE } from "./policy-flagship-wl005";
+import { WL001_COMPREHENSIVE } from "./policy-flagship-wl001";
+import { CAR001_COMPREHENSIVE } from "./policy-flagship-car001";
 
 export type Document = {
   id: string;
@@ -23,13 +43,70 @@ export type Document = {
   summary: string;
 };
 
+// Rich policy section — supports warning/practice/legal callout boxes and sub-sections
+export type PolicySection = {
+  title?: string;                            // new-format section heading (alias for heading)
+  heading?: string;                          // legacy heading field
+  body?: string;                             // main body text (supports \n for paragraphs)
+  steps?: string[];                          // numbered procedural steps (legacy)
+  procedure?: string[];                      // numbered procedure steps (new-format alias)
+  bulletPoints?: string[];                   // additional bullet list
+  subSections?: {
+    heading?: string;
+    title?: string;
+    body?: string;
+    steps?: string[];
+    bulletPoints?: string[];
+    warningBox?: string;
+    practiceBox?: string;
+    legalBox?: string;
+  }[];
+  warningBox?: string;    // red/amber — highlighted warning or important note
+  practiceBox?: string;   // green — best practice guidance
+  legalBox?: string;      // blue — specific legislation callout
+};
+
 export type DocumentContent = {
-  purpose: string;
-  scope: string;
-  responsibilities: { role: string; duties: string[] }[];
-  keyPoints: string[];
-  legislation: string[];
-  sections: { heading: string; body: string }[];
+  // ── Document control metadata (new-format policies) ─────────────────
+  title?: string;              // Policy title (from the policy itself)
+  policyId?: string;           // e.g. "SAF-001"
+  version?: string;            // e.g. "3.2"
+  effectiveDate?: string;      // ISO date string
+  reviewDate?: string;         // Date of last review / effective date
+  nextReviewDate?: string;     // Next scheduled review
+  approvedBy?: string;         // Approving role
+  reviewedBy?: string;         // Author / reviewer role
+
+  // ── Formal policy statement ──────────────────────────────────────────
+  statement?: string;
+
+  // ── Core sections (required in old format, optional in new format) ───
+  purpose?: string;
+  scope?: string;
+  responsibilities?: { role: string; duties: string[] }[];
+  keyPoints?: string[];
+  legislation?: string[];
+
+  // ── Body sections ─────────────────────────────────────────────────────
+  sections?: PolicySection[];
+  procedure?: PolicySection[];   // detailed procedural sections
+
+  // ── Rich extended fields ──────────────────────────────────────────────
+  definitions?: { term: string; definition: string }[];
+  training?: string;
+  monitoring?: string;
+  relatedDocuments?: string[];
+  appendices?: {
+    title: string;
+    description?: string;   // legacy
+    content?: string;       // new-format
+  }[];
+  versionHistory?: {
+    version: string;
+    date: string;
+    amendment?: string;     // legacy
+    changes?: string;       // new-format
+  }[];
 };
 
 export const CATEGORIES = {
@@ -867,7 +944,14 @@ const BASE_CONTENT: Record<string, DocumentContent> = {
   },
 };
 
+/** IDs of policies with full flagship content (12–18 pages, rich procedural detail). */
+export const FLAGSHIP_IDS = new Set([
+  "saf-001", "eff-002", "saf-003", "eff-001", "eff-004",
+  "res-001", "saf-005", "wl-005", "wl-001", "car-001",
+]);
+
 // Merge all content sources — specific imports override BASE_CONTENT
+// Flagship policies (deepest detail) are merged last so they win over category defaults
 export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
   ...BASE_CONTENT,
   ...SAFE_CONTENT,
@@ -875,6 +959,71 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
   ...CARING_CONTENT,
   ...RESPONSIVE_CONTENT,
   ...WELLLED_CONTENT,
+  // ── Flagship expanded policies ──────────────────────────────────────────────
+  "saf-001": SAF001_COMPREHENSIVE,   // Safeguarding Adults at Risk
+  "eff-002": EFF002_COMPREHENSIVE,   // Mental Capacity Act 2005
+  "saf-003": SAF003_COMPREHENSIVE,   // Medication Management
+  "eff-001": EFF001_COMPREHENSIVE,   // Care Planning
+  "eff-004": EFF004_COMPREHENSIVE,   // End of Life Care
+  "res-001": RES001_COMPREHENSIVE,   // Complaints Handling
+  "saf-005": SAF005_COMPREHENSIVE,   // Infection Prevention & Control
+  "wl-005": WL005_COMPREHENSIVE,     // Data Protection & GDPR
+  "wl-001": WL001_COMPREHENSIVE,     // Governance Framework
+  "car-001": CAR001_COMPREHENSIVE,   // Dignity & Respect
+  // ── Medium-depth priority policies ─────────────────────────────────────────
+  "wl-004": WL004_CONTENT,           // Whistleblowing (Raising Concerns)
+  "saf-006": SAF006_CONTENT,         // Risk Assessment
+  "wl-002": WL002_CONTENT,           // Recruitment & Selection
+  "wl-003": WL003_CONTENT,           // Supervision & Appraisal
+  "saf-015": SAF015_CONTENT,         // Accident & Incident Reporting
+  // ── Medium-depth batch 2 ───────────────────────────────────────────────────
+  "eff-005": EFF005_CONTENT,         // Dementia Care
+  "saf-009": SAF009_CONTENT,         // Falls Prevention
+  "wl-009": WL009_CONTENT,           // Induction & Mandatory Training
+  "saf-012": SAF012_CONTENT,         // Restraint & Restrictive Practice
+  "car-002": CAR002_CONTENT,         // Equality, Diversity & Inclusion
+  "saf-002": SAF002_CONTENT,         // Safeguarding Children
+  "saf-008": SAF008_CONTENT,         // Fire Safety
+  "wl-006": WL006_CONTENT,           // Record Keeping & Confidentiality
+  "saf-007": SAF007_CONTENT,         // Lone Working
+  "eff-003": EFF003_CONTENT,         // Nutrition & Hydration
+  "saf-004": SAF004_CONTENT,         // Medication Administration Procedure
+  "saf-010": SAF010_CONTENT,         // Moving & Handling
+  "saf-014": SAF014_CONTENT,         // Pressure Ulcer Prevention & Management
+  "eff-011": EFF011_CONTENT,         // Physical Health Monitoring (NEWS2)
+  "wl-017": WL017_CONTENT,           // CQC Registration & Regulatory Compliance
+  "saf-013": SAF013_CONTENT,         // Controlled Drugs
+  "saf-011": SAF011_CONTENT,         // Violence & Aggression
+  "wl-008": WL008_CONTENT,           // Staffing & Deployment
+  "wl-013": WL013_CONTENT,           // Quality Improvement
+  "eff-007": EFF007_CONTENT,         // Discharge & Transfer of Care
+  "eff-010": EFF010_CONTENT,         // Dysphagia & Swallowing Difficulties
+  "saf-016": SAF016_CONTENT,         // Medicines Covert Administration
+  "wl-010": WL010_CONTENT,           // Disciplinary & Capability
+  "eff-012": EFF012_CONTENT,         // Positive Behaviour Support
+  "wl-014": WL014_CONTENT,           // Information Governance
+  "eff-013": EFF013_CONTENT,         // Mental Health & Wellbeing
+  "wl-007": WL007_CONTENT,           // Business Continuity
+  "car-003": CAR003_CONTENT,         // Communication
+  "eff-008": EFF008_CONTENT,         // Continence Management
+  "wl-018": WL018_CONTENT,           // Registered Manager Accountability
+  "saf-017": SAF017_CONTENT,         // Skin Integrity & Wound Care
+  "saf-018": SAF018_CONTENT,         // Environmental Safety & Maintenance
+  "wl-011": WL011_CONTENT,           // Grievance Policy
+  "wl-012": WL012_CONTENT,           // Absence Management
+  "car-008": CAR008_CONTENT,         // Advocacy
+  "eff-006": EFF006_CONTENT,         // Pressure Ulcer Prevention
+  "eff-009": EFF009_CONTENT,         // Oral Health & Dental Care
+  "car-006": CAR006_CONTENT,         // Activities & Social Engagement
+  "car-007": CAR007_CONTENT,         // Family & Carer Involvement
+  "wl-016": WL016_CONTENT,           // Learning & Development Strategy
+  "car-004": CAR004_CONTENT,         // Relationships & Sexuality
+  "car-005": CAR005_CONTENT,         // Spiritual & Religious Care
+  "res-002": RES002_CONTENT,         // Service User Involvement
+  "res-003": RES003_CONTENT,         // Compliments & Feedback
+  "res-004": RES004_CONTENT,         // Flexible Service Delivery
+  "res-005": RES005_CONTENT,         // Hospital Admission & Discharge Liaison
+  "wl-015": WL015_CONTENT,           // Equality & Human Rights (Employment)
 };
 
 export function getDocumentsByCategory(keyQuestion?: string): Document[] {

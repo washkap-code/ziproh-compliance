@@ -15,8 +15,9 @@ export default function ForgotPasswordPage() {
     setLoading(true);
     setError("");
 
+    const origin = typeof window !== "undefined" ? window.location.origin : "https://app.ziprohtraining.co.uk";
     const { error: err } = await supabase.auth.resetPasswordForEmail(email, {
-      redirectTo: "https://app.ziprohtraining.co.uk/reset-password",
+      redirectTo: `${origin}/reset-password`,
     });
 
     setLoading(false);

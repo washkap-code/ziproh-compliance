@@ -78,10 +78,43 @@ CREATE TABLE IF NOT EXISTS public.audits (
   audit_type TEXT NOT NULL DEFAULT 'internal',
   status TEXT NOT NULL DEFAULT 'draft' CHECK (status IN ('draft', 'in_progress', 'completed')),
   score INTEGER,
+  findings JSONB,
   conducted_by UUID REFERENCES public.profiles(id),
   conducted_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
+
+-- Formal policy review records (manager signs off policy annually)
+CREATE TABLE IF NOT EXISTS public.policy_reviews (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  document_id TEXT NOT NULL,
+  reviewed_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  reviewer_name TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'approved'
+    CHECK (status IN ('approved', 'minor_updates', 'requires_revision')),
+  notes TEXT,
+  next_review_date DATE
+);
+
+CREATE INDEX IF NOT EXISTS idx_policy_reviews_user_doc
+  ON public.policy_reviews(user_id, document_id);
+
+-- Training completions (CPD record — covers both Ziproh modules and external training)
+CREATE TABLE IF NOT EXISTS public.training_completions (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  user_id UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  module_id TEXT,                -- e.g. "lrn-001" for Ziproh modules; NULL for external
+  training_name TEXT NOT NULL,
+  provider TEXT NOT NULL DEFAULT 'Ziproh Training',
+  completed_at DATE NOT NULL,
+  certificate_ref TEXT,
+  notes TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_training_completions_user
+  ON public.training_completions(user_id);
 
 -- ─── Row Level Security ───────────────────────────────────────────
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
@@ -90,6 +123,8 @@ ALTER TABLE public.uploaded_documents ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.staff_members ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.reading_lists ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.audits ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.policy_reviews ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.training_completions ENABLE ROW LEVEL SECURITY;
 
 -- Profiles: users can only see/edit their own profile
 CREATE POLICY "Users can view own profile" ON public.profiles
@@ -101,17 +136,42 @@ CREATE POLICY "Users can update own profile" ON public.profiles
 CREATE POLICY "Users can manage own read records" ON public.read_records
   FOR ALL USING (auth.uid() = user_id);
 
+-- Policy reviews: users can manage their own review records
+CREATE POLICY "Users can manage own policy reviews" ON public.policy_reviews
+  FOR ALL USING (auth.uid() = user_id);
+
+-- Training completions: users manage their own CPD records
+CREATE POLICY "Users can manage own training completions" ON public.training_completions
+  FOR ALL USING (auth.uid() = user_id);
+
 -- Uploaded docs: org members can see their org's docs
 CREATE POLICY "Users can see own org documents" ON public.uploaded_documents
   FOR SELECT USING (auth.uid() = org_id);
 CREATE POLICY "Admins can manage org documents" ON public.uploaded_documents
   FOR ALL USING (auth.uid() = org_id);
 
+-- Staff members: org owners can manage their staff; staff can view their own record
+CREATE POLICY "Org owners can manage staff" ON public.staff_members
+  FOR ALL USING (auth.uid() = org_id);
+CREATE POLICY "Staff can view own record" ON public.staff_members
+  FOR SELECT USING (auth.uid() = user_id);
+
+-- Reading lists: org owners manage; assigned staff can view
+CREATE POLICY "Org owners can manage reading lists" ON public.reading_lists
+  FOR ALL USING (auth.uid() = org_id);
+CREATE POLICY "Assigned staff can view reading lists" ON public.reading_lists
+  FOR SELECT USING (auth.uid() = ANY(assigned_to));
+
+-- Audits: org owners manage their own audits
+CREATE POLICY "Org owners can manage audits" ON public.audits
+  FOR ALL USING (auth.uid() = org_id);
+
 -- ─── Trigger: auto-create profile on signup ───────────────────────
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-  INSERT INTO public.profiles (id, email, first_name, last_name, org_name, service_type, regulator)
+  -- Create the user's own profile
+  INSERT INTO public.profiles (id, email, first_name, last_name, org_name, service_type, regulator, plan)
   VALUES (
     NEW.id,
     NEW.email,
@@ -119,8 +179,18 @@ BEGIN
     COALESCE(NEW.raw_user_meta_data->>'last_name', ''),
     COALESCE(NEW.raw_user_meta_data->>'org_name', ''),
     COALESCE(NEW.raw_user_meta_data->>'service_type', ''),
-    COALESCE(NEW.raw_user_meta_data->>'regulator', '')
+    COALESCE(NEW.raw_user_meta_data->>'regulator', ''),
+    COALESCE(NEW.raw_user_meta_data->>'plan', 'starter')
   );
+
+  -- Auto-link: if this email was invited as a staff member by any org,
+  -- set their user_id so the org owner can see their compliance data.
+  UPDATE public.staff_members
+  SET user_id = NEW.id,
+      status  = 'active'
+  WHERE email   = NEW.email
+    AND user_id IS NULL;
+
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
@@ -139,3 +209,45 @@ CREATE POLICY "Org members can upload documents" ON storage.objects
   FOR INSERT WITH CHECK (bucket_id = 'org-documents' AND auth.uid() IS NOT NULL);
 CREATE POLICY "Org members can view documents" ON storage.objects
   FOR SELECT USING (bucket_id = 'org-documents' AND auth.uid() IS NOT NULL);
+
+-- ─── Audit findings column (added post-launch) ────────────────────
+ALTER TABLE public.audits ADD COLUMN IF NOT EXISTS findings JSONB;
+
+-- ─── Feedback surveys ─────────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS public.feedback_surveys (
+  id         UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  org_id     UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  title      TEXT NOT NULL,
+  audience   TEXT NOT NULL DEFAULT 'residents'
+               CHECK (audience IN ('residents', 'families', 'staff', 'mixed')),
+  status     TEXT NOT NULL DEFAULT 'active'
+               CHECK (status IN ('active', 'draft', 'closed')),
+  closes_at  TIMESTAMPTZ,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+ALTER TABLE public.feedback_surveys ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Org owners can manage surveys" ON public.feedback_surveys
+  FOR ALL USING (auth.uid() = org_id);
+
+-- ─── Feedback responses ───────────────────────────────────────────
+CREATE TABLE IF NOT EXISTS public.feedback_responses (
+  id           UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  survey_id    UUID REFERENCES public.feedback_surveys(id) ON DELETE CASCADE NOT NULL,
+  org_id       UUID REFERENCES public.profiles(id) ON DELETE CASCADE NOT NULL,
+  respondent   TEXT NOT NULL DEFAULT 'Anonymous',
+  score        INTEGER NOT NULL CHECK (score BETWEEN 1 AND 5),
+  comment      TEXT,
+  sentiment    TEXT NOT NULL DEFAULT 'neutral'
+                 CHECK (sentiment IN ('positive', 'neutral', 'negative')),
+  responded_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_feedback_responses_survey
+  ON public.feedback_responses(survey_id);
+
+ALTER TABLE public.feedback_responses ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Org owners can manage responses" ON public.feedback_responses
+  FOR ALL USING (auth.uid() = org_id);
