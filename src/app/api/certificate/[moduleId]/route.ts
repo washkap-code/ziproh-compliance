@@ -10,6 +10,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createServerClient } from "@supabase/ssr";
+import { readFile } from "fs/promises";
+import path from "path";
+import QRCode from "qrcode";
 
 // ─── Module catalogue (mirrors learning/page.tsx) ─────────────────────────────
 const MODULES: Record<string, { title: string; category: string; duration: number; level: string; icon: string }> = {
@@ -56,7 +59,8 @@ export async function GET(
 
   // ── Profile + completion record ───────────────────────────────────────────
   const [profileRes, completionRes] = await Promise.all([
-    supabase.from("profiles").select("full_name, org_name").eq("id", user.id).single(),
+    // NB: profiles has first_name/last_name (no full_name column)
+    supabase.from("profiles").select("first_name, last_name, org_name").eq("id", user.id).single(),
     supabase
       .from("training_completions")
       .select("completed_at, certificate_ref")
@@ -67,7 +71,10 @@ export async function GET(
       .maybeSingle(),
   ]);
 
-  const learnerName  = profileRes.data?.full_name  || user.email?.split("@")[0] || "Learner";
+  const learnerName  =
+    [profileRes.data?.first_name, profileRes.data?.last_name].filter(Boolean).join(" ")
+    || user.email?.split("@")[0]
+    || "Learner";
   const orgName      = profileRes.data?.org_name   || "Care Organisation";
   const completedAt  = completionRes.data?.completed_at
     ? new Date(completionRes.data.completed_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })
@@ -75,6 +82,27 @@ export async function GET(
   const certRef      = completionRes.data?.certificate_ref
     || `ZT-${new Date().getFullYear()}-${Math.floor(10000 + Math.random() * 90000)}`;
   const cpdHours     = (mod.duration / 60).toFixed(2).replace(/\.?0+$/, "") + " CPD Hours";
+
+  // ── Brand assets ──────────────────────────────────────────────────────────
+  // Ziproh wordmark (top of certificate) + icon (verification seal)
+  let logoBuffer: Buffer | null = null;
+  let iconBuffer: Buffer | null = null;
+  try { logoBuffer = await readFile(path.join(process.cwd(), "public", "ziproh-logo.png")); } catch { /* skip */ }
+  try { iconBuffer = await readFile(path.join(process.cwd(), "public", "ziproh-icon.png")); } catch { /* skip */ }
+
+  // ── QR verification code ──────────────────────────────────────────────────
+  // Points to the public certificate registry so anyone can confirm authenticity
+  const siteUrl   = process.env.NEXT_PUBLIC_SITE_URL ?? "https://app.ziprohtraining.co.uk";
+  const verifyUrl = `${siteUrl}/verify/${encodeURIComponent(certRef)}`;
+  let qrBuffer: Buffer | null = null;
+  try {
+    qrBuffer = await QRCode.toBuffer(verifyUrl, {
+      width: 256,
+      margin: 1,
+      color: { dark: "#0A1629", light: "#FFFFFF" },
+      errorCorrectionLevel: "M",
+    });
+  } catch { /* QR generation failed — certificate still renders without it */ }
 
   // ── PDF generation ────────────────────────────────────────────────────────
   // pdfkit is a CommonJS module; we import it dynamically to avoid ESM issues.
@@ -172,8 +200,18 @@ export async function GET(
     corner(panelW + 14, PAGE_H - 14, 8, -8);
     corner(PAGE_W - 14, PAGE_H - 14, -8, -8);
 
+    // ── Ziproh wordmark (top, centred) ──
+    let headerY = 60;
+    if (logoBuffer) {
+      const logoW = 132;                       // wordmark aspect ≈ 2.9:1 → ~45pt tall
+      const logoH = 46;
+      doc.image(logoBuffer, cx + (cw - logoW) / 2, 38, {
+        fit: [logoW, logoH], align: "center", valign: "center",
+      });
+      headerY = 38 + logoH + 18;               // header starts below the wordmark
+    }
+
     // Header
-    const headerY = 55;
     doc.fontSize(9).font("Helvetica-Bold").fillColor(C.gold);
     doc.text("CERTIFICATE OF COMPLETION", cx, headerY, {
       width: cw, align: "center", lineBreak: false, characterSpacing: 3,
@@ -183,34 +221,34 @@ export async function GET(
 
     // "This is to certify that"
     doc.fontSize(11.5).font("Helvetica").fillColor(C.mid);
-    doc.text("This is to certify that", cx, headerY + 34, { width: cw, align: "center", lineBreak: false });
+    doc.text("This is to certify that", cx, headerY + 32, { width: cw, align: "center", lineBreak: false });
 
     // Learner name
-    const nameY = headerY + 64;
-    doc.fontSize(34).font("Helvetica-Bold").fillColor(C.dark);
+    const nameY = headerY + 60;
+    doc.fontSize(32).font("Helvetica-Bold").fillColor(C.dark);
     doc.text(learnerName, cx, nameY, { width: cw, align: "center", lineBreak: false });
 
-    // Name underline
-    const nameW = doc.widthOfString(learnerName, { fontSize: 34 });
+    // Name underline (font size 32 is active — widthOfString uses the current font)
+    const nameW = doc.widthOfString(learnerName);
     const nameLineX = cx + (cw - nameW) / 2;
-    doc.moveTo(nameLineX, nameY + 42).lineTo(nameLineX + nameW, nameY + 42)
+    doc.moveTo(nameLineX, nameY + 40).lineTo(nameLineX + nameW, nameY + 40)
       .lineWidth(1.5).strokeColor(C.brand).stroke();
 
     // Org
     doc.fontSize(11).font("Helvetica").fillColor(C.mid);
-    doc.text(`on behalf of  ${orgName}`, cx, nameY + 52, { width: cw, align: "center", lineBreak: false });
+    doc.text(`on behalf of  ${orgName}`, cx, nameY + 50, { width: cw, align: "center", lineBreak: false });
 
     // "has successfully completed"
     doc.fontSize(11.5).font("Helvetica").fillColor(C.mid);
-    doc.text("has successfully completed", cx, nameY + 78, { width: cw, align: "center", lineBreak: false });
+    doc.text("has successfully completed", cx, nameY + 74, { width: cw, align: "center", lineBreak: false });
 
     // Course name
-    const courseY = nameY + 108;
+    const courseY = nameY + 100;
     doc.fontSize(19).font("Helvetica-Bold").fillColor(C.brand);
     doc.text(mod.title, cx, courseY, { width: cw, align: "center", lineBreak: true });
 
     // Pill details
-    const pillsY = courseY + 66;
+    const pillsY = courseY + 58;
     function pill(label: string, value: string, px: number) {
       const pw = 145, ph = 36, pr = 8;
       doc.roundedRect(px, pillsY, pw, ph, pr).fill(C.goldLt);
@@ -222,9 +260,53 @@ export async function GET(
     }
     const totalPillW = 3 * 145 + 2 * 14;
     const pillStartX = cx + (cw - totalPillW) / 2;
-    pill("Date Completed", completedAt,                       pillStartX);
-    pill("Duration",       `${mod.duration} minutes`,        pillStartX + 159);
-    pill("CPD",            cpdHours,                          pillStartX + 318);
+    pill("Date Completed", completedAt,                pillStartX);
+    pill("Duration",       `${mod.duration} minutes`,  pillStartX + 159);
+    pill("CPD",            cpdHours,                   pillStartX + 318);
+
+    // ── Verification row (between pills and footer) ──
+    const verifyRowY = pillsY + 64;
+
+    // Left: how to verify
+    doc.fontSize(7.5).font("Helvetica-Bold").fillColor(C.gold);
+    doc.text("VERIFY THIS CERTIFICATE", cx, verifyRowY, { lineBreak: false, characterSpacing: 1.5 });
+    doc.fontSize(8.5).font("Helvetica").fillColor(C.mid);
+    doc.text(
+      "Scan the QR code or visit the address below to confirm this certificate is genuine:",
+      cx, verifyRowY + 14, { width: cw - 220 },
+    );
+    doc.fontSize(8.5).font("Helvetica-Bold").fillColor(C.brand);
+    doc.text(verifyUrl.replace(/^https?:\/\//, ""), cx, verifyRowY + 38, { width: cw - 220, lineBreak: false });
+
+    // Right: verification seal (Ziproh icon in gold rings)
+    const sealX = cx + cw - 160;
+    const sealY = verifyRowY + 28;
+    doc.circle(sealX, sealY, 36).lineWidth(2).strokeColor(C.gold).stroke();
+    doc.circle(sealX, sealY, 30.5).lineWidth(0.75).strokeColor(C.gold).stroke();
+    if (iconBuffer) {
+      doc.save();
+      doc.circle(sealX, sealY, 28).clip();
+      doc.image(iconBuffer, sealX - 28, sealY - 28, { width: 56, height: 56 });
+      doc.restore();
+    } else {
+      doc.circle(sealX, sealY, 28).fill(C.brand);
+      doc.fontSize(24).font("Helvetica-Bold").fillColor("white");
+      doc.text("Z", sealX - 8, sealY - 12, { lineBreak: false });
+    }
+    doc.fontSize(6).font("Helvetica-Bold").fillColor(C.gold);
+    doc.text("VERIFIED", sealX - 36, sealY + 42, { width: 72, align: "center", lineBreak: false, characterSpacing: 1.5 });
+
+    // Far right: QR code
+    if (qrBuffer) {
+      const qrSize = 74;
+      const qrX = cx + cw - qrSize - 8;
+      const qrY = verifyRowY - 6;
+      doc.roundedRect(qrX - 5, qrY - 5, qrSize + 10, qrSize + 10, 6)
+        .lineWidth(0.75).strokeColor(C.rule).stroke();
+      doc.image(qrBuffer, qrX, qrY, { width: qrSize, height: qrSize });
+      doc.fontSize(6).font("Helvetica-Bold").fillColor(C.muted);
+      doc.text("SCAN TO VERIFY", qrX - 5, qrY + qrSize + 9, { width: qrSize + 10, align: "center", lineBreak: false, characterSpacing: 1 });
+    }
 
     // Footer
     const footerY = PAGE_H - 54;
@@ -235,17 +317,6 @@ export async function GET(
     doc.text("Issued by Ziproh Training Ltd  ·  Verified at app.ziprohtraining.co.uk", cx, footerY, {
       width: cw, align: "right", lineBreak: false,
     });
-
-    // Seal
-    const sealX = cx + cw - 58;
-    const sealY = pillsY - 4;
-    doc.circle(sealX, sealY, 38).lineWidth(2).strokeColor(C.gold).stroke();
-    doc.circle(sealX, sealY, 32).lineWidth(0.75).strokeColor(C.gold).stroke();
-    doc.circle(sealX, sealY, 30).fill(C.brand);
-    doc.fontSize(26).font("Helvetica-Bold").fillColor("white");
-    doc.text("Z", sealX - 9, sealY - 14, { lineBreak: false });
-    doc.fontSize(5.5).font("Helvetica-Bold").fillColor("rgba(255,255,255,0.8)");
-    doc.text("VERIFIED", sealX - 14, sealY + 13, { lineBreak: false, characterSpacing: 1 });
 
     doc.end();
   });

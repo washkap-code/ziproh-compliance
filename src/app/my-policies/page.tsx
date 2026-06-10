@@ -177,6 +177,7 @@ export default function MyPoliciesPage() {
   const [adoptions,      setAdoptions]      = useState<AdoptionRecord[]>([]);
   const [loading,        setLoading]        = useState(true);
   const [pdfLoading,     setPdfLoading]     = useState<string | null>(null);
+  const [zipLoading,     setZipLoading]     = useState(false);
   const [activeTab,      setActiveTab]      = useState<"adopted" | "all">("adopted");
   const [kqFilter,       setKqFilter]       = useState<string>("All");
 
@@ -237,6 +238,29 @@ export default function MyPoliciesPage() {
     displayPolicies = displayPolicies.filter((p) => p.keyQuestion === kqFilter);
   }
 
+  async function handleExportAll() {
+    if (zipLoading) return;
+    setZipLoading(true);
+    try {
+      const resp = await fetch("/api/policies/export-zip");
+      if (!resp.ok) {
+        const json = await resp.json().catch(() => ({}));
+        throw new Error(json.error ?? "Export failed");
+      }
+      const blob = await resp.blob();
+      const url  = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href  = url;
+      link.download = "policy-portfolio.zip";
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "Export failed — please try again.");
+    } finally {
+      setZipLoading(false);
+    }
+  }
+
   async function handleDownload(docId: string) {
     if (pdfLoading) return;
     setPdfLoading(docId);
@@ -264,11 +288,26 @@ export default function MyPoliciesPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
 
         {/* ── Page header ── */}
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">My Adopted Policies</h1>
-          <p className="mt-1 text-sm text-gray-500">
-            Your organisation's formal policy portfolio — adopted, reviewed, and ready for inspection.
-          </p>
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">My Adopted Policies</h1>
+            <p className="mt-1 text-sm text-gray-500">
+              Your organisation's formal policy portfolio — adopted, reviewed, and ready for inspection.
+            </p>
+          </div>
+          <button
+            onClick={handleExportAll}
+            disabled={zipLoading || loading || adoptions.length === 0}
+            className="flex-shrink-0 inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white transition-all hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ backgroundColor: "#2E6FFF" }}
+            title={adoptions.length === 0 ? "Adopt policies first to export your portfolio" : "Download every adopted policy as a ZIP of branded PDFs"}
+          >
+            {zipLoading ? (
+              <><span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" /> Preparing ZIP…</>
+            ) : (
+              <>📦 Download All (ZIP)</>
+            )}
+          </button>
         </div>
 
         {/* ── Stats bar ── */}

@@ -69,6 +69,7 @@ type SidebarProfile = {
   regulator: string;
   subscription_status: string;
   trial_ends_at: string;
+  logo_url: string | null;
 };
 
 type Notification = {
@@ -101,17 +102,34 @@ function SidebarContents({
 
       {/* Org info */}
       <div className="px-4 py-3 border-b" style={{ borderColor: "#e2e8f0", backgroundColor: "#f8faff" }}>
-        <div className="text-xs text-gray-500 mb-0.5">Your Organisation</div>
-        <div className="text-sm font-semibold text-gray-900 truncate">
-          {profile?.org_name || "Loading…"}
-        </div>
-        <div className="flex items-center gap-1.5 mt-1">
-          <span className="badge badge-green text-xs capitalize">
-            {profile?.plan || "Starter"}
-          </span>
-          {profile?.regulator && (
-            <span className="text-xs text-gray-400">• {profile.regulator}</span>
+        <div className="text-xs text-gray-500 mb-1">Your Organisation</div>
+        <div className="flex items-center gap-2.5 min-w-0">
+          {profile?.logo_url && (
+            <div
+              className="flex-shrink-0 w-9 h-9 rounded-lg bg-white flex items-center justify-center overflow-hidden"
+              style={{ border: "1px solid #e2e8f0", boxShadow: "0 1px 2px rgba(10,22,41,0.06)" }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={profile.logo_url}
+                alt={`${profile.org_name} logo`}
+                className="max-w-full max-h-full object-contain p-1"
+              />
+            </div>
           )}
+          <div className="min-w-0">
+            <div className="text-sm font-semibold text-gray-900 truncate">
+              {profile?.org_name || "Loading…"}
+            </div>
+            <div className="flex items-center gap-1.5 mt-0.5">
+              <span className="badge badge-green text-xs capitalize">
+                {profile?.plan || "Starter"}
+              </span>
+              {profile?.regulator && (
+                <span className="text-xs text-gray-400 truncate">• {profile.regulator}</span>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -198,7 +216,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       const [profileRes, readRes, auditRes, staffRes] = await Promise.all([
         sb.from("profiles")
-          .select("first_name, org_name, plan, regulator, subscription_status, trial_ends_at")
+          .select("first_name, org_name, plan, regulator, subscription_status, trial_ends_at, logo_url")
           .eq("id", user.id).single(),
         sb.from("read_records").select("document_id").eq("user_id", user.id),
         sb.from("audits").select("conducted_at").eq("org_id", user.id)

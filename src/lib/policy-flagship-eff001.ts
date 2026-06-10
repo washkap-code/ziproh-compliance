@@ -186,7 +186,7 @@ export const EFF001_COMPREHENSIVE: DocumentContent = {
           heading: "3.2 Using the Person's Own Words",
           body: "Wherever possible, care plans should be written in the first person ('I like...', 'I find it difficult to...') or should clearly reflect the person's own language and descriptions. Generic, task-focused language ('assist with personal care') should be replaced with specific, person-centred language ('help me wash my hair on Tuesdays because it takes longer and I like to look nice for my daughter's visit').",
           practiceBox:
-            "One test of whether a care plan is truly person-centred: could it belong to anyone, or does it unmistakeably belong to this specific person? If you removed the name from the plan and couldn't tell whose it was from the content, it needs more individualisation.",
+            "One test of whether a care plan is truly person-centred: could it belong to anyone, or does it unmistakably belong to this specific person? If you removed the name from the plan and couldn't tell whose it was from the content, it needs more individualisation.",
         },
         {
           heading: "3.3 Consent to the Care Plan",

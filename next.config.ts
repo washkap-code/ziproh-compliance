@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // @react-pdf/renderer uses Node.js native APIs — must not be bundled by webpack
-  serverExternalPackages: ["@react-pdf/renderer", "pdfkit"],
+  // pdfkit uses Node.js native APIs and bundled font data — must not be bundled by webpack
+  serverExternalPackages: ["pdfkit"],
 };
 
 export default nextConfig;

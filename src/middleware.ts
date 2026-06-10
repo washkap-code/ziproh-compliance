@@ -56,7 +56,8 @@ export async function middleware(request: NextRequest) {
     return supabaseResponse;
   }
 
-  const isPublic = PUBLIC_PATHS.has(pathname);
+  // /verify/* is the public certificate registry (reached via QR scan — no login)
+  const isPublic = PUBLIC_PATHS.has(pathname) || pathname.startsWith("/verify");
 
   // Unauthenticated user trying to access a protected route → redirect to login
   if (!user && !isPublic) {

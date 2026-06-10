@@ -155,8 +155,9 @@ export default function AccountPage() {
       const fd = new FormData();
       fd.append("file", file);
       const res = await fetch("/api/upload/logo", { method: "POST", body: fd });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? "Upload failed");
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(json.error ?? `Upload failed (HTTP ${res.status})`);
+      if (!json.logoUrl) throw new Error("Upload failed — no URL returned");
       setLogoUrl(json.logoUrl);
       showToast("Organisation logo updated.");
     } catch (err) {
@@ -359,6 +360,9 @@ export default function AccountPage() {
                     className="sr-only"
                     id="logo-upload-input"
                   />
+                  {/* The wrapping <label> activates the hidden input natively —
+                      do NOT also call input.click() here, or the file dialog is
+                      triggered twice and some browsers cancel the selection. */}
                   <span
                     className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold cursor-pointer transition-all select-none"
                     style={{
@@ -366,7 +370,6 @@ export default function AccountPage() {
                       color: logoUploading ? "#9ca3af" : "white",
                       pointerEvents: logoUploading ? "none" : "auto",
                     }}
-                    onClick={() => document.getElementById("logo-upload-input")?.click()}
                   >
                     {logoUploading ? (
                       <><span className="w-4 h-4 border-2 border-gray-300 border-t-transparent rounded-full animate-spin" /> Uploading…</>

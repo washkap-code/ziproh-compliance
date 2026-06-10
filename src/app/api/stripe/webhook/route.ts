@@ -5,6 +5,25 @@ import { createClient } from "@supabase/supabase-js";
 // NOTE: stripe and supabase clients are created inside the handler so they
 // are never instantiated during `next build` — only on real requests.
 
+// Map Stripe subscription statuses onto the values allowed by the
+// profiles.subscription_status CHECK constraint
+// ('trialing' | 'active' | 'past_due' | 'canceled').
+// Unmapped statuses (incomplete, unpaid, paused…) would otherwise make the
+// UPDATE violate the constraint and fail silently.
+function mapStripeStatus(status: string): "trialing" | "active" | "past_due" | "canceled" {
+  switch (status) {
+    case "trialing":   return "trialing";
+    case "active":     return "active";
+    case "past_due":
+    case "unpaid":     return "past_due";
+    case "canceled":
+    case "incomplete":
+    case "incomplete_expired":
+    case "paused":     return "canceled";
+    default:           return "past_due";
+  }
+}
+
 export async function POST(req: Request) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
     apiVersion: "2024-06-20",
@@ -37,11 +56,23 @@ export async function POST(req: Request) {
       const { userId, planId } = session.metadata ?? {};
 
       if (userId && planId) {
+        // Read the real subscription status from Stripe — a completed paid
+        // checkout must activate the account ("active"), not leave it on
+        // "trialing" (which keeps trial watermarks on policy PDFs).
+        let status: "trialing" | "active" | "past_due" | "canceled" = "active";
+        if (session.subscription) {
+          try {
+            const sub = await stripe.subscriptions.retrieve(session.subscription as string);
+            status = mapStripeStatus(sub.status);
+          } catch {
+            // fall back to "active" — checkout.session.completed implies payment succeeded
+          }
+        }
         await supabase.from("profiles").update({
           stripe_customer_id: session.customer as string,
           stripe_subscription_id: session.subscription as string,
           plan: planId,
-          subscription_status: "trialing",
+          subscription_status: status,
         }).eq("id", userId);
       }
       break;
@@ -52,7 +83,7 @@ export async function POST(req: Request) {
       const customerId = sub.customer as string;
 
       await supabase.from("profiles").update({
-        subscription_status: sub.status as string,
+        subscription_status: mapStripeStatus(sub.status),
       }).eq("stripe_customer_id", customerId);
       break;
     }

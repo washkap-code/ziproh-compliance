@@ -106,6 +106,29 @@ const PAGE_H   = 841.89;  // A4 height (pt)
 const MARGIN   = 56;
 const CONTENT_W = PAGE_W - MARGIN * 2;
 
+// ─── Fixed-position writing ───────────────────────────────────────────────────
+//
+// pdfkit auto-adds a page whenever text is written below the bottom margin.
+// Headers/footers/watermarks are drawn at absolute positions (often inside the
+// margin area), so we must temporarily disable the bottom margin and restore
+// the cursor afterwards — otherwise the pageAdded handler that draws the footer
+// triggers a new page, which fires pageAdded again → infinite recursion
+// → "Maximum call stack size exceeded" → 500 "PDF download failed".
+
+function withFixedPosition(doc: PDFKit.PDFDocument, fn: () => void) {
+  const savedX = doc.x;
+  const savedY = doc.y;
+  const savedBottom = doc.page.margins.bottom;
+  doc.page.margins.bottom = 0;
+  try {
+    fn();
+  } finally {
+    doc.page.margins.bottom = savedBottom;
+    doc.x = savedX;
+    doc.y = savedY;
+  }
+}
+
 // ─── Running header / footer ──────────────────────────────────────────────────
 
 function addRunningHeader(
@@ -116,27 +139,27 @@ function addRunningHeader(
 ) {
   const y = 18;
   doc.save();
+  withFixedPosition(doc, () => {
+    // Left: org name
+    doc.fontSize(7.5).font("Helvetica-Bold");
+    colourFill(doc, C.brand);
+    doc.text(orgName.toUpperCase(), MARGIN, y, { lineBreak: false });
 
-  // Left: org name
-  doc.fontSize(7.5).font("Helvetica-Bold");
-  colourFill(doc, C.brand);
-  doc.text(orgName.toUpperCase(), MARGIN, y, { lineBreak: false });
+    // Right: policy ref
+    doc.fontSize(7.5).font("Helvetica");
+    colourFill(doc, C.muted);
+    doc.text(
+      isTrial ? "TRIAL PREVIEW — NOT FOR DISTRIBUTION" : `Ref: ${policyRef.toUpperCase()}`,
+      MARGIN,
+      y,
+      { width: CONTENT_W, align: "right", lineBreak: false },
+    );
 
-  // Right: policy ref
-  doc.fontSize(7.5).font("Helvetica");
-  colourFill(doc, C.muted);
-  doc.text(
-    isTrial ? "TRIAL PREVIEW — NOT FOR DISTRIBUTION" : `Ref: ${policyRef.toUpperCase()}`,
-    MARGIN,
-    y,
-    { width: CONTENT_W, align: "right", lineBreak: false },
-  );
-
-  // Rule under header
-  const ruleY = y + 13;
-  colourStroke(doc, isTrial ? C.trial : C.brand);
-  doc.moveTo(MARGIN, ruleY).lineTo(PAGE_W - MARGIN, ruleY).lineWidth(0.75).stroke();
-
+    // Rule under header
+    const ruleY = y + 13;
+    colourStroke(doc, isTrial ? C.trial : C.brand);
+    doc.moveTo(MARGIN, ruleY).lineTo(PAGE_W - MARGIN, ruleY).lineWidth(0.75).stroke();
+  });
   doc.restore();
 }
 
@@ -148,28 +171,28 @@ function addRunningFooter(
 ) {
   const y = PAGE_H - 28;
   doc.save();
+  withFixedPosition(doc, () => {
+    // Rule above footer
+    colourStroke(doc, C.rule);
+    doc.moveTo(MARGIN, y - 4).lineTo(PAGE_W - MARGIN, y - 4).lineWidth(0.5).stroke();
 
-  // Rule above footer
-  colourStroke(doc, C.rule);
-  doc.moveTo(MARGIN, y - 4).lineTo(PAGE_W - MARGIN, y - 4).lineWidth(0.5).stroke();
+    doc.fontSize(7).font("Helvetica");
+    colourFill(doc, C.muted);
 
-  doc.fontSize(7).font("Helvetica");
-  colourFill(doc, C.muted);
+    // Left: confidentiality notice
+    doc.text(
+      `CONFIDENTIAL — Adopted by ${orgName}. Unauthorised reproduction prohibited.`,
+      MARGIN, y,
+      { lineBreak: false },
+    );
 
-  // Left: confidentiality notice
-  doc.text(
-    `CONFIDENTIAL — Adopted by ${orgName}. Unauthorised reproduction prohibited.`,
-    MARGIN, y,
-    { lineBreak: false },
-  );
-
-  // Right: page number
-  doc.text(
-    `Page ${pageNum}`,
-    MARGIN, y,
-    { width: CONTENT_W, align: "right", lineBreak: false },
-  );
-
+    // Right: page number
+    doc.text(
+      `Page ${pageNum}`,
+      MARGIN, y,
+      { width: CONTENT_W, align: "right", lineBreak: false },
+    );
+  });
   doc.restore();
 }
 
@@ -177,14 +200,16 @@ function addRunningFooter(
 
 function addTrialWatermark(doc: PDFKit.PDFDocument) {
   doc.save();
-  doc.translate(PAGE_W / 2, PAGE_H / 2);
-  doc.rotate(-45);
-  doc.opacity(0.1);
-  doc.fontSize(64).font("Helvetica-Bold");
-  doc.fillColor(C.trial as Parameters<PDFKit.PDFDocument["fillColor"]>[0]);
-  doc.text("TRIAL PREVIEW", -200, -36, { width: 400, align: "center", lineBreak: false });
-  doc.fontSize(28).font("Helvetica");
-  doc.text("NOT FOR DISTRIBUTION", -200, 42, { width: 400, align: "center", lineBreak: false });
+  withFixedPosition(doc, () => {
+    doc.translate(PAGE_W / 2, PAGE_H / 2);
+    doc.rotate(-45);
+    doc.opacity(0.1);
+    doc.fontSize(64).font("Helvetica-Bold");
+    doc.fillColor(C.trial as Parameters<PDFKit.PDFDocument["fillColor"]>[0]);
+    doc.text("TRIAL PREVIEW", -200, -36, { width: 400, align: "center", lineBreak: false });
+    doc.fontSize(28).font("Helvetica");
+    doc.text("NOT FOR DISTRIBUTION", -200, 42, { width: 400, align: "center", lineBreak: false });
+  });
   doc.restore();
 }
 
@@ -205,12 +230,23 @@ async function drawCoverPage(
   const [r2, g2, b2] = hexToRgb(C.brand);
   doc.rect(0, headerH - 6, PAGE_W, 6).fill([r2, g2, b2] as [number, number, number]);
 
-  // Logo (top-left inside header)
+  // Logo (top-left inside header) — presented on a white rounded card so any
+  // logo (dark, light, or transparent background) sits cleanly on the brand band
   let logoBottom = 36;
   if (opts.orgLogoBuffer) {
     try {
-      doc.image(opts.orgLogoBuffer, MARGIN, 28, { fit: [130, 55], valign: "center" });
-      logoBottom = 90;
+      const cardX = MARGIN;
+      const cardY = 26;
+      const cardW = 150;
+      const cardH = 62;
+      doc.roundedRect(cardX, cardY, cardW, cardH, 8)
+        .fill(C.white as Parameters<PDFKit.PDFDocument["fill"]>[0]);
+      doc.image(opts.orgLogoBuffer, cardX + 12, cardY + 9, {
+        fit: [cardW - 24, cardH - 18],
+        align: "center",
+        valign: "center",
+      });
+      logoBottom = cardY + cardH + 8;   // content starts below the card
     } catch {
       // logo load failed — skip silently
     }
@@ -229,8 +265,9 @@ async function drawCoverPage(
   doc.fillColor("rgba(255,255,255,0.75)" as Parameters<PDFKit.PDFDocument["fillColor"]>[0]);
   doc.text(`${opts.keyQuestion} · ${opts.category}`, MARGIN, logoBottom + 14, { lineBreak: false });
 
-  // Policy title
-  doc.fontSize(26).font("Helvetica-Bold");
+  // Policy title — shrink slightly for long titles so the header band never overflows
+  const titleSize = opts.title.length > 45 ? 21 : 26;
+  doc.fontSize(titleSize).font("Helvetica-Bold");
   doc.fillColor("white" as Parameters<PDFKit.PDFDocument["fillColor"]>[0]);
   const titleY = logoBottom + 34;
   doc.text(opts.title, MARGIN, titleY, { width: CONTENT_W - 20, lineBreak: true });
@@ -258,7 +295,7 @@ async function drawCoverPage(
     doc.rect(MARGIN, bodyTopY, 4, 52).fill();
     colourFill(doc, "#92400E");
     doc.fontSize(9).font("Helvetica-Bold");
-    doc.text("⚠  TRIAL PREVIEW — For evaluation purposes only", MARGIN + 14, bodyTopY + 8, { lineBreak: false });
+    doc.text("TRIAL PREVIEW — For evaluation purposes only", MARGIN + 14, bodyTopY + 8, { lineBreak: false });
     colourFill(doc, "#92400E");
     doc.fontSize(8.5).font("Helvetica");
     doc.text(
@@ -275,7 +312,7 @@ async function drawCoverPage(
 
     doc.fontSize(7.5).font("Helvetica-Bold");
     colourFill(doc, C.adopted);
-    doc.text("✓  FORMALLY ADOPTED BY", MARGIN + 14, bodyTopY + 10, { lineBreak: false });
+    doc.text("FORMALLY ADOPTED BY", MARGIN + 14, bodyTopY + 10, { lineBreak: false });
 
     doc.fontSize(14).font("Helvetica-Bold");
     colourFill(doc, C.dark);
@@ -306,34 +343,36 @@ async function drawCoverPage(
     doc.text(opts.orgName, MARGIN + 14, bodyTopY + 20, { lineBreak: false });
   }
 
-  // ── Copyright / legal disclaimer ──
-  const disclaimerY = PAGE_H - 120;
-  colourStroke(doc, C.rule);
-  doc.moveTo(MARGIN, disclaimerY).lineTo(PAGE_W - MARGIN, disclaimerY).lineWidth(0.5).stroke();
+  // ── Copyright / legal disclaimer (fixed position — may extend into margin) ──
+  withFixedPosition(doc, () => {
+    const disclaimerY = PAGE_H - 120;
+    colourStroke(doc, C.rule);
+    doc.moveTo(MARGIN, disclaimerY).lineTo(PAGE_W - MARGIN, disclaimerY).lineWidth(0.5).stroke();
 
-  doc.fontSize(7.5).font("Helvetica");
-  colourFill(doc, C.muted);
-  doc.text(
-    `© ${new Date().getFullYear()} Ziproh Training Ltd. All rights reserved. This policy document is licensed to ${opts.orgName} for internal use only. Reproduction, distribution, modification, or transfer to any third party is strictly prohibited. This document is protected under copyright law and may only be used by authorised personnel of ${opts.orgName}. Ziproh Training Ltd reserves the right to update policy content at any time; subscribers are notified of all changes via the Ziproh platform.`,
-    MARGIN,
-    disclaimerY + 8,
-    { width: CONTENT_W, lineBreak: true },
-  );
+    doc.fontSize(7.5).font("Helvetica");
+    colourFill(doc, C.muted);
+    doc.text(
+      `© ${new Date().getFullYear()} Ziproh Training Ltd. All rights reserved. This policy document is licensed to ${opts.orgName} for internal use only. Reproduction, distribution, modification, or transfer to any third party is strictly prohibited. This document is protected under copyright law and may only be used by authorised personnel of ${opts.orgName}. Ziproh Training Ltd reserves the right to update policy content at any time; subscribers are notified of all changes via the Ziproh platform.`,
+      MARGIN,
+      disclaimerY + 8,
+      { width: CONTENT_W, lineBreak: true },
+    );
 
-  // Policy reference row at bottom
-  doc.fontSize(8).font("Helvetica-Bold");
-  colourFill(doc, C.muted);
-  doc.text(
-    `Policy Reference: ${opts.policyId.toUpperCase()}`,
-    MARGIN, PAGE_H - 38,
-    { lineBreak: false },
-  );
-  doc.font("Helvetica");
-  doc.text(
-    `Generated: ${new Date().toLocaleDateString("en-GB")}`,
-    MARGIN, PAGE_H - 38,
-    { width: CONTENT_W, align: "right", lineBreak: false },
-  );
+    // Policy reference row at bottom
+    doc.fontSize(8).font("Helvetica-Bold");
+    colourFill(doc, C.muted);
+    doc.text(
+      `Policy Reference: ${opts.policyId.toUpperCase()}`,
+      MARGIN, PAGE_H - 38,
+      { lineBreak: false },
+    );
+    doc.font("Helvetica");
+    doc.text(
+      `Generated: ${new Date().toLocaleDateString("en-GB")}`,
+      MARGIN, PAGE_H - 38,
+      { width: CONTENT_W, align: "right", lineBreak: false },
+    );
+  });
 
   if (opts.isTrial) addTrialWatermark(doc);
 }
@@ -457,9 +496,9 @@ function renderSection(doc: PDFKit.PDFDocument, sec: PolicySection, num?: number
   if (sec.steps?.length)       numberedList(doc, sec.steps);
   if (sec.procedure?.length)   numberedList(doc, sec.procedure);
   if (sec.bulletPoints?.length) bulletList(doc, sec.bulletPoints);
-  if (sec.warningBox)  calloutBox(doc, "⚠  IMPORTANT", sec.warningBox, C.warn, C.warnBdr, "#92400E");
-  if (sec.practiceBox) calloutBox(doc, "✓  BEST PRACTICE", sec.practiceBox, C.good, C.goodBdr, "#065F46");
-  if (sec.legalBox)    calloutBox(doc, "⚖  LEGAL REQUIREMENT", sec.legalBox, C.legal, C.legalBdr, "#1D4ED8");
+  if (sec.warningBox)  calloutBox(doc, "IMPORTANT", sec.warningBox, C.warn, C.warnBdr, "#92400E");
+  if (sec.practiceBox) calloutBox(doc, "BEST PRACTICE", sec.practiceBox, C.good, C.goodBdr, "#065F46");
+  if (sec.legalBox)    calloutBox(doc, "LEGAL REQUIREMENT", sec.legalBox, C.legal, C.legalBdr, "#1D4ED8");
 
   if (sec.subSections?.length) {
     for (const ss of sec.subSections) {
@@ -468,9 +507,9 @@ function renderSection(doc: PDFKit.PDFDocument, sec: PolicySection, num?: number
       if (ss.steps?.length)        numberedList(doc, ss.steps);
       if (ss.procedure?.length)    numberedList(doc, ss.procedure);
       if (ss.bulletPoints?.length) bulletList(doc, ss.bulletPoints);
-      if (ss.warningBox)  calloutBox(doc, "⚠  IMPORTANT", ss.warningBox, C.warn, C.warnBdr, "#92400E");
-      if (ss.practiceBox) calloutBox(doc, "✓  BEST PRACTICE", ss.practiceBox, C.good, C.goodBdr, "#065F46");
-      if (ss.legalBox)    calloutBox(doc, "⚖  LEGAL REQUIREMENT", ss.legalBox, C.legal, C.legalBdr, "#1D4ED8");
+      if (ss.warningBox)  calloutBox(doc, "IMPORTANT", ss.warningBox, C.warn, C.warnBdr, "#92400E");
+      if (ss.practiceBox) calloutBox(doc, "BEST PRACTICE", ss.practiceBox, C.good, C.goodBdr, "#065F46");
+      if (ss.legalBox)    calloutBox(doc, "LEGAL REQUIREMENT", ss.legalBox, C.legal, C.legalBdr, "#1D4ED8");
     }
   }
 }
@@ -544,7 +583,7 @@ function drawContentPages(
     doc.fontSize(10).font("Helvetica-Bold");
     colourFill(doc, "#92400E");
     doc.text(
-      `⚠  ${bodySections.length - 2} more sections available — subscribe to Ziproh to access the full policy`,
+      `${bodySections.length - 2} more sections available — subscribe to Ziproh to access the full policy`,
       MARGIN + 14, boxY + 8,
       { width: CONTENT_W - 28 },
     );
@@ -582,8 +621,8 @@ function drawContentPages(
       for (const v of c.versionHistory) {
         doc.fontSize(9).font("Helvetica-Bold");
         colourFill(doc, C.dark);
-        doc.text(`v${v.version}  ·  ${formatDate(v.date)}`, MARGIN, doc.y, { lineBreak: false });
-        doc.moveDown(0.2);
+        doc.text(`v${v.version}  ·  ${formatDate(v.date)}`, MARGIN, doc.y, { width: CONTENT_W });
+        doc.moveDown(0.1);
         doc.fontSize(BODY_SIZE).font("Helvetica");
         colourFill(doc, C.mid);
         doc.text(v.changes ?? v.amendment ?? "", MARGIN + 14, doc.y, { width: CONTENT_W - 14 });

@@ -128,6 +128,7 @@ export default function DashboardPage() {
   const [staffCount,     setStaffCount]     = useState(0);
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [teamStats,      setTeamStats]      = useState<TeamMemberStat[]>([]);
+  const [trialDays,      setTrialDays]      = useState<number | null>(null);
 
   useEffect(() => {
     // Check dismissal from localStorage
@@ -145,7 +146,7 @@ export default function DashboardPage() {
       if (!user) { setLoading(false); return; }
 
       const [profileRes, recordsRes, auditsRes, listsRes, staffRes] = await Promise.all([
-        supabase.from("profiles").select("first_name, org_name, service_type, regulator").eq("id", user.id).single(),
+        supabase.from("profiles").select("first_name, org_name, service_type, regulator, subscription_status, trial_ends_at").eq("id", user.id).single(),
         supabase.from("read_records").select("document_id, read_at").eq("user_id", user.id).order("read_at", { ascending: false }),
         supabase.from("audits").select("id", { count: "exact", head: true }).eq("org_id", user.id),
         supabase.from("reading_lists").select("id", { count: "exact", head: true }).eq("org_id", user.id),
@@ -161,6 +162,10 @@ export default function DashboardPage() {
         if (p.first_name) setFirstName(p.first_name);
         if (p.org_name)   setOrgName(p.org_name);
         setProfileComplete(!!(p.org_name && p.service_type && p.regulator));
+        if (p.subscription_status === "trialing" && p.trial_ends_at) {
+          const days = Math.ceil((new Date(p.trial_ends_at).getTime() - Date.now()) / 86_400_000);
+          setTrialDays(days);
+        }
       }
       if (recordsRes.data) setReadRecords(recordsRes.data as ReadRecord[]);
       setAuditCount(auditsRes.count ?? 0);
@@ -313,13 +318,37 @@ export default function DashboardPage() {
   return (
     <DashboardLayout>
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">
-          {loading ? "Loading…" : `${greeting}, ${firstName} 👋`}
-        </h1>
-        <p className="text-gray-500 mt-1 text-sm">
-          {orgName ? `Compliance overview for ${orgName}` : "Your compliance overview"}
-        </p>
+      <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900">
+            {loading ? "Loading…" : `${greeting}, ${firstName} 👋`}
+          </h1>
+          <p className="text-gray-500 mt-1 text-sm">
+            {orgName ? `Compliance overview for ${orgName}` : "Your compliance overview"}
+          </p>
+        </div>
+
+        {/* Trial countdown */}
+        {!loading && trialDays !== null && trialDays > 0 && (
+          <Link
+            href="/upgrade"
+            className="flex-shrink-0 flex items-center gap-3 px-4 py-2.5 rounded-xl transition-all hover:shadow-md"
+            style={{
+              backgroundColor: trialDays <= 3 ? "#fee2e2" : "#fff8ed",
+              border: `1px solid ${trialDays <= 3 ? "#fca5a5" : "#fde68a"}`,
+            }}
+          >
+            <span className="text-xl">⏱</span>
+            <div>
+              <div className="text-sm font-bold" style={{ color: trialDays <= 3 ? "#b91c1c" : "#92400e" }}>
+                {trialDays} day{trialDays !== 1 ? "s" : ""} left on trial
+              </div>
+              <div className="text-xs" style={{ color: trialDays <= 3 ? "#dc2626" : "#b45309" }}>
+                Upgrade to keep full access →
+              </div>
+            </div>
+          </Link>
+        )}
       </div>
 
       {/* ── Getting Started checklist ──────────────────────────────────────── */}

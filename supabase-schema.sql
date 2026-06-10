@@ -287,3 +287,24 @@ CREATE POLICY "Users can update own logos" ON storage.objects
   FOR UPDATE USING (bucket_id = 'org-logos' AND auth.uid() IS NOT NULL);
 CREATE POLICY "Users can delete own logos" ON storage.objects
   FOR DELETE USING (bucket_id = 'org-logos' AND auth.uid() IS NOT NULL);
+
+-- ─── Public certificate verification registry ─────────────────────
+-- Backs the QR code on training certificates (/verify/[ref]).
+-- A SECURITY DEFINER view exposes ONLY the minimal fields needed to
+-- confirm a certificate is genuine — nothing else from the tables.
+CREATE OR REPLACE VIEW public.certificate_registry AS
+SELECT
+  tc.certificate_ref,
+  tc.training_name,
+  tc.module_id,
+  tc.provider,
+  tc.completed_at,
+  (p.first_name || ' ' || p.last_name) AS learner_name,
+  p.org_name
+FROM public.training_completions tc
+JOIN public.profiles p ON p.id = tc.user_id
+WHERE tc.certificate_ref IS NOT NULL;
+
+-- Allow anonymous lookups (QR scans are unauthenticated)
+GRANT SELECT ON public.certificate_registry TO anon;
+GRANT SELECT ON public.certificate_registry TO authenticated;

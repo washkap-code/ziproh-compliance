@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { createBrowserClient } from "@supabase/ssr";
+import { QUIZZES, PASS_MARK, type QuizQuestion } from "@/lib/quiz-data";
 
 // ─── Module catalogue (static — links to ziprohtraining.co.uk for enrolment) ──
 type Module = {
@@ -127,6 +128,13 @@ export default function LearningPage() {
   const [saveError, setSaveError]     = useState("");
   const [certLoading, setCertLoading] = useState(false);
 
+  // Knowledge check (quiz) state
+  const [quizModule, setQuizModule]   = useState<Module | null>(null);
+  const [quizAnswers, setQuizAnswers] = useState<(number | null)[]>([]);
+  const [quizStep, setQuizStep]       = useState(0);
+  const [quizResult, setQuizResult]   = useState<{ score: number; total: number; passed: boolean } | null>(null);
+  const [quizSaving, setQuizSaving]   = useState(false);
+
   // Load completions
   useEffect(() => {
     const supabase = createBrowserClient(
@@ -226,6 +234,64 @@ export default function LearningPage() {
     }
   }
 
+  // ── Knowledge check (quiz) ──────────────────────────────────────────────────
+  function startQuiz(module: Module) {
+    const questions = QUIZZES[module.id];
+    if (!questions) return;
+    setQuizModule(module);
+    setQuizAnswers(new Array(questions.length).fill(null));
+    setQuizStep(0);
+    setQuizResult(null);
+  }
+
+  function answerQuiz(qIndex: number, optIndex: number) {
+    setQuizAnswers((prev) => {
+      const next = [...prev];
+      next[qIndex] = optIndex;
+      return next;
+    });
+  }
+
+  async function submitQuiz() {
+    if (!quizModule) return;
+    const questions = QUIZZES[quizModule.id] ?? [];
+    const score = questions.reduce(
+      (acc, q, i) => acc + (quizAnswers[i] === q.correct ? 1 : 0), 0);
+    const passed = score / questions.length >= PASS_MARK;
+    setQuizResult({ score, total: questions.length, passed });
+
+    if (!passed) return;
+
+    // Passed — record the completion with an auto-generated certificate ref
+    setQuizSaving(true);
+    try {
+      const supabase = createBrowserClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const certRef = `ZT-${new Date().getFullYear()}-${Math.floor(10000 + Math.random() * 90000)}`;
+      const { data } = await supabase
+        .from("training_completions")
+        .insert({
+          user_id: user.id,
+          module_id: quizModule.id,
+          training_name: quizModule.title,
+          provider: "Ziproh Training",
+          completed_at: new Date().toISOString().slice(0, 10),
+          certificate_ref: certRef,
+          notes: `Knowledge check passed: ${score}/${questions.length}`,
+        })
+        .select()
+        .single();
+      if (data) setCompletions((prev) => [data as CompletionRow, ...prev]);
+    } finally {
+      setQuizSaving(false);
+    }
+  }
+
   async function deleteCompletion(id: string) {
     const supabase = createBrowserClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -301,6 +367,137 @@ export default function LearningPage() {
     </div>
   );
 
+  // ── Knowledge check modal ────────────────────────────────────────────────────
+  function QuizModal() {
+    if (!quizModule) return null;
+    const questions: QuizQuestion[] = QUIZZES[quizModule.id] ?? [];
+    const q = questions[quizStep];
+    const answered = quizAnswers[quizStep] !== null;
+    const allAnswered = quizAnswers.every((a) => a !== null);
+
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        style={{ backgroundColor: "rgba(0,0,0,0.5)" }}>
+        <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-xl max-h-[90vh] overflow-y-auto">
+
+          {quizResult ? (
+            /* ── Result screen ── */
+            <div className="text-center py-4">
+              <div className="text-5xl mb-3">{quizResult.passed ? "🎉" : "📚"}</div>
+              <h2 className="font-bold text-gray-900 text-xl mb-1">
+                {quizResult.passed ? "Knowledge check passed!" : "Not quite this time"}
+              </h2>
+              <p className="text-sm text-gray-500 mb-1">
+                You scored {quizResult.score} out of {quizResult.total}
+                {" "}({Math.round((quizResult.score / quizResult.total) * 100)}%).
+              </p>
+              <p className="text-xs text-gray-400 mb-5">
+                {quizResult.passed
+                  ? quizSaving
+                    ? "Recording your completion…"
+                    : "Your completion has been recorded in your CPD training log."
+                  : `You need ${Math.ceil(quizResult.total * PASS_MARK)}/${quizResult.total} to pass. Review the module and try again.`}
+              </p>
+              <div className="flex gap-3">
+                <button onClick={() => setQuizModule(null)} className="btn-secondary flex-1 text-sm">Close</button>
+                {quizResult.passed && quizModule.certificate ? (
+                  <button
+                    onClick={() => { downloadCertificate(quizModule.id, quizModule.title); }}
+                    disabled={quizSaving || certLoading}
+                    className="btn-primary flex-1 text-sm"
+                    style={{ opacity: quizSaving || certLoading ? 0.6 : 1 }}>
+                    {certLoading ? "Generating…" : "⬇ Download Certificate"}
+                  </button>
+                ) : !quizResult.passed ? (
+                  <button
+                    onClick={() => startQuiz(quizModule)}
+                    className="btn-primary flex-1 text-sm">
+                    ↻ Try Again
+                  </button>
+                ) : null}
+              </div>
+            </div>
+          ) : (
+            /* ── Question screen ── */
+            <>
+              <div className="flex items-center justify-between mb-1">
+                <h2 className="font-bold text-gray-900 text-base">Knowledge Check</h2>
+                <button onClick={() => setQuizModule(null)} className="text-gray-300 hover:text-gray-500 text-lg leading-none">✕</button>
+              </div>
+              <p className="text-xs text-gray-500 mb-4">{quizModule.title} · pass mark {Math.round(PASS_MARK * 100)}%</p>
+
+              {/* Progress dots */}
+              <div className="flex gap-1.5 mb-5">
+                {questions.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setQuizStep(i)}
+                    className="h-1.5 flex-1 rounded-full transition-colors"
+                    style={{
+                      backgroundColor: i === quizStep ? "#2E6FFF"
+                        : quizAnswers[i] !== null ? "#93c5fd" : "#e5e7eb",
+                    }}
+                    aria-label={`Question ${i + 1}`}
+                  />
+                ))}
+              </div>
+
+              <p className="text-sm font-semibold text-gray-900 mb-4 leading-relaxed">
+                {quizStep + 1}. {q.question}
+              </p>
+
+              <div className="space-y-2 mb-5">
+                {q.options.map((opt, oi) => {
+                  const selected = quizAnswers[quizStep] === oi;
+                  return (
+                    <button
+                      key={oi}
+                      onClick={() => answerQuiz(quizStep, oi)}
+                      className="w-full text-left px-4 py-3 rounded-xl text-sm transition-all"
+                      style={{
+                        border: `1.5px solid ${selected ? "#2E6FFF" : "#e5e7eb"}`,
+                        backgroundColor: selected ? "#eff4ff" : "white",
+                        color: selected ? "#1d4ed8" : "#374151",
+                        fontWeight: selected ? 600 : 400,
+                      }}>
+                      {opt}
+                    </button>
+                  );
+                })}
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setQuizStep((s) => Math.max(0, s - 1))}
+                  disabled={quizStep === 0}
+                  className="btn-secondary flex-1 text-sm disabled:opacity-40">
+                  ← Back
+                </button>
+                {quizStep < questions.length - 1 ? (
+                  <button
+                    onClick={() => setQuizStep((s) => s + 1)}
+                    disabled={!answered}
+                    className="btn-primary flex-1 text-sm"
+                    style={{ opacity: answered ? 1 : 0.5 }}>
+                    Next →
+                  </button>
+                ) : (
+                  <button
+                    onClick={submitQuiz}
+                    disabled={!allAnswered}
+                    className="btn-primary flex-1 text-sm"
+                    style={{ opacity: allAnswered ? 1 : 0.5 }}>
+                    Submit Answers ✓
+                  </button>
+                )}
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   // ── Module detail view ───────────────────────────────────────────────────────
   if (activeModule) {
     const isDone = completedIds.has(activeModule.id);
@@ -309,6 +506,7 @@ export default function LearningPage() {
     return (
       <DashboardLayout>
         {showLog && <LogModal />}
+        {quizModule && <QuizModal />}
         <div className="max-w-3xl">
           <button onClick={() => setActiveModule(null)} className="text-sm text-gray-400 hover:text-gray-600 mb-4">
             ← Learning Centre
@@ -345,13 +543,22 @@ export default function LearningPage() {
           <div className="card p-5 mb-4">
             <h3 className="font-bold text-gray-900 mb-3 text-sm">Take this course</h3>
             <p className="text-xs text-gray-500 mb-4">
-              This module is available on the Ziproh Training website. Once you have completed it, come back here to log your completion for your CPD record.
+              This module is available on the Ziproh Training website. Once you have studied it,
+              {QUIZZES[activeModule.id]
+                ? " take the knowledge check below to record your completion and unlock your certificate."
+                : " come back here to log your completion for your CPD record."}
             </p>
-            <div className="flex gap-3">
+            <div className="flex flex-wrap gap-3">
               <a href={activeModule.courseUrl} target="_blank" rel="noopener noreferrer"
                 className="btn-primary flex-1 text-sm text-center no-underline">
                 Enrol on Training Site →
               </a>
+              {QUIZZES[activeModule.id] && (
+                <button onClick={() => startQuiz(activeModule)} className="btn-primary flex-1 text-sm"
+                  style={{ backgroundColor: "#10B981" }}>
+                  📝 Take Knowledge Check
+                </button>
+              )}
               <button onClick={() => openLogModal(activeModule)} className="btn-secondary flex-1 text-sm">
                 ✓ Log as Completed
               </button>
