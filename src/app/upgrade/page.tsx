@@ -1,10 +1,18 @@
 "use client";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { createBrowserClient } from "@supabase/ssr";
+
+const sb = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 const PLANS = [
   {
     name: "Professional",
+    planId: "professional",
     price: "£49",
     period: "/month",
     tagline: "For growing care services",
@@ -26,6 +34,7 @@ const PLANS = [
   },
   {
     name: "Enterprise",
+    planId: "enterprise",
     price: "£149",
     period: "/month",
     tagline: "For multi-site organisations",
@@ -46,6 +55,39 @@ const PLANS = [
 ];
 
 export default function UpgradePage() {
+  const [loadingPlan, setLoadingPlan] = useState<string | null>(null);
+  const [error, setError] = useState("");
+
+  async function handleUpgrade(planId: string) {
+    setError("");
+    setLoadingPlan(planId);
+    try {
+      const { data: { user } } = await sb.auth.getUser();
+      if (!user) { window.location.href = "/login?redirectTo=/upgrade"; return; }
+
+      const res = await fetch("/api/stripe/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          planId,
+          billing: "monthly",
+          customerEmail: user.email,
+          userId: user.id,
+        }),
+      });
+
+      if (!res.ok) throw new Error("checkout_failed");
+      const { url, error: apiError } = await res.json();
+      if (apiError || !url) throw new Error(apiError ?? "no_url");
+      window.location.href = url;
+    } catch {
+      // Stripe not configured yet — fall back to email
+      window.location.href = `mailto:hello@ziprohtraining.co.uk?subject=Upgrade%20to%20Ziproh%20${planId === "professional" ? "Professional" : "Enterprise"}`;
+    } finally {
+      setLoadingPlan(null);
+    }
+  }
+
   return (
     <div className="min-h-screen flex flex-col" style={{ backgroundColor: "#f8faff" }}>
       {/* Header */}
@@ -53,10 +95,7 @@ export default function UpgradePage() {
         <Link href="/dashboard">
           <Image src="/ziproh-logo.png" alt="Ziproh" width={110} height={32} style={{ objectFit: "contain" }} />
         </Link>
-        <Link
-          href="/account"
-          className="text-sm text-gray-500 hover:text-gray-700 transition-colors"
-        >
+        <Link href="/account" className="text-sm text-gray-500 hover:text-gray-700 transition-colors">
           ← Back to account
         </Link>
       </header>
@@ -72,9 +111,16 @@ export default function UpgradePage() {
             Keep your service CQC-ready — upgrade to continue
           </h1>
           <p className="text-gray-500 text-lg leading-relaxed">
-            Don't lose access to your policies, audit records, and compliance evidence. Upgrade in under a minute.
+            Don&apos;t lose access to your policies, audit records, and compliance evidence. Upgrade in under a minute.
           </p>
         </div>
+
+        {error && (
+          <div className="mb-6 px-5 py-3 rounded-xl text-sm font-medium"
+            style={{ backgroundColor: "#fee2e2", color: "#b91c1c" }}>
+            {error}
+          </div>
+        )}
 
         {/* Plans */}
         <div className="grid md:grid-cols-2 gap-6 w-full max-w-3xl mb-12">
@@ -83,17 +129,13 @@ export default function UpgradePage() {
               key={plan.name}
               className="bg-white rounded-2xl p-7 flex flex-col"
               style={{
-                border: plan.highlight
-                  ? `2px solid ${plan.color}`
-                  : "1px solid #e2e8f0",
+                border: plan.highlight ? `2px solid ${plan.color}` : "1px solid #e2e8f0",
                 boxShadow: plan.highlight ? `0 4px 24px ${plan.color}20` : undefined,
               }}
             >
               {plan.highlight && (
-                <div
-                  className="self-start text-xs font-bold px-3 py-1 rounded-full mb-4"
-                  style={{ backgroundColor: `${plan.color}15`, color: plan.color }}
-                >
+                <div className="self-start text-xs font-bold px-3 py-1 rounded-full mb-4"
+                  style={{ backgroundColor: `${plan.color}15`, color: plan.color }}>
                   Most Popular
                 </div>
               )}
@@ -113,20 +155,21 @@ export default function UpgradePage() {
                 ))}
               </ul>
 
-              <a
-                href="mailto:hello@ziprohtraining.co.uk?subject=Upgrade%20to%20Ziproh%20Professional"
-                className="block w-full text-center py-3 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90"
+              <button
+                onClick={() => handleUpgrade(plan.planId)}
+                disabled={loadingPlan !== null}
+                className="block w-full text-center py-3 rounded-xl text-sm font-bold text-white transition-all hover:opacity-90 disabled:opacity-60"
                 style={{ backgroundColor: plan.color }}
               >
-                {plan.cta}
-              </a>
+                {loadingPlan === plan.planId ? "Redirecting…" : plan.cta}
+              </button>
             </div>
           ))}
         </div>
 
         {/* Trust signals */}
         <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">
-          <span className="flex items-center gap-1.5">🔒 Secure payments</span>
+          <span className="flex items-center gap-1.5">🔒 Secure payments via Stripe</span>
           <span className="flex items-center gap-1.5">✓ Cancel anytime</span>
           <span className="flex items-center gap-1.5">📋 62 CQC-aligned policies</span>
           <span className="flex items-center gap-1.5">🇬🇧 UK-based support</span>

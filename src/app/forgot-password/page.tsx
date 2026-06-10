@@ -2,7 +2,12 @@
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { supabase } from "@/lib/supabase";
+import { createBrowserClient } from "@supabase/ssr";
+
+const sb = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export default function ForgotPasswordPage() {
   const [email,     setEmail]     = useState("");
@@ -16,7 +21,7 @@ export default function ForgotPasswordPage() {
     setError("");
 
     const origin = typeof window !== "undefined" ? window.location.origin : "https://app.ziprohtraining.co.uk";
-    const { error: err } = await supabase.auth.resetPasswordForEmail(email, {
+    const { error: err } = await sb.auth.resetPasswordForEmail(email, {
       redirectTo: `${origin}/reset-password`,
     });
 

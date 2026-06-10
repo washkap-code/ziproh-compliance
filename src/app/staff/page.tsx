@@ -146,52 +146,49 @@ export default function StaffPage() {
     })();
   }, []);
 
-  // Invite handler — writes to Supabase
+  // Invite handler — calls server-side API (sends real email if SUPABASE_SERVICE_ROLE_KEY is set)
   async function sendInvite() {
     if (!inviteEmail.trim() || !inviteName.trim()) return;
     setInviting(true);
     setInviteError("");
 
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setInviting(false); return; }
-
-    const parts = inviteName.trim().split(" ");
+    const parts     = inviteName.trim().split(" ");
     const firstName = parts[0];
-    const lastName = parts.slice(1).join(" ") || null;
+    const lastName  = parts.slice(1).join(" ") || undefined;
 
-    const { data, error } = await supabase
-      .from("staff_members")
-      .insert({
-        org_id: user.id,
-        email: inviteEmail.trim().toLowerCase(),
-        first_name: firstName,
-        last_name: lastName,
-        role: inviteRole,
-        status: "invited",
-      })
-      .select()
-      .single();
+    const res = await fetch("/api/staff/invite", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email:     inviteEmail.trim().toLowerCase(),
+        firstName,
+        lastName,
+        role:      inviteRole,
+      }),
+    });
 
-    if (error) {
-      setInviteError(
-        error.code === "23505"
-          ? "This email address is already in your staff list."
-          : "Could not add staff member. Please try again."
-      );
+    const json = await res.json();
+
+    if (!res.ok) {
+      setInviteError(json.error ?? "Could not add staff member. Please try again.");
       setInviting(false);
       return;
     }
 
-    if (data) {
-      const newMember = deriveDisplay(data as StaffRow, staff.length);
-      setStaff((prev) => [...prev, newMember]);
-    }
+    // Optimistically add to local list
+    const fakeRow: StaffRow = {
+      id:          crypto.randomUUID(),
+      user_id:     null,
+      email:       inviteEmail.trim().toLowerCase(),
+      first_name:  firstName,
+      last_name:   lastName ?? null,
+      role:        inviteRole,
+      status:      "invited",
+      invited_at:  new Date().toISOString(),
+    };
+    setStaff((prev) => [...prev, deriveDisplay(fakeRow, prev.length)]);
 
-    // Build a pre-filled invite link so the staff member's email is auto-populated
+    // Show copy-pasteable fallback link (used when no service role key / no email sent)
     const origin = typeof window !== "undefined" ? window.location.origin : "https://app.ziprohtraining.co.uk";
     const inviteLink = `${origin}/register?inviteEmail=${encodeURIComponent(inviteEmail.trim().toLowerCase())}`;
     setLastInviteLink(inviteLink);

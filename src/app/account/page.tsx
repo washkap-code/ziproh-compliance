@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/DashboardLayout";
-import { supabase } from "@/lib/supabase";
+import { createBrowserClient } from "@supabase/ssr";
 import type { Profile } from "@/lib/supabase";
 
 const REGULATORS  = ["CQC", "Care Inspectorate", "CIW", "RQIA"];
@@ -17,9 +17,9 @@ const SERVICE_TYPES = [
   "Other",
 ];
 const PLAN_LABELS: Record<string, string> = {
-  starter: "Starter — £49/mo",
-  professional: "Professional — £99/mo",
-  enterprise: "Enterprise — £199/mo",
+  starter:      "Free Trial",
+  professional: "Professional — £49/mo",
+  enterprise:   "Enterprise — £149/mo",
 };
 const STATUS_STYLE: Record<string, { label: string; bg: string; color: string }> = {
   trialing: { label: "Free Trial",  bg: "#e8f0ff", color: "#2E6FFF"  },
@@ -27,6 +27,11 @@ const STATUS_STYLE: Record<string, { label: string; bg: string; color: string }>
   past_due: { label: "Past Due",    bg: "#fef3c7", color: "#b45309"  },
   canceled: { label: "Canceled",    bg: "#fee2e2", color: "#b91c1c"  },
 };
+
+const sb = createBrowserClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export default function AccountPage() {
   const router = useRouter();
@@ -52,10 +57,10 @@ export default function AccountPage() {
   // ── Load profile ────────────────────────────────────────────────────────────
   useEffect(() => {
     async function load() {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await sb.auth.getUser();
       if (!user) { router.replace("/login"); return; }
 
-      const { data } = await supabase
+      const { data } = await sb
         .from("profiles")
         .select("*")
         .eq("id", user.id)
@@ -85,7 +90,7 @@ export default function AccountPage() {
     e.preventDefault();
     if (!profile) return;
     setSaving(true);
-    const { error } = await supabase
+    const { error } = await sb
       .from("profiles")
       .update({ first_name: firstName, last_name: lastName, org_name: orgName, service_type: serviceType, regulator })
       .eq("id", profile.id);
@@ -104,11 +109,11 @@ export default function AccountPage() {
     if (pwNew.length < 8)    { showToast("Password must be at least 8 characters.", false); return; }
     setPwSaving(true);
     // Re-authenticate with current password first
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: { user } } = await sb.auth.getUser();
     if (!user?.email) { showToast("Session error — please log in again.", false); setPwSaving(false); return; }
-    const { error: signInErr } = await supabase.auth.signInWithPassword({ email: user.email, password: pwCurrent });
+    const { error: signInErr } = await sb.auth.signInWithPassword({ email: user.email, password: pwCurrent });
     if (signInErr) { showToast("Current password is incorrect.", false); setPwSaving(false); return; }
-    const { error } = await supabase.auth.updateUser({ password: pwNew });
+    const { error } = await sb.auth.updateUser({ password: pwNew });
     setPwSaving(false);
     if (error) showToast("Failed to update password.", false);
     else { showToast("Password changed successfully."); setPwCurrent(""); setPwNew(""); setPwConfirm(""); }
@@ -116,7 +121,7 @@ export default function AccountPage() {
 
   // ── Sign out ─────────────────────────────────────────────────────────────────
   async function signOut() {
-    await supabase.auth.signOut();
+    await sb.auth.signOut();
     router.push("/");
   }
 
@@ -359,12 +364,12 @@ export default function AccountPage() {
               </div>
             )}
 
-            <a
-              href="https://app.ziprohtraining.co.uk/pricing"
+            <Link
+              href="/upgrade"
               className="btn-primary text-sm w-full text-center block"
             >
               {profile?.subscription_status === "trialing" ? "Upgrade Now" : "Manage Subscription"}
-            </a>
+            </Link>
 
             <p className="text-xs text-gray-400 text-center">
               To cancel or get billing help, email{" "}
