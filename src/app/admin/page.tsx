@@ -109,6 +109,38 @@ export default function AdminPage() {
   const [pdfSaving,    setPdfSaving]    = useState(false);
   const [pdfMsg,       setPdfMsg]       = useState<{ text: string; ok: boolean } | null>(null);
 
+  // Policy update email broadcast
+  const [notifyDocId,   setNotifyDocId]   = useState("");
+  const [notifySummary, setNotifySummary] = useState("");
+  const [notifySending, setNotifySending] = useState(false);
+  const [notifyMsg,     setNotifyMsg]     = useState<{ text: string; ok: boolean } | null>(null);
+
+  async function sendPolicyUpdateBroadcast() {
+    if (!notifyDocId.trim() || notifySending) return;
+    if (!confirm(`Email ALL platform users that "${notifyDocId.trim()}" has been updated?`)) return;
+    setNotifySending(true);
+    setNotifyMsg(null);
+    try {
+      const res = await fetch("/api/admin/notify-policy-update", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          documentId: notifyDocId.trim().toLowerCase(),
+          changeSummary: notifySummary.trim() || undefined,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? "Send failed");
+      setNotifyMsg({ text: `Sent to ${json.sent} recipient${json.sent === 1 ? "" : "s"}${json.failed ? ` (${json.failed} failed)` : ""}.`, ok: true });
+      setNotifyDocId("");
+      setNotifySummary("");
+    } catch (e) {
+      setNotifyMsg({ text: e instanceof Error ? e.message : "Send failed", ok: false });
+    } finally {
+      setNotifySending(false);
+    }
+  }
+
   async function lookupOrgForPdf() {
     if (!pdfEmail.trim()) return;
     setPdfLooking(true);
@@ -540,6 +572,53 @@ export default function AdminPage() {
               )}
             </div>
           )}
+        </div>
+
+        {/* ── Policy Update Email Broadcast ── */}
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mt-6">
+          <h2 className="text-base font-bold text-gray-900 mb-1">📣 Policy Update Notification</h2>
+          <p className="text-sm text-gray-500 mb-5">
+            Email every platform user that a policy has been updated, with a direct link to review and
+            re-adopt it. Sent via Resend — requires RESEND_API_KEY to be configured in Vercel.
+          </p>
+
+          <div className="space-y-3">
+            <div className="flex gap-3">
+              <input
+                type="text"
+                value={notifyDocId}
+                onChange={e => setNotifyDocId(e.target.value)}
+                placeholder="Policy document ID (e.g. saf-001)"
+                className="w-64 px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <input
+                type="text"
+                value={notifySummary}
+                onChange={e => setNotifySummary(e.target.value)}
+                placeholder="Optional one-line summary of what changed"
+                className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+              <button
+                onClick={sendPolicyUpdateBroadcast}
+                disabled={notifySending || !notifyDocId.trim()}
+                className="px-5 py-2.5 rounded-xl bg-blue-600 text-white text-sm font-semibold disabled:opacity-50 whitespace-nowrap"
+              >
+                {notifySending ? "Sending…" : "Send to All Users"}
+              </button>
+            </div>
+
+            {notifyMsg && (
+              <div
+                className="p-3 rounded-xl text-sm"
+                style={{
+                  backgroundColor: notifyMsg.ok ? "#d1fae5" : "#fee2e2",
+                  color: notifyMsg.ok ? "#065f46" : "#b91c1c",
+                }}
+              >
+                {notifyMsg.ok ? "✓" : "✕"} {notifyMsg.text}
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Footer */}

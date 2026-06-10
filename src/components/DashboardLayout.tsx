@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useState, useRef } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createBrowserClient } from "@supabase/ssr";
 import { DOCUMENTS } from "@/lib/documents";
 
@@ -62,6 +62,35 @@ const MOBILE_BOTTOM_NAV: NavItem[] = [
   { href: "/ai-assistant", label: "AI",        icon: "🤖" },
 ];
 
+// ─── Read-only staff view ─────────────────────────────────────────────────────
+// Staff members (role 'staff' in staff_members, logged in under their own
+// account) get a simplified, read-only experience: policies to read, their
+// reading lists, their own record, learning and the AI assistant.
+// Management/billing/audit pages are hidden and guarded.
+
+const STAFF_ALLOWED_PREFIXES = [
+  "/dashboard", "/compliance", "/my-record", "/reading-lists",
+  "/learning", "/ai-assistant", "/account", "/help", "/verify",
+];
+
+const MOBILE_BOTTOM_NAV_STAFF: NavItem[] = [
+  { href: "/dashboard",    label: "Home",      icon: "🏠" },
+  { href: "/compliance",   label: "Policies",  icon: "📋" },
+  { href: "/learning",     label: "Learning",  icon: "🎓" },
+  { href: "/ai-assistant", label: "AI",        icon: "🤖" },
+];
+
+function staffNavGroups(): NavGroup[] {
+  return NAV_GROUPS
+    .map((g) => ({
+      group: g.group,
+      items: g.items.filter((i) =>
+        STAFF_ALLOWED_PREFIXES.some((p) => i.href === p || i.href.startsWith(p + "/"))
+      ),
+    }))
+    .filter((g) => g.items.length > 0);
+}
+
 type SidebarProfile = {
   first_name: string;
   org_name: string;
@@ -84,12 +113,15 @@ type Notification = {
 function SidebarContents({
   profile,
   path,
+  isStaff,
   onClose,
 }: {
   profile: SidebarProfile | null;
   path: string;
+  isStaff: boolean;
   onClose?: () => void;
 }) {
+  const navGroups = isStaff ? staffNavGroups() : NAV_GROUPS;
   return (
     <>
       {/* Logo */}
@@ -133,9 +165,17 @@ function SidebarContents({
         </div>
       </div>
 
+      {/* Staff badge */}
+      {isStaff && (
+        <div className="px-4 py-2 text-[10px] font-semibold uppercase tracking-widest"
+          style={{ backgroundColor: "#F0F6FF", color: "#2E6FFF", borderBottom: "1px solid #e2e8f0" }}>
+          Staff member view
+        </div>
+      )}
+
       {/* Nav */}
       <nav className="flex-1 p-3 overflow-y-auto">
-        {NAV_GROUPS.map((group, gi) => (
+        {navGroups.map((group, gi) => (
           <div key={gi} className={gi > 0 ? "mt-4" : ""}>
             {group.group && (
               <div className="px-3 mb-1 text-[10px] font-semibold uppercase tracking-widest text-gray-400">
@@ -199,7 +239,9 @@ function SidebarContents({
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const path = usePathname();
+  const router = useRouter();
   const [profile, setProfile] = useState<SidebarProfile | null>(null);
+  const [isStaff, setIsStaff] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
@@ -225,6 +267,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       ]);
 
       if (profileRes.data) setProfile(profileRes.data as SidebarProfile);
+
+      // Read-only staff view: active staff_members row under another org,
+      // with role 'staff' (managers/admins keep the full experience)
+      const { data: membership } = await sb
+        .from("staff_members")
+        .select("org_id, role, status")
+        .eq("user_id", user.id)
+        .eq("status", "active")
+        .maybeSingle();
+      if (membership && membership.org_id !== user.id && membership.role === "staff") {
+        setIsStaff(true);
+      }
 
       // ── Derive notifications from data ──────────────────────────────────────
       const notifs: Notification[] = [];
@@ -307,6 +361,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     setMobileMenuOpen(false);
   }, [path]);
 
+  // Staff guard: redirect staff members away from management pages
+  useEffect(() => {
+    if (!isStaff) return;
+    const allowed = STAFF_ALLOWED_PREFIXES.some(
+      (p) => path === p || path.startsWith(p + "/")
+    );
+    if (!allowed) router.replace("/dashboard");
+  }, [isStaff, path, router]);
+
   // Trial state — only enforce once profile has loaded
   const isTrialExpired =
     profile !== null &&
@@ -366,7 +429,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         className="hidden lg:flex w-64 flex-shrink-0 flex-col"
         style={{ backgroundColor: "white", borderRight: "1px solid #e2e8f0", minHeight: "100vh" }}
       >
-        <SidebarContents profile={profile} path={path} />
+        <SidebarContents profile={profile} path={path} isStaff={isStaff} />
       </aside>
 
       {/* ── Mobile drawer overlay ────────────────────────────── */}
@@ -385,6 +448,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <SidebarContents
               profile={profile}
               path={path}
+              isStaff={isStaff}
               onClose={() => setMobileMenuOpen(false)}
             />
           </aside>
@@ -534,7 +598,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t z-40 flex"
           style={{ borderColor: "#e2e8f0" }}
         >
-          {MOBILE_BOTTOM_NAV.map((item) => {
+          {(isStaff ? MOBILE_BOTTOM_NAV_STAFF : MOBILE_BOTTOM_NAV).map((item) => {
             const isActive = path === item.href || path.startsWith(item.href + "/");
             return (
               <Link
