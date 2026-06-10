@@ -41,6 +41,7 @@ export type Document = {
   readTime: number;
   tags: string[];
   summary: string;
+  changelog?: string[];   // What changed in the latest version — shown as a banner on updated policies
 };
 
 // Rich policy section — supports warning/practice/legal callout boxes and sub-sections
@@ -191,6 +192,12 @@ export const DOCUMENTS: Document[] = [
     version: "4.2", lastUpdated: "2026-06-01", status: "updated", readTime: 15,
     tags: ["safeguarding", "adults", "abuse", "prevention"],
     summary: "Sets out responsibilities for protecting adults at risk from abuse, neglect and exploitation. Aligned to the Care Act 2014 and local authority safeguarding procedures.",
+    changelog: [
+      "Updated to reflect 2024 DHSC safeguarding review recommendations.",
+      "New guidance added on online/digital abuse and financial exploitation via social media.",
+      "Concern documentation timescale tightened: staff must log in digital record within 2 hours (previously 24 hours).",
+      "Appendix B (Local Authority safeguarding contacts) refreshed for 2026.",
+    ],
   },
   {
     id: "saf-002",
@@ -210,6 +217,12 @@ export const DOCUMENTS: Document[] = [
     version: "5.0", lastUpdated: "2026-05-20", status: "updated", readTime: 20,
     tags: ["medication", "MAR", "controlled drugs", "administration"],
     summary: "Comprehensive policy covering the ordering, receipt, storage, administration, recording, and disposal of medication.",
+    changelog: [
+      "Major revision (v5.0): policy restructured into six clear sections — Ordering, Receipt, Storage, Administration, Recording, Disposal.",
+      "New section on 'When to Refuse Administration' including capacity, consent and covert medication considerations.",
+      "Controlled drugs audit requirements updated to reflect 2025 amendments to the Misuse of Drugs Regulations.",
+      "Electronic MAR (eMAR) guidance added for services using digital medication records.",
+    ],
   },
   {
     id: "saf-004",
@@ -220,6 +233,12 @@ export const DOCUMENTS: Document[] = [
     version: "3.4", lastUpdated: "2026-05-20", status: "updated", readTime: 18,
     tags: ["medication", "administration", "procedure", "MAR chart"],
     summary: "Step-by-step procedure for the safe administration of medication to service users, including self-administration protocols.",
+    changelog: [
+      "Step 4 (pre-administration checks) expanded with a new 'Five Rights Plus Two' checklist (Right person, drug, dose, route, time + Right reason, documentation).",
+      "Self-administration section rewritten with tiered assessment levels (Level 1–3).",
+      "Allergy and adverse reaction response steps updated to align with new anaphylaxis guidance from NHS England.",
+      "Companion procedure to updated Medication Management Policy v5.0.",
+    ],
   },
   {
     id: "saf-005",
@@ -229,6 +248,12 @@ export const DOCUMENTS: Document[] = [
     version: "6.1", lastUpdated: "2026-05-28", status: "updated", readTime: 14,
     tags: ["IPC", "infection", "hygiene", "PPE", "MRSA"],
     summary: "Policy to prevent and control the spread of infections within the service, including hand hygiene, PPE use, and outbreak management.",
+    changelog: [
+      "Outbreak management section revised following UKHSA 2025 care home outbreak guidance update.",
+      "PPE selection table updated — surgical mask now mandatory (not recommended) for all personal care activities.",
+      "New subsection on respiratory hygiene and 'Catch it, Bin it, Kill it' staff communications.",
+      "Appendix C (Notifiable diseases list) updated with additions from the Health Protection (Notification) Regulations 2024.",
+    ],
   },
   {
     id: "saf-006",
@@ -619,6 +644,12 @@ export const DOCUMENTS: Document[] = [
     version: "5.0", lastUpdated: "2026-05-30", status: "updated", readTime: 25,
     tags: ["governance", "quality", "CQC", "board", "accountability"],
     summary: "Overarching governance framework setting out the structures, processes and responsibilities for quality assurance and regulatory compliance.",
+    changelog: [
+      "Major revision (v5.0): aligned to CQC's updated Single Assessment Framework quality statements effective January 2025.",
+      "New section on 'Learning Culture' — providers must now document how learning from incidents feeds into quality improvement cycles.",
+      "Governance meeting schedule and quorum requirements formalised in Appendix A.",
+      "Data quality and data assurance roles clarified following NHS Data Security Standard update.",
+    ],
   },
   {
     id: "wl-002",
@@ -763,6 +794,12 @@ export const DOCUMENTS: Document[] = [
     version: "4.0", lastUpdated: "2026-05-20", status: "updated", readTime: 18,
     tags: ["CQC", "registration", "notifications", "compliance", "Regulation 17"],
     summary: "Policy for maintaining CQC registration, meeting statutory notification requirements and preparing for inspections under the current regulatory framework.",
+    changelog: [
+      "Updated to reflect CQC's new provider portal submission requirements (effective April 2025).",
+      "Statutory notification trigger list expanded — now includes unexpected deaths during restraint and allegations against staff.",
+      "New inspection preparation checklist added as Appendix D, mapped to the Single Assessment Framework evidence categories.",
+      "Section 6 (Regulation 17 — Good Governance) rewritten to reference new CQC evidence scoring methodology.",
+    ],
   },
   {
     id: "wl-018",

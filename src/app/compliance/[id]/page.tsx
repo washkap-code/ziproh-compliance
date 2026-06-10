@@ -550,6 +550,31 @@ export default function DocumentPage() {
             </div>
           </div>
 
+          {/* ── Changelog banner (updated policies only) ── */}
+          {doc.status === "updated" && doc.changelog && doc.changelog.length > 0 && (
+            <div className="rounded-xl border border-blue-200 bg-blue-50 p-4">
+              <div className="flex items-start gap-3">
+                <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center text-blue-600 text-base">
+                  🔄
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-blue-800 mb-2">
+                    What&rsquo;s changed in v{doc.version}
+                    <span className="ml-2 text-xs font-normal text-blue-500">Updated {formattedDate}</span>
+                  </p>
+                  <ul className="space-y-1">
+                    {doc.changelog.map((item, i) => (
+                      <li key={i} className="flex items-start gap-2 text-sm text-blue-700">
+                        <span className="mt-1 flex-shrink-0 w-1.5 h-1.5 rounded-full bg-blue-400" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* ── Action bar ── */}
           <div className="card" style={{ padding: "0.875rem 1.25rem" }}>
             <div className="flex flex-wrap items-center gap-3">

@@ -55,6 +55,26 @@ export default function AccountPage() {
   const [pwNew,     setPwNew]     = useState("");
   const [pwConfirm, setPwConfirm] = useState("");
 
+  // Billing portal
+  const [portalLoading, setPortalLoading] = useState(false);
+
+  async function openBillingPortal() {
+    setPortalLoading(true);
+    try {
+      const res = await fetch("/api/stripe/portal", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) });
+      if (res.ok) {
+        const { url } = await res.json();
+        if (url) { window.location.href = url; return; }
+      }
+      const { error } = await res.json().catch(() => ({}));
+      setToast({ msg: error ?? "Unable to open billing portal. Please email hello@ziprohtraining.co.uk.", ok: false });
+    } catch {
+      setToast({ msg: "Unable to open billing portal. Please email hello@ziprohtraining.co.uk.", ok: false });
+    } finally {
+      setPortalLoading(false);
+    }
+  }
+
   // ── Load profile ────────────────────────────────────────────────────────────
   useEffect(() => {
     async function load() {
@@ -365,18 +385,30 @@ export default function AccountPage() {
               </div>
             )}
 
-            <Link
-              href="/upgrade"
-              className="btn-primary text-sm w-full text-center block"
-            >
-              {profile?.subscription_status === "trialing" ? "Upgrade Now" : "Manage Subscription"}
-            </Link>
+            {profile?.subscription_status === "trialing" || !profile?.subscription_status ? (
+              <Link href="/upgrade" className="btn-primary text-sm w-full text-center block">
+                Upgrade Now →
+              </Link>
+            ) : (
+              <button
+                onClick={openBillingPortal}
+                disabled={portalLoading}
+                className="btn-primary text-sm w-full text-center"
+                style={{ opacity: portalLoading ? 0.7 : 1 }}
+              >
+                {portalLoading ? "Opening portal…" : "Manage Billing →"}
+              </button>
+            )}
 
             <p className="text-xs text-gray-400 text-center">
-              To cancel or get billing help, email{" "}
-              <a href="mailto:hello@ziprohtraining.co.uk" className="underline">
-                hello@ziprohtraining.co.uk
-              </a>
+              {profile?.subscription_status === "active"
+                ? "Change payment method, view invoices, or cancel subscription."
+                : "To get billing help, email "}
+              {profile?.subscription_status !== "active" && (
+                <a href="mailto:hello@ziprohtraining.co.uk" className="underline">
+                  hello@ziprohtraining.co.uk
+                </a>
+              )}
             </p>
           </div>
 
