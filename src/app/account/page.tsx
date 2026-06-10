@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import DashboardLayout from "@/components/DashboardLayout";
 import { createBrowserClient } from "@supabase/ssr";
 import type { Profile } from "@/lib/supabase";
