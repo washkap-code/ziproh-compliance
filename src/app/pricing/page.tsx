@@ -14,7 +14,8 @@ const PLANS = [
     id: "professional",
     name: "Professional",
     subtitle: "For single-site care providers",
-    monthly: 49,
+    perMonth: 39,
+    annualTotal: 468,
     color: "#2E6FFF",
     popular: true,
     features: [
@@ -37,7 +38,8 @@ const PLANS = [
     id: "enterprise",
     name: "Enterprise",
     subtitle: "For multi-site care groups",
-    monthly: 149,
+    perMonth: 119,
+    annualTotal: 1428,
     color: "#7c3aed",
     popular: false,
     features: [
@@ -92,18 +94,16 @@ export default function PricingPage() {
       const { data: { user } } = await sb.auth.getUser();
 
       if (!user) {
-        // Not logged in — go to register (trial starts there)
         window.location.href = `/register?plan=${planId}`;
         return;
       }
 
-      // Already logged in — try Stripe checkout
       const res = await fetch("/api/stripe/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           planId,
-          billing: "monthly",
+          billing: "annual",
           customerEmail: user.email,
           userId: user.id,
         }),
@@ -114,7 +114,6 @@ export default function PricingPage() {
         if (url) { window.location.href = url; return; }
       }
 
-      // Stripe not configured — fall back to upgrade page
       window.location.href = "/upgrade";
     } catch {
       window.location.href = `/register?plan=${planId}`;
@@ -186,10 +185,10 @@ export default function PricingPage() {
                 </div>
 
                 <div className="flex items-end gap-1 mb-2">
-                  <span className="text-5xl font-extrabold text-gray-900">£{plan.monthly}</span>
-                  <span className="text-gray-400 text-sm mb-1.5">/month</span>
+                  <span className="text-5xl font-extrabold text-gray-900">£{plan.perMonth}</span>
+                  <span className="text-gray-400 text-sm mb-1.5">/mo</span>
                 </div>
-                <p className="text-xs text-gray-400 mb-8">Billed monthly. Cancel anytime.</p>
+                <p className="text-xs text-gray-400 mb-8">Billed annually (£{plan.annualTotal}/yr). Cancel anytime.</p>
 
                 <button
                   onClick={() => handleStart(plan.id)}
@@ -224,7 +223,7 @@ export default function PricingPage() {
           </div>
         </section>
 
-        {/* Feature comparison — simple */}
+        {/* Feature comparison */}
         <section className="py-16 px-6 bg-white">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-2xl font-bold text-gray-900 text-center mb-10">Everything you get</h2>

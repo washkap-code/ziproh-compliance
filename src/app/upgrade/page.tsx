@@ -13,8 +13,9 @@ const PLANS = [
   {
     name: "Professional",
     planId: "professional",
-    price: "£49",
-    period: "/month",
+    price: "£39",
+    annualTotal: "£468",
+    period: "/mo",
     tagline: "For growing care services",
     color: "#2E6FFF",
     highlight: true,
@@ -35,8 +36,9 @@ const PLANS = [
   {
     name: "Enterprise",
     planId: "enterprise",
-    price: "£149",
-    period: "/month",
+    price: "£119",
+    annualTotal: "£1,428",
+    period: "/mo",
     tagline: "For multi-site organisations",
     color: "#7c3aed",
     highlight: false,
@@ -70,7 +72,7 @@ export default function UpgradePage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           planId,
-          billing: "monthly",
+          billing: "annual",
           customerEmail: user.email,
           userId: user.id,
         }),
@@ -81,7 +83,6 @@ export default function UpgradePage() {
       if (apiError || !url) throw new Error(apiError ?? "no_url");
       window.location.href = url;
     } catch {
-      // Stripe not configured yet — fall back to email
       window.location.href = `mailto:hello@ziprohtraining.co.uk?subject=Upgrade%20to%20Ziproh%20${planId === "professional" ? "Professional" : "Enterprise"}`;
     } finally {
       setLoadingPlan(null);
@@ -141,10 +142,11 @@ export default function UpgradePage() {
               )}
               <div className="mb-1 text-lg font-bold text-gray-900">{plan.name}</div>
               <div className="text-sm text-gray-500 mb-5">{plan.tagline}</div>
-              <div className="flex items-end gap-1 mb-6">
+              <div className="flex items-end gap-1 mb-1">
                 <span className="text-4xl font-extrabold text-gray-900">{plan.price}</span>
                 <span className="text-gray-400 text-sm mb-1">{plan.period}</span>
               </div>
+              <p className="text-xs text-gray-400 mb-6">Billed annually ({plan.annualTotal}/yr). Cancel anytime.</p>
 
               <ul className="space-y-2.5 mb-8 flex-1">
                 {plan.features.map((f) => (
