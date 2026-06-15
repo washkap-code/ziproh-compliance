@@ -81,6 +81,7 @@ export default function StaffPage() {
   const [loading, setLoading]         = useState(true);
   const [staff, setStaff]             = useState<StaffMember[]>([]);
   const [orgName, setOrgName]         = useState("");
+  const [plan, setPlan]               = useState<string | null>(null);
   const [filter, setFilter]           = useState<"all" | "active" | "invited">("all");
   const [showInvite, setShowInvite]   = useState(false);
   const [inviteName, setInviteName]   = useState("");
@@ -104,13 +105,14 @@ export default function StaffPage() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) { setLoading(false); return; }
 
-      // Profile for org name
+      // Profile for org name + plan
       const { data: profile } = await supabase
         .from("profiles")
-        .select("org_name")
+        .select("org_name, plan")
         .eq("id", user.id)
         .single();
       if (profile?.org_name) setOrgName(profile.org_name);
+      if (profile?.plan) setPlan(profile.plan);
 
       // Staff members for this org
       const { data: rows } = await supabase
@@ -199,6 +201,32 @@ export default function StaffPage() {
     setInviteRole("staff");
     setShowInvite(false);
     setInviting(false);
+  }
+
+  function exportCSV() {
+    const rows = [
+      ["Name", "Email", "Role", "Status", "Policies Read", "Total Policies", "% Compliance"],
+      ...staff.map((m) => {
+        const pct = m.status === "invited" ? 0 : Math.round((m.policiesRead / m.totalPolicies) * 100);
+        return [
+          m.name,
+          m.email,
+          ROLE_LABELS[m.role] ?? m.role,
+          m.status === "active" ? "Active" : "Invited",
+          m.status === "invited" ? "0" : String(m.policiesRead),
+          String(m.totalPolicies),
+          m.status === "invited" ? "N/A" : `${pct}%`,
+        ];
+      }),
+    ];
+    const csv = rows.map((r) => r.map((c) => `"${c.replace(/"/g, '""')}"`).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `staff-compliance-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 
   const filtered =
@@ -350,6 +378,26 @@ export default function StaffPage() {
             >
               📊 Compliance Matrix
             </Link>
+            {/* CSV Export — Enterprise only */}
+            {plan === "enterprise" ? (
+              <button
+                onClick={exportCSV}
+                disabled={staff.length === 0}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold border transition-all hover:bg-purple-50 disabled:opacity-50"
+                style={{ borderColor: "#7c3aed", color: "#7c3aed" }}
+              >
+                ⬇ Export CSV
+              </button>
+            ) : (
+              <Link
+                href="/upgrade"
+                title="Enterprise plan required"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-semibold border opacity-60 hover:opacity-100 transition-opacity"
+                style={{ borderColor: "#d1d5db", color: "#6b7280" }}
+              >
+                🔒 Export CSV
+              </Link>
+            )}
             <button onClick={() => { setShowInvite(true); setInviteError(""); }} className="btn-primary flex items-center gap-2">
               <span>＋</span> Invite Staff
             </button>

@@ -37,6 +37,27 @@ export type PolicyAdoption = {
   created_at: string;
 };
 
+export type Site = {
+  id: string;
+  org_id: string;
+  name: string;
+  address?: string;
+  service_type?: string;
+  regulator?: string;
+  active: boolean;
+  created_at: string;
+};
+
+export type PolicyAnnotation = {
+  id: string;
+  org_id: string;
+  policy_id: string;
+  content: string;
+  created_by?: string;
+  created_at: string;
+  updated_at: string;
+};
+
 export type ReadRecord = {
   id: string;
   user_id: string;

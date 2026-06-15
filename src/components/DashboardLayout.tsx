@@ -199,6 +199,32 @@ function SidebarContents({
         ))}
       </nav>
 
+      {/* Enterprise section */}
+      {!isStaff && profile?.plan === "enterprise" && (
+        <div className="px-3 pb-2">
+          <div className="px-3 mb-1 mt-4 text-[10px] font-semibold uppercase tracking-widest text-gray-400">Enterprise</div>
+          <Link
+            href="/sites"
+            onClick={onClose}
+            className={`sidebar-link ${path === "/sites" || path.startsWith("/sites/") ? "active" : ""}`}
+          >
+            <span className="text-base">🏢</span>
+            <span>Group Overview</span>
+          </Link>
+        </div>
+      )}
+
+      {/* Upgrade nudge for Professional users */}
+      {!isStaff && profile?.plan === "professional" && (
+        <div className="mx-3 mb-2 p-3 rounded-xl text-xs" style={{ backgroundColor: "#f5f3ff", border: "1px solid #ede9fe" }}>
+          <p className="font-semibold text-purple-700 mb-0.5">Upgrade to Enterprise</p>
+          <p className="text-purple-600 leading-relaxed mb-2">Multi-site management, policy annotations, and more.</p>
+          <Link href="/upgrade" onClick={onClose} className="block text-center text-xs font-semibold text-white py-1.5 rounded-lg" style={{ backgroundColor: "#7c3aed" }}>
+            See Enterprise →
+          </Link>
+        </div>
+      )}
+
       {/* Bottom */}
       <div className="p-3 border-t space-y-0.5" style={{ borderColor: "#e2e8f0" }}>
         {BOTTOM_NAV.map((item) => (

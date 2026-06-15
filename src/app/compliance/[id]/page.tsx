@@ -303,6 +303,15 @@ export default function DocumentPage() {
   const [rlLoading,    setRlLoading]    = useState(false);
   const [rlSaving,     setRlSaving]     = useState<string | null>(null); // list id being saved
 
+  // Organisation annotation state (Enterprise)
+  type Annotation = { id: string; content: string; created_by?: string; updated_at: string } | null;
+  const [annotation,      setAnnotation]      = useState<Annotation>(null);
+  const [plan,            setPlan]            = useState<string | null>(null);
+  const [annotOpen,       setAnnotOpen]       = useState(false);
+  const [annotText,       setAnnotText]       = useState("");
+  const [annotSaving,     setAnnotSaving]     = useState(false);
+  const [annotDeleting,   setAnnotDeleting]   = useState(false);
+
   // Policy adoption state
   type Adoption = { reviewerName: string; reviewerRole: string; adoptedAt: string } | null;
   const [adoption,          setAdoption]          = useState<Adoption>(null);
@@ -372,8 +381,8 @@ export default function DocumentPage() {
       if (!user) { setOrgLoaded(true); return; }
       setUserId(user.id);
 
-      const [profileRes, ackRes, adoptRes] = await Promise.all([
-        supabase.from("profiles").select("org_name").eq("id", user.id).single(),
+      const [profileRes, ackRes, adoptRes, annotRes] = await Promise.all([
+        supabase.from("profiles").select("org_name, plan").eq("id", user.id).single(),
         supabase.from("read_records")
           .select("read_at")
           .eq("user_id", user.id)
@@ -384,9 +393,15 @@ export default function DocumentPage() {
           .eq("org_id", user.id)
           .eq("document_id", id)
           .maybeSingle(),
+        fetch(`/api/annotations/${id}`).then(r => r.json()).catch(() => ({ annotation: null })),
       ]);
 
       if (profileRes.data?.org_name) setOrgName(profileRes.data.org_name);
+      if (profileRes.data?.plan) setPlan(profileRes.data.plan);
+      if (annotRes?.annotation) {
+        setAnnotation(annotRes.annotation);
+        setAnnotText(annotRes.annotation.content);
+      }
       if (ackRes.data?.read_at) setAcknowledgedAt(ackRes.data.read_at);
       if (adoptRes.data) {
         setAdoption({
@@ -467,6 +482,37 @@ export default function DocumentPage() {
   const formattedDate = new Date(doc.lastUpdated).toLocaleDateString("en-GB", {
     day: "numeric", month: "long", year: "numeric",
   });
+
+  async function saveAnnotation() {
+    if (!annotText.trim()) return;
+    setAnnotSaving(true);
+    try {
+      const res = await fetch(`/api/annotations/${id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: annotText.trim() }),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        setAnnotation(json.annotation);
+        setAnnotOpen(false);
+      }
+    } finally {
+      setAnnotSaving(false);
+    }
+  }
+
+  async function deleteAnnotation() {
+    if (!confirm("Remove this organisation note?")) return;
+    setAnnotDeleting(true);
+    try {
+      await fetch(`/api/annotations/${id}`, { method: "DELETE" });
+      setAnnotation(null);
+      setAnnotText("");
+    } finally {
+      setAnnotDeleting(false);
+    }
+  }
 
   // Save policy adoption record
   async function saveAdoption() {
@@ -634,6 +680,86 @@ export default function DocumentPage() {
                       </li>
                     ))}
                   </ul>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── Organisation Annotation (Enterprise) ── */}
+          {annotation && (
+            <div className="rounded-xl border border-yellow-300 bg-yellow-50 p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex items-start gap-2 flex-1 min-w-0">
+                  <span className="text-base flex-shrink-0">📝</span>
+                  <div className="min-w-0">
+                    <p className="text-xs font-bold tracking-widest text-yellow-700 mb-1">ORGANISATION NOTE</p>
+                    <p className="text-sm text-yellow-900 leading-relaxed whitespace-pre-line">{annotation.content}</p>
+                    {annotation.created_by && (
+                      <p className="text-xs text-yellow-600 mt-1.5">
+                        Added by {annotation.created_by} · {new Date(annotation.updated_at).toLocaleDateString("en-GB")}
+                      </p>
+                    )}
+                  </div>
+                </div>
+                {plan === "enterprise" && (
+                  <div className="flex gap-2 flex-shrink-0">
+                    <button
+                      onClick={() => { setAnnotText(annotation.content); setAnnotOpen(true); }}
+                      className="text-xs text-yellow-700 hover:text-yellow-900 underline whitespace-nowrap"
+                    >Edit</button>
+                    <button
+                      onClick={deleteAnnotation}
+                      disabled={annotDeleting}
+                      className="text-xs text-red-500 hover:text-red-700 underline whitespace-nowrap disabled:opacity-50"
+                    >{annotDeleting ? "Removing…" : "Remove"}</button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          {/* Add annotation button — Enterprise only, shown when no annotation exists */}
+          {plan === "enterprise" && !annotation && (
+            <div className="flex justify-end">
+              <button
+                onClick={() => { setAnnotText(""); setAnnotOpen(true); }}
+                className="text-xs font-semibold text-purple-700 hover:text-purple-900 flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-200 bg-purple-50 hover:bg-purple-100 transition-colors"
+              >
+                📝 Add Organisation Note
+              </button>
+            </div>
+          )}
+
+          {/* ── Annotation modal ── */}
+          {annotOpen && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: "rgba(0,0,0,0.4)" }}>
+              <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg" onClick={e => e.stopPropagation()}>
+                <div className="p-6 border-b" style={{ borderColor: "#e2e8f0" }}>
+                  <h2 className="font-bold text-gray-900 text-lg">Organisation Note</h2>
+                  <p className="text-sm text-gray-500 mt-0.5">
+                    Add context visible to all staff in your organisation when they view this policy.
+                  </p>
+                </div>
+                <div className="p-6">
+                  <textarea
+                    value={annotText}
+                    onChange={e => setAnnotText(e.target.value)}
+                    rows={5}
+                    placeholder="e.g. This policy was last reviewed at our team meeting on 12 June 2026. Key contact for queries: Jane Smith (Registered Manager)."
+                    className="w-full border rounded-xl px-3 py-2.5 text-sm resize-none focus:outline-none focus:ring-2"
+                    style={{ borderColor: "#d1d5db", lineHeight: 1.6 }}
+                  />
+                  <p className="text-xs text-gray-400 mt-1.5">Visible to all staff in your organisation. Enterprise feature.</p>
+                </div>
+                <div className="p-6 pt-0 flex gap-3 justify-end">
+                  <button onClick={() => setAnnotOpen(false)} className="text-sm text-gray-500 px-4 py-2 rounded-xl hover:bg-gray-100">Cancel</button>
+                  <button
+                    onClick={saveAnnotation}
+                    disabled={annotSaving || !annotText.trim()}
+                    className="text-sm font-semibold text-white px-5 py-2 rounded-xl disabled:opacity-50"
+                    style={{ backgroundColor: "#7c3aed" }}
+                  >
+                    {annotSaving ? "Saving…" : "Save Note"}
+                  </button>
                 </div>
               </div>
             </div>

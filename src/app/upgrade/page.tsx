@@ -52,7 +52,7 @@ const PLANS = [
       "SAML SSO",
       "SLA & uptime guarantee",
     ],
-    cta: "Contact Sales",
+    cta: "Start Free Trial",
   },
 ];
 
