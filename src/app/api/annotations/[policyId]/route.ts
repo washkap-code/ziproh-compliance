@@ -12,7 +12,8 @@ async function makeClient() {
 }
 
 // GET /api/annotations/[policyId] — fetch org annotation for this policy
-export async function GET(_req: Request, { params }: { params: { policyId: string } }) {
+export async function GET(_req: Request, { params }: { params: Promise<{ policyId: string }> }) {
+  const { policyId } = await params;
   const sb = await makeClient();
   const { data: { user } } = await sb.auth.getUser();
   if (!user) return NextResponse.json({ annotation: null });
@@ -23,14 +24,15 @@ export async function GET(_req: Request, { params }: { params: { policyId: strin
   const { data } = await sb.from("policy_annotations")
     .select("*")
     .eq("org_id", profile.org_name)
-    .eq("policy_id", params.policyId)
+    .eq("policy_id", policyId)
     .single();
 
   return NextResponse.json({ annotation: data ?? null });
 }
 
 // POST /api/annotations/[policyId] — upsert annotation
-export async function POST(req: Request, { params }: { params: { policyId: string } }) {
+export async function POST(req: Request, { params }: { params: Promise<{ policyId: string }> }) {
+  const { policyId } = await params;
   const sb = await makeClient();
   const { data: { user } } = await sb.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -44,7 +46,7 @@ export async function POST(req: Request, { params }: { params: { policyId: strin
 
   const { data, error } = await sb.from("policy_annotations").upsert({
     org_id: profile.org_name,
-    policy_id: params.policyId,
+    policy_id: policyId,
     content: content.trim(),
     created_by: `${profile.first_name} ${profile.last_name}`.trim(),
     updated_at: new Date().toISOString(),
@@ -55,7 +57,8 @@ export async function POST(req: Request, { params }: { params: { policyId: strin
 }
 
 // DELETE /api/annotations/[policyId] — remove annotation
-export async function DELETE(_req: Request, { params }: { params: { policyId: string } }) {
+export async function DELETE(_req: Request, { params }: { params: Promise<{ policyId: string }> }) {
+  const { policyId } = await params;
   const sb = await makeClient();
   const { data: { user } } = await sb.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -66,7 +69,7 @@ export async function DELETE(_req: Request, { params }: { params: { policyId: st
   const { error } = await sb.from("policy_annotations")
     .delete()
     .eq("org_id", profile.org_name)
-    .eq("policy_id", params.policyId);
+    .eq("policy_id", policyId);
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true });

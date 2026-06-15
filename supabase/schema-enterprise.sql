@@ -40,9 +40,6 @@ create policy "org members can delete sites" on sites
 -- 2. Add site_id to profiles (nullable — existing users unaffected)
 alter table profiles add column if not exists site_id uuid references sites(id);
 
--- 3. Add site_id to audit_results (nullable — existing audits unaffected)
-alter table audit_results add column if not exists site_id uuid references sites(id);
-
 -- 4. POLICY ANNOTATIONS TABLE (Enterprise org-specific notes on policies)
 create table if not exists policy_annotations (
   id          uuid primary key default gen_random_uuid(),

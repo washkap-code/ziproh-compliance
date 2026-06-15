@@ -11,8 +11,9 @@ async function makeClient() {
   );
 }
 
-// GET /api/sites/[id] — get site details + staff count + audit count
-export async function GET(_req: Request, { params }: { params: { id: string } }) {
+// GET /api/sites/[id] — get site details + staff count + compliance score
+export async function GET(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id: siteId } = await params;
   const sb = await makeClient();
   const { data: { user } } = await sb.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -20,11 +21,10 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
   const { data: profile } = await sb.from("profiles").select("org_name, plan").eq("id", user.id).single();
   if (!profile || profile.plan !== "enterprise") return NextResponse.json({ error: "Enterprise required" }, { status: 403 });
 
-  const { data: site } = await sb.from("sites").select("*").eq("id", params.id).eq("org_id", profile.org_name).single();
+  const { data: site } = await sb.from("sites").select("*").eq("id", siteId).eq("org_id", profile.org_name).single();
   if (!site) return NextResponse.json({ error: "Site not found" }, { status: 404 });
 
-  const { data: staff } = await sb.from("profiles").select("id, first_name, last_name, email").eq("org_name", profile.org_name).eq("site_id", params.id);
-  const { data: audits } = await sb.from("audit_results").select("id, kq, score, created_at").eq("org_id", profile.org_name).eq("site_id", params.id).order("created_at", { ascending: false }).limit(10);
+  const { data: staff } = await sb.from("profiles").select("id, first_name, last_name, email").eq("org_name", profile.org_name).eq("site_id", siteId);
 
   // Compliance score: avg read-rate across staff at this site
   let complianceScore = 0;
@@ -39,11 +39,12 @@ export async function GET(_req: Request, { params }: { params: { id: string } })
     complianceScore = Math.round(perStaff.reduce((a, b) => a + b, 0) / perStaff.length);
   }
 
-  return NextResponse.json({ site, staff: staff ?? [], audits: audits ?? [], complianceScore });
+  return NextResponse.json({ site, staff: staff ?? [], audits: [], complianceScore });
 }
 
 // PATCH /api/sites/[id] — update site
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id: siteId } = await params;
   const sb = await makeClient();
   const { data: { user } } = await sb.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -52,13 +53,14 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   if (!profile || profile.plan !== "enterprise") return NextResponse.json({ error: "Enterprise required" }, { status: 403 });
 
   const body = await req.json();
-  const { data: site, error } = await sb.from("sites").update(body).eq("id", params.id).eq("org_id", profile.org_name).select().single();
+  const { data: site, error } = await sb.from("sites").update(body).eq("id", siteId).eq("org_id", profile.org_name).select().single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ site });
 }
 
 // DELETE /api/sites/[id] — soft delete (set active = false)
-export async function DELETE(_req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const { id: siteId } = await params;
   const sb = await makeClient();
   const { data: { user } } = await sb.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -66,7 +68,7 @@ export async function DELETE(_req: Request, { params }: { params: { id: string }
   const { data: profile } = await sb.from("profiles").select("org_name, plan").eq("id", user.id).single();
   if (!profile || profile.plan !== "enterprise") return NextResponse.json({ error: "Enterprise required" }, { status: 403 });
 
-  const { error } = await sb.from("sites").update({ active: false }).eq("id", params.id).eq("org_id", profile.org_name);
+  const { error } = await sb.from("sites").update({ active: false }).eq("id", siteId).eq("org_id", profile.org_name);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true });
 }
