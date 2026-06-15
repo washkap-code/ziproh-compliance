@@ -197,6 +197,78 @@ export const SAF018_CONTENT: DocumentContent = {
       title: "Reporting and Rectifying Defects",
       body: "All environmental defects and maintenance failures must be reported and recorded. [ORGANISATION_NAME] operates a maintenance defect log in which all reported defects are recorded with:\n• Date reported.\n• Nature of defect.\n• Risk assessment — is the defect an immediate safety risk or can repair be scheduled?\n• Action taken — who has been contacted; expected repair date.\n• Date resolved.\n\nDefects that pose an immediate safety risk must be mitigated immediately (e.g. wet floor signage for a spill; out-of-service notice on a faulty hoist) and repaired as a priority. Defects must not remain unresolved beyond a reasonable period — the Registered Manager reviews the defect log weekly to ensure no items are outstanding without reason.",
     },
+    {
+      title: "Equipment Safety and LOLER",
+      body: "All equipment used in the delivery of care must be safe, fit for purpose, and subject to a programme of inspection and maintenance. Equipment safety at [ORGANISATION_NAME] is governed by three key regulations:\n\n• Provision and Use of Work Equipment Regulations 1998 (PUWER): all work equipment must be suitable for its intended use, maintained in a safe condition, inspected at appropriate intervals, and used only by staff who have been trained.\n• Lifting Operations and Lifting Equipment Regulations 1998 (LOLER): all lifting equipment — including hoists, slings, bath lifts, ceiling tracks, and stair lifts — must be thoroughly examined by a competent person at prescribed intervals and before first use.\n• Medical Devices Regulations 2002: medical devices must be managed in accordance with manufacturer instructions and MHRA guidance.\n\nLOLER examination intervals:\n• Hoists and mobile lifting equipment: every 6 months.\n• Slings and soft attachments: every 6 months or after any incident that could have caused damage.\n• Passenger lifts: every 6 months (under LOLER) and annually (full service).\n• Bath and shower chairs with lifting function: every 6 months.\n\nAll LOLER thorough examination reports must be retained for at least 2 years and made available to CQC on request.",
+      procedure: [
+        "Before using any hoist or sling, staff must perform a pre-use check: check the equipment for damage, check the sling is the correct type and size for the service user, check the sling is free from tears or worn stitching.",
+        "If any equipment defect is found during a pre-use check, remove the equipment from use immediately and label it 'Do Not Use'. Report to the senior on duty and log in the maintenance defect register.",
+        "Never improvise or adapt lifting equipment — use only the approved attachments and accessories for the model in use.",
+        "Ensure LOLER examination certificates are current before using any lifting equipment. If a certificate has expired, the equipment must not be used until it has been examined.",
+        "Any incident involving lifting equipment — including near misses — must be reported under SAF-015 and reviewed by the Registered Manager.",
+      ],
+      warningBox: "Using a hoist with an out-of-date LOLER certificate, damaged slings, or incorrect weight rating is a serious safety breach and may result in CQC enforcement action. Inspectors routinely check LOLER documentation during inspections. The Registered Manager is responsible for ensuring LOLER examination records are current for all equipment.",
+    },
+    {
+      title: "Contractor Management",
+      body: "Contractors working on [ORGANISATION_NAME]'s premises — including maintenance engineers, cleaning contractors, construction workers, utilities engineers, and IT contractors — present specific health and safety risks if not properly managed. Contractors are not exempt from [ORGANISATION_NAME]'s health and safety requirements by virtue of their contractor status.",
+      subSections: [
+        {
+          heading: "Pre-Contractor Approval",
+          body: "Before engaging a contractor, [ORGANISATION_NAME] must:\n• Verify that the contractor holds appropriate insurance (public liability insurance of at least £5 million; employers' liability where they employ staff).\n• Check that the contractor holds any required trade certifications (Gas Safe registration for gas work; NICEIC/NAPIT membership for electrical work; Legionella specialist certification where relevant).\n• Request and review the contractor's risk assessment and method statement (RAMS) for the planned work.\n• Obtain evidence that contractor staff have undergone appropriate checks where they will have unsupervised access to service users or their belongings (DBS disclosure may be required).",
+        },
+        {
+          heading: "Contractor Induction",
+          body: "All contractors attending [ORGANISATION_NAME]'s premises must complete a contractor induction before commencing work. The induction covers:\n• Emergency procedures — evacuation routes, muster point, how to raise an alarm.\n• [ORGANISATION_NAME]'s safeguarding obligations — contractors must report any safeguarding concern immediately to the Registered Manager.\n• Infection control requirements for the specific area being worked in.\n• Areas that are off-limits without escort.\n• Reporting procedures for incidents, near misses, or damage caused during the work.\n\nContractors sign the induction record. A record of all contractors attending site is maintained in the visitor/contractor log.",
+        },
+        {
+          heading: "Permit to Work",
+          body: "A permit to work (PTW) system must be used for high-risk activities, including:\n• Hot work (welding, grinding, cutting) — risk of fire.\n• Confined space entry.\n• Work on live electrical systems.\n• Work on the roof or at height.\n• Isolation of fire or safety systems (e.g. disabling a fire suppression system during maintenance).\n\nThe PTW is issued by the Registered Manager or a nominated competent person, specifying: the work to be done; the hazards involved; the control measures in place; the duration of the permit; and the sign-off procedure on completion. No high-risk work may commence without a signed PTW.",
+        },
+        {
+          heading: "Supervision During Work",
+          body: "Where contractors are working in areas used by service users, a member of [ORGANISATION_NAME]'s staff must be available to supervise or escort them. Service users must not be left alone with contractors without a risk assessment confirming this is safe. The Registered Manager must be informed when contractors are on site and the expected duration of the work.",
+        },
+      ],
+    },
+    {
+      title: "Waste Management",
+      body: "Waste generated at [ORGANISATION_NAME] must be managed in accordance with the Environmental Protection Act 1990 (Duty of Care), the Controlled Waste Regulations 2012, and the Health Technical Memorandum 07-01 (HTM 07-01) for healthcare waste. Waste must be correctly classified, segregated, stored, and disposed of in a way that does not cause harm to people or the environment.",
+      subSections: [
+        {
+          heading: "Waste Classification and Segregation",
+          body: "Waste at [ORGANISATION_NAME] falls into the following categories:\n\n• Clinical/healthcare waste: waste that has been in contact with bodily fluids, including used dressings, continence products, and certain personal protective equipment. Must be placed in yellow clinical waste bags (for incineration) or yellow/black striped bags (for alternative treatment) — never in domestic waste.\n• Sharps waste: needles, lancets, and other sharp clinical items. Must be placed in UN-approved yellow sharps containers (never in clinical waste bags). Sharps containers must be no more than 2/3 full when sealed — never overfill.\n• Medicinal waste: unused or expired medication. Must be returned to the supplying pharmacy or placed in purple-lidded sharps containers (for cytotoxic and cytostatic medicines, yellow-lidded containers) — never in clinical or domestic waste.\n• Domestic waste: non-clinical general waste. Placed in black bags for domestic collection.\n• Confidential waste: paperwork containing personal data. Must be shredded on site or placed in locked confidential waste bags for collection by an approved contractor.",
+          warningBox: "Incorrect segregation of clinical waste — for example, placing a used wound dressing in domestic waste — is an environmental offence under the Environmental Protection Act 1990 and a CQC concern. Where [ORGANISATION_NAME] provides care in service users' own homes, staff must follow the organisation's guidance on managing clinical waste generated during care visits.",
+        },
+        {
+          heading: "Storage and Collection",
+          body: "Clinical waste awaiting collection must be stored in a secure, locked, purpose-designed waste storage area. Waste must not be stored for longer than the maximum period specified in the waste carrier's licence (typically 72 hours for healthcare waste). Sharps containers and clinical waste bags must be sealed before removal from the point of use.\n\nAll clinical waste must be collected by a licensed waste carrier. [ORGANISATION_NAME] must retain waste transfer notes for at least 2 years (3 years for hazardous waste). The Registered Manager maintains a waste management contract with an approved licensed carrier.",
+        },
+        {
+          heading: "Duty of Care",
+          body: "Under the Environmental Protection Act 1990, [ORGANISATION_NAME] has a legal duty of care for all waste it produces — from generation through to final disposal. This means:\n• All waste must be stored securely to prevent escape.\n• Waste may only be handed to a licensed waste carrier.\n• Waste transfer documentation must be signed and retained.\n• [ORGANISATION_NAME] must take all reasonable steps to ensure that waste is correctly described and does not cause harm to the carrier, the public, or the environment.",
+          legalBox: "The offence of breaching the waste duty of care (Environmental Protection Act 1990, s.34) carries an unlimited fine on conviction. CQC inspectors also view poor waste management — particularly in relation to sharps and clinical waste — as a significant indicator of infection control failure.",
+        },
+      ],
+    },
+    {
+      title: "Utilities Safety",
+      body: "The safe management of utilities — gas, electricity, and water — is a critical component of environmental safety. [ORGANISATION_NAME] ensures that all utility systems are inspected, maintained, and operated safely.",
+      subSections: [
+        {
+          heading: "Gas Safety",
+          body: "All gas appliances, pipework, and flues at [ORGANISATION_NAME]'s premises must be serviced and inspected annually by a Gas Safe registered engineer. A Gas Safety Certificate (CP12) must be obtained and retained for each inspection. Staff must know the location of the gas isolation valve and how to shut off gas supply in an emergency. Any smell of gas must be treated as an emergency: evacuate, ventilate, call the National Gas Emergency Service (0800 111 999), and do not use electrical switches or naked flames.",
+        },
+        {
+          heading: "Electrical Safety",
+          body: "Fixed electrical installations must be tested every 5 years (or more frequently in high-risk environments) by a qualified electrician and an Electrical Installation Condition Report (EICR) obtained. Portable electrical appliances must be tested in accordance with the PAT schedule in the Planned Preventive Maintenance programme. Defective electrical equipment must be taken out of service immediately. Extension leads should be used only as a temporary measure and must not be daisy-chained. Staff must not attempt any electrical repair or modification.",
+        },
+        {
+          heading: "Emergency Utility Procedures",
+          body: "All staff must know the location of:\n• The gas isolation valve (main gas shut-off).\n• The electrical consumer unit / distribution board (main fuse box).\n• The water stopcock (to isolate water supply in the event of a major leak).\n\nThis information must be included in induction training and displayed in a prominent location in staff areas. In any utility emergency, the Registered Manager must be notified immediately and the relevant emergency service or utility provider contacted.",
+        },
+      ],
+    },
   ],
   relatedDocuments: [
     "saf-008 — Fire Safety Policy",

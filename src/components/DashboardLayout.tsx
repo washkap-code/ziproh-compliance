@@ -395,7 +395,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="text-5xl mb-4">⏱</div>
           <h1 className="text-2xl font-bold text-gray-900 mb-2">Your free trial has ended</h1>
           <p className="text-gray-500 text-sm mb-6 leading-relaxed">
-            Upgrade to keep your service CQC-ready — full access to all 62 policies, audit tools, and your compliance record.
+            Upgrade to keep your service CQC-ready — full access to all 87 policies, audit tools, and your compliance record.
           </p>
           <Link
             href="/upgrade"

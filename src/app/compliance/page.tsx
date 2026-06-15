@@ -70,6 +70,8 @@ export default function ComplianceCentrePage() {
   const kqColor: Record<string, string> = {
     Safe: "#22c55e", Effective: "#2E6FFF", Caring: "#ec4899",
     Responsive: "#f59e0b", "Well-Led": "#8b5cf6",
+    "Governance & Quality": "#0f766e", "Information & Records": "#0369a1",
+    "Workforce & HR": "#b45309", "Care Operations": "#be185d",
   };
 
   const statusLabel: Record<string, { label: string; cls: string }> = {

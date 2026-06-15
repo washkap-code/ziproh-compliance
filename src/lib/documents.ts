@@ -26,13 +26,17 @@ import { SAF005_COMPREHENSIVE } from "./policy-flagship-saf005";
 import { WL005_COMPREHENSIVE } from "./policy-flagship-wl005";
 import { WL001_COMPREHENSIVE } from "./policy-flagship-wl001";
 import { CAR001_COMPREHENSIVE } from "./policy-flagship-car001";
+import { GOV001_CONTENT, GOV002_CONTENT, GOV003_CONTENT, GOV004_CONTENT, GOV005_CONTENT, GOV006_CONTENT, GOV007_CONTENT } from "./policy-new-gov";
+import { IGR001_CONTENT, IGR002_CONTENT, IGR003_CONTENT, IGR004_CONTENT, IGR005_CONTENT } from "./policy-new-igr";
+import { HR001_CONTENT, HR002_CONTENT, HR003_CONTENT, HR004_CONTENT, HR005_CONTENT, HR006_CONTENT, HR007_CONTENT } from "./policy-new-hr";
+import { COP001_CONTENT, COP002_CONTENT, COP003_CONTENT, COP004_CONTENT, COP005_CONTENT, COP006_CONTENT } from "./policy-new-cop";
 
 export type Document = {
   id: string;
   title: string;
   category: string;
   subcategory: string;
-  keyQuestion: "Safe" | "Effective" | "Caring" | "Responsive" | "Well-Led";
+  keyQuestion: "Safe" | "Effective" | "Caring" | "Responsive" | "Well-Led" | "Governance & Quality" | "Information & Records" | "Workforce & HR" | "Care Operations";
   serviceTypes: string[];
   regulators: string[];
   version: string;
@@ -178,6 +182,53 @@ export const CATEGORIES = {
       "Business Continuity",
       "Supervision & Appraisal",
       "Whistleblowing",
+    ],
+  },
+  gov: {
+    label: "Governance & Quality",
+    color: "#0f766e",
+    icon: "⚖️",
+    subcategories: [
+      "CQC Compliance",
+      "Quality Assurance",
+      "Audit & Improvement",
+      "Document Control",
+      "Business Continuity",
+    ],
+  },
+  igr: {
+    label: "Information & Records",
+    color: "#0369a1",
+    icon: "🗂️",
+    subcategories: [
+      "Records Management",
+      "Confidentiality",
+      "Data Protection",
+      "Information Governance",
+    ],
+  },
+  hr: {
+    label: "Workforce & HR",
+    color: "#b45309",
+    icon: "👥",
+    subcategories: [
+      "Recruitment & Induction",
+      "Training & Development",
+      "Staff Conduct",
+      "Disciplinary & Grievance",
+      "Rostering & Deployment",
+    ],
+  },
+  cop: {
+    label: "Care Operations",
+    color: "#be185d",
+    icon: "🏥",
+    subcategories: [
+      "Consent & Capacity",
+      "Service User Information",
+      "Domiciliary Care",
+      "Clinical Procedures",
+      "Risk Management",
     ],
   },
 };
@@ -810,6 +861,239 @@ export const DOCUMENTS: Document[] = [
     tags: ["registered manager", "accountability", "CQC", "Regulation 7", "fit and proper"],
     summary: "Policy setting out the accountability, responsibilities and fitness requirements for the Registered Manager under the Health and Social Care Act 2008.",
   },
+
+  // ─── GOVERNANCE & QUALITY ─────────────────────────────────────────────────
+  {
+    id: "gov-001",
+    title: "Duty of Candour Policy and Procedure",
+    category: "Governance & Quality", subcategory: "CQC Compliance", keyQuestion: "Governance & Quality",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "2.3", lastUpdated: "2026-04-01", status: "current", readTime: 14,
+    tags: ["duty of candour", "Regulation 20", "transparency", "notifiable safety incidents", "apology"],
+    summary: "Comprehensive policy implementing CQC Regulation 20 — Duty of Candour. Covers notifiable safety incidents, verbal and written notification, apology requirements, and the Duty of Candour Register.",
+  },
+  {
+    id: "gov-002",
+    title: "Quality Assurance and Governance Framework",
+    category: "Governance & Quality", subcategory: "Quality Assurance", keyQuestion: "Governance & Quality",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "3.1", lastUpdated: "2026-04-01", status: "current", readTime: 16,
+    tags: ["quality assurance", "governance", "KPIs", "PDSA", "risk management", "quality dashboard"],
+    summary: "Overarching governance framework covering the 6 pillars of quality, Quality Dashboard KPIs, governance meeting structure, risk management matrix, and the PDSA improvement cycle.",
+  },
+  {
+    id: "gov-003",
+    title: "Internal Audit Policy and Audit Schedule",
+    category: "Governance & Quality", subcategory: "Audit & Improvement", keyQuestion: "Governance & Quality",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "2.0", lastUpdated: "2026-04-01", status: "current", readTime: 12,
+    tags: ["audit", "internal audit", "audit schedule", "compliance", "quality improvement"],
+    summary: "Annual internal audit schedule covering 12 domains including care plans, MAR, IPC, safeguarding, and MCA/DoLS. Sets out the 5-stage audit process and re-audit triggers for non-compliance.",
+  },
+  {
+    id: "gov-004",
+    title: "Document Control and Policy Review Policy",
+    category: "Governance & Quality", subcategory: "Document Control", keyQuestion: "Governance & Quality",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "1.9", lastUpdated: "2026-04-01", status: "current", readTime: 10,
+    tags: ["document control", "policy review", "version control", "policy management"],
+    summary: "Sets out the version numbering convention, 12-month review cycle, 6-step review process, and staff acknowledgement requirements for all organisational policies and procedures.",
+  },
+  {
+    id: "gov-005",
+    title: "CQC Notifications Policy and Procedure",
+    category: "Governance & Quality", subcategory: "CQC Compliance", keyQuestion: "Governance & Quality",
+    serviceTypes: ["All"], regulators: ["CQC"],
+    version: "2.1", lastUpdated: "2026-04-01", status: "current", readTime: 11,
+    tags: ["CQC notifications", "notifiable events", "Regulation 18", "serious injury", "death"],
+    summary: "Full list of notifiable events and deadlines (death same day, serious injury 3 working days, etc.), 7-step notification procedure, and Notifications Log requirements.",
+  },
+  {
+    id: "gov-006",
+    title: "Statement of Purpose Policy",
+    category: "Governance & Quality", subcategory: "CQC Compliance", keyQuestion: "Governance & Quality",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "2.0", lastUpdated: "2026-04-01", status: "current", readTime: 9,
+    tags: ["statement of purpose", "Schedule 3", "registration", "CQC", "service description"],
+    summary: "Covers mandatory Schedule 3 content, the 5-step change procedure, and the 28-day CQC notification requirement for any material changes to the Statement of Purpose.",
+  },
+  {
+    id: "gov-007",
+    title: "Business Continuity and Emergency Planning Policy",
+    category: "Governance & Quality", subcategory: "Business Continuity", keyQuestion: "Governance & Quality",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "2.2", lastUpdated: "2026-04-01", status: "current", readTime: 13,
+    tags: ["business continuity", "emergency planning", "BCP", "resilience", "staffing contingency"],
+    summary: "Covers 9 risk scenarios, Emergency Response Procedures, staffing contingency cascade, and the annual desktop exercise requirement for business continuity planning.",
+  },
+
+  // ─── INFORMATION & RECORDS ────────────────────────────────────────────────
+  {
+    id: "igr-001",
+    title: "Records Management Policy",
+    category: "Information & Records", subcategory: "Records Management", keyQuestion: "Information & Records",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "2.4", lastUpdated: "2026-04-01", status: "current", readTime: 12,
+    tags: ["records management", "Caldicott", "record keeping", "retention schedule", "access control"],
+    summary: "Covers the Caldicott principles, contemporaneous record-keeping standards, correction procedure, access controls, and the full retention schedule (adult 8 years, children until 25, employment 6 years).",
+  },
+  {
+    id: "igr-002",
+    title: "Confidentiality Policy",
+    category: "Information & Records", subcategory: "Confidentiality", keyQuestion: "Information & Records",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "2.6", lastUpdated: "2026-04-01", status: "current", readTime: 11,
+    tags: ["confidentiality", "GDPR", "Caldicott", "information sharing", "social media"],
+    summary: "Covers common law duty of confidence, UK GDPR, 5 lawful bases for sharing, the 7 Caldicott Principles, and the social media prohibition for care staff.",
+  },
+  {
+    id: "igr-003",
+    title: "Data Breach and Incident Response Procedure",
+    category: "Information & Records", subcategory: "Data Protection", keyQuestion: "Information & Records",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "1.8", lastUpdated: "2026-04-01", status: "current", readTime: 10,
+    tags: ["data breach", "ICO", "incident response", "GDPR", "72 hours", "data protection"],
+    summary: "7-step breach response procedure (contain, report, assess, notify ICO within 72 hours, notify individuals, investigate, record), ICO notification requirements, and Data Breach Register.",
+  },
+  {
+    id: "igr-004",
+    title: "Subject Access Request Procedure",
+    category: "Information & Records", subcategory: "Data Protection", keyQuestion: "Information & Records",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "1.7", lastUpdated: "2026-04-01", status: "current", readTime: 9,
+    tags: ["SAR", "subject access request", "GDPR", "Article 15", "data rights"],
+    summary: "Article 15 right of access, 1-calendar-month deadline, identity verification, 7-step response procedure, exemptions, and SAR Log requirements.",
+  },
+  {
+    id: "igr-005",
+    title: "Retention and Disposal Schedule",
+    category: "Information & Records", subcategory: "Records Management", keyQuestion: "Information & Records",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "1.6", lastUpdated: "2026-04-01", status: "current", readTime: 9,
+    tags: ["retention", "disposal", "records", "GDPR", "data minimisation", "DBS"],
+    summary: "Full retention schedule for 20+ record types, legal hold procedure, secure disposal procedure (cross-cut shredder / approved contractor), and Disposal Log requirements.",
+  },
+
+  // ─── WORKFORCE & HR ───────────────────────────────────────────────────────
+  {
+    id: "hr-001",
+    title: "Induction and Onboarding Policy",
+    category: "Workforce & HR", subcategory: "Recruitment & Induction", keyQuestion: "Workforce & HR",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "2.1", lastUpdated: "2026-04-01", status: "current", readTime: 13,
+    tags: ["induction", "onboarding", "DBS", "Care Certificate", "pre-employment checks"],
+    summary: "Covers pre-employment checks (DBS, RTW, 2 references, OHQ), 3-stage induction programme, Care Certificate Standards 1-15, and the shortened induction for agency workers.",
+  },
+  {
+    id: "hr-002",
+    title: "Statutory and Mandatory Training Policy",
+    category: "Workforce & HR", subcategory: "Training & Development", keyQuestion: "Workforce & HR",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "2.3", lastUpdated: "2026-04-01", status: "current", readTime: 11,
+    tags: ["mandatory training", "statutory training", "training matrix", "CPD", "non-compliance"],
+    summary: "16-subject mandatory training matrix with frequencies, 4-stage escalation for non-compliance, delivery methods, and Training Matrix maintenance requirements.",
+  },
+  {
+    id: "hr-003",
+    title: "Staff Conduct and Code of Conduct Policy",
+    category: "Workforce & HR", subcategory: "Staff Conduct", keyQuestion: "Workforce & HR",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "2.0", lastUpdated: "2026-04-01", status: "current", readTime: 10,
+    tags: ["code of conduct", "staff conduct", "professional boundaries", "gifts", "social media"],
+    summary: "10 standards of conduct, professional boundaries (no gifts over £10, no personal relationships), outside-work conduct standards, and gross misconduct examples including DBS referral triggers.",
+  },
+  {
+    id: "hr-004",
+    title: "Disciplinary Policy and Procedure",
+    category: "Workforce & HR", subcategory: "Disciplinary & Grievance", keyQuestion: "Workforce & HR",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "3.2", lastUpdated: "2026-04-01", status: "current", readTime: 14,
+    tags: ["disciplinary", "ACAS", "misconduct", "gross misconduct", "DBS referral", "suspension"],
+    summary: "ACAS Code of Practice aligned. Covers informal resolution, 5-stage formal procedure, sanction timescales, and the mandatory DBS referral duty on dismissal for harm-related conduct.",
+  },
+  {
+    id: "hr-005",
+    title: "Grievance Policy and Procedure",
+    category: "Workforce & HR", subcategory: "Disciplinary & Grievance", keyQuestion: "Workforce & HR",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "2.5", lastUpdated: "2026-04-01", status: "current", readTime: 11,
+    tags: ["grievance", "ACAS", "complaint", "non-retaliation", "appeal"],
+    summary: "Informal resolution first, 5-step formal procedure with defined timescales (acknowledgement 3 days, hearing 10 days, decision 5 days, appeal 10 days), and non-retaliation guarantee.",
+  },
+  {
+    id: "hr-006",
+    title: "Staff Rota and Rostering Policy",
+    category: "Workforce & HR", subcategory: "Rostering & Deployment", keyQuestion: "Workforce & HR",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "2.0", lastUpdated: "2026-04-01", status: "current", readTime: 10,
+    tags: ["rota", "rostering", "Working Time Regulations", "staffing", "agency staff"],
+    summary: "Working Time Regulations compliance (48-hour max, 11-hour rest), 5 rostering principles, 5-step staffing shortfall escalation, and agency staff quality requirements.",
+  },
+  {
+    id: "hr-007",
+    title: "Whistleblowing and Speaking Up Policy",
+    category: "Workforce & HR", subcategory: "Staff Conduct", keyQuestion: "Workforce & HR",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "2.1", lastUpdated: "2026-04-01", status: "current", readTime: 11,
+    tags: ["whistleblowing", "speaking up", "FTSU", "Protect", "CQC", "public interest disclosure"],
+    summary: "Enhanced whistleblowing policy with Freedom to Speak Up (FTSU) lead role, escalation routes, and contacts including Protect (020 3117 2520) and CQC (03000 616161).",
+  },
+
+  // ─── CARE OPERATIONS ─────────────────────────────────────────────────────
+  {
+    id: "cop-001",
+    title: "Consent to Care and Treatment Policy",
+    category: "Care Operations", subcategory: "Consent & Capacity", keyQuestion: "Care Operations",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "2.5", lastUpdated: "2026-04-01", status: "current", readTime: 13,
+    tags: ["consent", "Regulation 11", "Mental Capacity Act", "informed consent", "refusal"],
+    summary: "Comprehensive consent framework under CQC Regulation 11 and the Mental Capacity Act 2005. Covers valid consent, capacity assessment, best-interests decisions, ADRTs, and consent documentation.",
+  },
+  {
+    id: "cop-002",
+    title: "Deprivation of Liberty Safeguards Policy",
+    category: "Care Operations", subcategory: "Consent & Capacity", keyQuestion: "Care Operations",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "2.1", lastUpdated: "2026-04-01", status: "current", readTime: 14,
+    tags: ["DoLS", "LPS", "deprivation of liberty", "Cheshire West", "acid test", "MCA"],
+    summary: "DoLS and LPS framework based on the Cheshire West acid test. Covers identification, Standard and Urgent applications, least restrictive practice, RPR appointment, and the DoLS Register.",
+  },
+  {
+    id: "cop-003",
+    title: "Service User Guide Policy",
+    category: "Care Operations", subcategory: "Service User Information", keyQuestion: "Care Operations",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "1.8", lastUpdated: "2026-04-01", status: "current", readTime: 8,
+    tags: ["service user guide", "welcome pack", "accessible information", "complaints", "advocacy"],
+    summary: "Policy and content framework for the Service User Guide — the key document informing service users, families and representatives about the service, rights, complaints procedure, and key contacts.",
+  },
+  {
+    id: "cop-004",
+    title: "No Reply and Missed Call Policy",
+    category: "Care Operations", subcategory: "Domiciliary Care", keyQuestion: "Care Operations",
+    serviceTypes: ["Domiciliary Care", "Community"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "2.0", lastUpdated: "2026-04-01", status: "current", readTime: 10,
+    tags: ["no reply", "missed call", "domiciliary care", "welfare check", "police", "ECM"],
+    summary: "7-step no reply procedure for domiciliary care including back-blow escalation, emergency contacts, police welfare check, and documentation requirements. Covers electronic call monitoring.",
+  },
+  {
+    id: "cop-005",
+    title: "Delegated Healthcare Tasks Policy",
+    category: "Care Operations", subcategory: "Clinical Procedures", keyQuestion: "Care Operations",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "1.9", lastUpdated: "2026-04-01", status: "current", readTime: 12,
+    tags: ["delegation", "clinical tasks", "insulin", "catheter", "PEG", "competency", "NMC"],
+    summary: "Framework for delegated healthcare tasks under NMC guidance. Lists delegatable tasks (insulin, catheter, PEG, stoma, wound care), training and competency requirements, and error reporting.",
+  },
+  {
+    id: "cop-006",
+    title: "Choking Risk Management Procedure",
+    category: "Care Operations", subcategory: "Risk Management", keyQuestion: "Care Operations",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "2.1", lastUpdated: "2026-04-01", status: "current", readTime: 12,
+    tags: ["choking", "dysphagia", "IDDSI", "Heimlich", "aspiration", "food texture", "mealtime"],
+    summary: "Comprehensive choking prevention and emergency response procedure including IDDSI food texture framework (Levels 0-7), mealtime supervision, Resuscitation Council UK Heimlich technique, and post-incident review.",
+  },
 ];
 
 // ─── Document content (rich policy body) ──────────────────────────────────
@@ -1062,6 +1346,35 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
   "res-004": RES004_CONTENT,         // Flexible Service Delivery
   "res-005": RES005_CONTENT,         // Hospital Admission & Discharge Liaison
   "wl-015": WL015_CONTENT,           // Equality & Human Rights (Employment)
+  // ── New priority policies — Governance & Quality ───────────────────────────
+  "gov-001": GOV001_CONTENT,
+  "gov-002": GOV002_CONTENT,
+  "gov-003": GOV003_CONTENT,
+  "gov-004": GOV004_CONTENT,
+  "gov-005": GOV005_CONTENT,
+  "gov-006": GOV006_CONTENT,
+  "gov-007": GOV007_CONTENT,
+  // ── New priority policies — Information & Records ──────────────────────────
+  "igr-001": IGR001_CONTENT,
+  "igr-002": IGR002_CONTENT,
+  "igr-003": IGR003_CONTENT,
+  "igr-004": IGR004_CONTENT,
+  "igr-005": IGR005_CONTENT,
+  // ── New priority policies — Workforce & HR ─────────────────────────────────
+  "hr-001": HR001_CONTENT,
+  "hr-002": HR002_CONTENT,
+  "hr-003": HR003_CONTENT,
+  "hr-004": HR004_CONTENT,
+  "hr-005": HR005_CONTENT,
+  "hr-006": HR006_CONTENT,
+  "hr-007": HR007_CONTENT,
+  // ── New priority policies — Care Operations ────────────────────────────────
+  "cop-001": COP001_CONTENT,
+  "cop-002": COP002_CONTENT,
+  "cop-003": COP003_CONTENT,
+  "cop-004": COP004_CONTENT,
+  "cop-005": COP005_CONTENT,
+  "cop-006": COP006_CONTENT,
 };
 
 export function getDocumentsByCategory(keyQuestion?: string): Document[] {

@@ -21,6 +21,10 @@ const KQ_COLOR: Record<string, string> = {
   Caring: "#ec4899",
   Responsive: "#f59e0b",
   "Well-Led": "#8b5cf6",
+  "Governance & Quality": "#0f766e",
+  "Information & Records": "#0369a1",
+  "Workforce & HR": "#b45309",
+  "Care Operations": "#be185d",
 };
 
 // ─── Default fallback content ──────────────────────────────────────────────────

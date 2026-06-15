@@ -669,6 +669,64 @@ export const SAF001_COMPREHENSIVE: DocumentContent = {
       practiceBox:
         "Quality assurance in safeguarding is not just about counting the number of referrals made. It is about assessing whether the quality of those referrals was good, whether the people involved had the right outcome, and whether learning has been applied to prevent recurrence.",
     },
+    {
+      heading: "17. Allegations Against Staff",
+      body:
+        "Where an allegation is made — or information is received — that a member of staff, volunteer, or contractor has abused, neglected, or harmed a service user (or acted in a way that may have caused harm), [ORGANISATION_NAME] must respond with the same rigour as any other safeguarding concern. The person alleged to have caused harm is not exempted from safeguarding processes by virtue of their employment status.",
+      subSections: [
+        {
+          heading: "17.1 Immediate Response",
+          body: "On receiving an allegation against a member of staff, the Registered Manager must:\n• Ensure the safety of the service user(s) involved — remove the alleged perpetrator from the area if this can be done without drawing attention to the investigation, or consider immediate suspension on full pay pending investigation.\n• Not investigate the allegation internally before consulting the Local Authority Designated Officer (LADO).\n• Preserve any evidence — secure the scene, retain records, and ensure witnesses are not spoken to in a way that contaminates their accounts.\n• Notify the CQC of the allegation under Regulation 18 (notification of other incidents) within 24 hours where the allegation involves a regulated activity.\n• Notify the Disclosure and Barring Service (DBS) where a member of staff is removed from working with vulnerable adults following a safeguarding allegation.",
+          warningBox:
+            "Do not conduct an internal investigation before contacting the LADO. Premature interviews of witnesses or the subject of an allegation can contaminate evidence, undermine a subsequent police investigation, and create legal risk for [ORGANISATION_NAME]. The LADO's role is to advise on the investigation process — contact them first.",
+        },
+        {
+          heading: "17.2 LADO Referral",
+          body: "The Local Authority Designated Officer (LADO) is a statutory role under Working Together to Safeguard Children 2023 and local adult safeguarding guidance. The LADO manages allegations against staff across all agencies in the local area.\n\nA referral to the LADO must be made within 24 hours where:\n• An allegation has been made that a staff member, volunteer or contractor has behaved in a way that has harmed, or may have harmed, an adult at risk.\n• The allegation involves possible criminal offending against an adult at risk.\n• The behaviour of the staff member suggests they may be unsuitable to work with vulnerable adults.\n\nThe Registered Manager will contact the LADO by telephone, followed by a written referral within 24 hours. The LADO will advise on next steps, which may include: internal investigation led by [ORGANISATION_NAME]; police investigation; joint investigation; or strategy discussion. [ORGANISATION_NAME] will cooperate fully with the LADO's recommendations.",
+        },
+        {
+          heading: "17.3 Suspension Considerations",
+          body: "Suspension is a neutral act — it is not a punishment or a finding of guilt. Suspension on full pay may be appropriate pending investigation where:\n• The nature of the allegation is serious and the service user's or staff safety is at risk if the person continues in their role.\n• There is a risk of evidence being tampered with.\n• The working relationship has broken down in a way that makes the investigation impossible.\n\nAlternative management arrangements (change of rota, redeployment to a non-service user facing role, increased supervision) should be considered before suspension, where the allegation is less serious.\n\nThe decision to suspend must be made by the Registered Manager or Provider, in consultation with the LADO and HR advice if available. The suspension must be reviewed at regular intervals — it must not become open-ended.",
+        },
+        {
+          heading: "17.4 Parallel Investigations",
+          body: "Investigations into allegations against staff may run in parallel:\n• A police investigation (if criminal conduct is suspected).\n• A Section 42 safeguarding enquiry by the local authority.\n• An internal disciplinary investigation by [ORGANISATION_NAME] (paused if police investigation is in progress, to avoid prejudicing criminal proceedings).\n• A DBS referral.\n• A professional regulatory body referral (e.g. NMC, HCPC, Social Work England) if the staff member is a registered professional.\n\n[ORGANISATION_NAME] will coordinate its internal investigation with the LADO strategy discussions to ensure no duplication, contamination, or prejudice to parallel proceedings.",
+        },
+        {
+          heading: "17.5 Confidentiality and Communication",
+          body: "Allegations against staff must be handled with strict confidentiality:\n• The identity of the person making the allegation must not be disclosed to the subject of the allegation without their consent, or unless required by law.\n• Information must be shared only on a 'need to know' basis — staff involved in the investigation must not discuss it with colleagues.\n• The service user or their family/advocate must be kept informed of progress in a way that does not prejudice the investigation.\n• The subject of the allegation is entitled to be told the nature of the allegation and to have the opportunity to respond — but only in the context of the formal investigation process, not informally.\n• Staff must not contact service users or their families directly about the allegation.",
+        },
+        {
+          heading: "17.6 Outcome and Record-Keeping",
+          body: "Following investigation, outcomes may include: substantiated (allegation proven and action taken); unsubstantiated (allegation not proven — not the same as deliberately false); unfounded (allegation is demonstrably false or made in bad faith); inconclusive (insufficient evidence to determine).\n\nAll outcomes must be recorded on the person's HR file and in the safeguarding log. Where the allegation is substantiated, [ORGANISATION_NAME] must:\n• Take appropriate disciplinary action, up to and including dismissal.\n• Refer to the DBS under the Safeguarding Vulnerable Groups Act 2006 (mandatory referral where a person is dismissed or removed from regulated activity in circumstances where the grounds relate to harm to a vulnerable adult).\n• Consider referral to a professional regulatory body.\n• Report to CQC.",
+          legalBox:
+            "Failure to make a mandatory DBS referral where one is required is a criminal offence. [ORGANISATION_NAME] has a legal duty to refer where a person is removed from regulated activity (dismissed, resigned, or moved to non-regulated activity) and the grounds relate to concerns about harming, or posing a risk of harm to, a vulnerable adult. The test is whether [ORGANISATION_NAME] reasonably considers the person has engaged in relevant conduct — not whether harm has been proven.",
+        },
+      ],
+    },
+    {
+      heading: "18. Closed Culture Prevention",
+      body:
+        "A 'closed culture' is one in which poor or harmful care is able to flourish behind closed doors — where staff do not feel able to raise concerns, where service users cannot easily complain, where scrutiny is limited, and where leadership does not demonstrate openness or accountability. CQC's guidance on closed cultures (2020, updated 2022) identifies closed cultures as among the highest-risk environments for the abuse and neglect of people receiving care. [ORGANISATION_NAME] is committed to preventing the development of a closed culture and to creating an environment where concerns are raised, heard, and acted upon.",
+      subSections: [
+        {
+          heading: "18.1 Indicators of a Closed Culture",
+          body: "Staff and managers must be aware of the following indicators that a closed culture may be developing:\n\nCulture and behaviour:\n• Staff who mock, infantilise, or demean service users — even in a supposedly 'joking' manner.\n• Use of derogatory language about service users, in private conversations or on communication channels.\n• Staff who resist scrutiny, external visits, or inspection readiness activities.\n• A 'them and us' mentality between management and frontline staff.\n• Reluctance of staff to raise concerns, or previous concerns being dismissed.\n\nCare practices:\n• Unexplained or repetitive injuries to service users.\n• Service users appearing withdrawn, fearful, or distressed without explanation.\n• Consistent use of restrictive practices without documentation or review.\n• Pressure on service users not to complain or to discourage contact with family.\n\nGovernance:\n• Low or absent whistleblowing activity over a sustained period.\n• Patterns of staff misconduct being handled informally rather than through policy.\n• Safeguarding referrals that do not reflect the volume or severity of known concerns.",
+          warningBox:
+            "CQC has found in multiple Serious Case Reviews and SARs that a 'normalisation of poor care' is the most common precursor to a closed culture. When poor care becomes routine — when staff no longer recognise it as poor care — the risk of serious harm escalates dramatically. Leadership must be alert to any drifting of standards, however gradual.",
+        },
+        {
+          heading: "18.2 Proactive Monitoring and Prevention",
+          body: "[ORGANISATION_NAME] will take the following proactive steps to prevent the development of a closed culture:\n\n• Leadership visibility: The Registered Manager will conduct regular unannounced walk-arounds across all shifts, including nights and weekends, to observe care quality and staff behaviour.\n• Service user feedback: Structured, independent feedback from service users will be sought at least quarterly, using accessible formats and ensuring feedback can be given without staff present.\n• Speak Up culture: The Registered Manager will actively encourage and visibly celebrate staff who raise concerns under WL-004 (Whistleblowing Policy). Zero tolerance for any retaliation against staff who speak up.\n• Culture audits: An annual culture audit will be conducted, gathering anonymous feedback from staff on team dynamics, management behaviour, and the safety of raising concerns.\n• External scrutiny: [ORGANISATION_NAME] will actively engage with and facilitate visits by external professionals — local authority quality teams, Healthwatch, advocacy organisations — and will not attempt to limit or choreograph their interactions with service users.\n• Duty of Candour: [ORGANISATION_NAME] is committed to Regulation 20 (Duty of Candour) and will be open and transparent with service users, their families, and regulators when things go wrong.",
+        },
+        {
+          heading: "18.3 CQC Guidance on Closed Cultures",
+          body: "CQC's guidance 'Assessing closed cultures' (2022) provides a framework for identifying and challenging closed cultures. CQC inspectors are specifically trained to identify the indicators of a closed culture and are empowered to take urgent enforcement action where a closed culture is identified — including cancellation of registration.\n\n[ORGANISATION_NAME] uses CQC's published indicators as a self-assessment tool, reviewing against them annually and following any significant incident or complaint. The Registered Manager will present a closed culture self-assessment to the Provider/Board annually as part of the governance calendar.\n\nKey CQC focus areas:\n• Are people treated with dignity and respect in interactions with staff?\n• Are people supported to maintain relationships outside the service?\n• Are staff trained and confident to raise concerns?\n• Is there a culture of openness, learning and improvement?\n• Are restrictive practices used only as a last resort, with full documentation and review?",
+          practiceBox:
+            "One of the most effective preventive measures against closed cultures is investing in the human relationships within the service. Services where staff genuinely know and care about their service users — where there is warmth, laughter, and connection — are fundamentally less at risk than those where staff are merely going through the motions. Leadership must model the culture it wants to see, not just monitor for its absence.",
+        },
+      ],
+    },
   ],
 
   training:

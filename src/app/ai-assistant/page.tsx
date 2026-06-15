@@ -77,7 +77,7 @@ export default function AIAssistantPage() {
     {
       id: "welcome",
       role: "assistant",
-      content: "Hello! I'm Ziproh AI, your 24/7 compliance assistant. I know all 62 policies in your Compliance Centre and can point you directly to the right one. I can help you:\n\n- Interpret CQC regulations and the 5 Key Questions\n- Navigate UK care legislation (Care Act, MCA, HSCA Regulations)\n- Find specific Ziproh policies (e.g. \"show me the medication policies\")\n- Prepare for CQC inspections — try asking about /inspection-prep\n- Answer safeguarding, HR, and governance questions\n\nWhat would you like to know?",
+      content: "Hello! I'm Ziproh AI, your 24/7 compliance assistant. I know all 87 policies in your Compliance Centre and can point you directly to the right one. I can help you:\n\n- Interpret CQC regulations and the 5 Key Questions\n- Navigate UK care legislation (Care Act, MCA, HSCA Regulations)\n- Find specific Ziproh policies (e.g. \"show me the medication policies\")\n- Prepare for CQC inspections — try asking about /inspection-prep\n- Answer safeguarding, HR, and governance questions\n\nWhat would you like to know?",
       timestamp: new Date(),
     },
   ]);
@@ -274,7 +274,7 @@ export default function AIAssistantPage() {
             <div className="bg-white rounded-2xl border border-gray-100 p-4">
               <h3 className="text-sm font-semibold text-gray-700 mb-2">⚡ Capabilities</h3>
               <ul className="space-y-1.5 text-xs text-gray-500">
-                <li>✓ Knows all 62 Ziproh policies</li>
+                <li>✓ Knows all 87 Ziproh policies</li>
                 <li>✓ Links directly to specific policies</li>
                 <li>✓ CQC regulation interpretation</li>
                 <li>✓ Inspection prep guidance</li>
