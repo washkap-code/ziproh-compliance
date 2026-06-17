@@ -19,7 +19,7 @@ const SERVICE_TYPES = [
 ];
 const PLAN_LABELS: Record<string, string> = {
   starter:      "Free Trial",
-  professional: "Professional — £39/mo (annual)",
+  professional: "Professional — £79/mo (annual)",
   enterprise:   "Enterprise — £119/mo (annual)",
 };
 const STATUS_STYLE: Record<string, { label: string; bg: string; color: string }> = {

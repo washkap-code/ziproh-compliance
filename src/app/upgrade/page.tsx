@@ -13,8 +13,8 @@ const PLANS = [
   {
     name: "Professional",
     planId: "professional",
-    price: "£39",
-    annualTotal: "£468",
+    price: "£79",
+    annualTotal: "£950",
     period: "/mo",
     tagline: "For growing care services",
     color: "#2E6FFF",

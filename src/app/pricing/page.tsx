@@ -14,8 +14,8 @@ const PLANS = [
     id: "professional",
     name: "Professional",
     subtitle: "For single-site care providers",
-    perMonth: 39,
-    annualTotal: 468,
+    perMonth: 79,
+    annualTotal: 950,
     color: "#2E6FFF",
     popular: true,
     features: [
