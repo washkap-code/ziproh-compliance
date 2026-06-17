@@ -19,7 +19,7 @@ const PLANS = [
     color: "#2E6FFF",
     popular: true,
     features: [
-      "All 87 policies & procedures",
+      "All 89 policies & procedures",
       "Auto-updated to match CQC, CI, CIW & RQIA",
       "Unlimited user accounts",
       "Full Audit Centre",
@@ -229,7 +229,7 @@ export default function PricingPage() {
             <h2 className="text-2xl font-bold text-gray-900 text-center mb-10">Everything you get</h2>
             <div className="grid md:grid-cols-3 gap-6">
               {[
-                { icon: "📋", title: "87 Policies", desc: "Auto-updated to match current CQC, CI, CIW and RQIA guidance. Download any policy as a branded PDF." },
+                { icon: "📋", title: "89 Policies", desc: "Auto-updated to match current CQC, CI, CIW and RQIA guidance. Download any policy as a branded PDF." },
                 { icon: "🤖", title: "Ziproh AI", desc: "Ask any compliance question and get an expert answer with direct links to the relevant policy." },
                 { icon: "🔍", title: "Audit Centre", desc: "Run internal audits, score each area, and build an evidence trail for inspectors." },
                 { icon: "🏛️", title: "Inspection Prep", desc: "Know exactly where you stand before a CQC visit. Per-Key-Question readiness scores and checklists." },

@@ -17,6 +17,7 @@ import { EFF013_CONTENT, WL007_CONTENT, CAR003_CONTENT, EFF008_CONTENT, WL018_CO
 import { SAF017_CONTENT, SAF018_CONTENT, WL011_CONTENT, WL012_CONTENT, CAR008_CONTENT } from "./policy-medium-depth-8";
 import { EFF006_CONTENT, EFF009_CONTENT, CAR006_CONTENT, CAR007_CONTENT, WL016_CONTENT } from "./policy-medium-depth-9";
 import { CAR004_CONTENT, CAR005_CONTENT, RES002_CONTENT, RES003_CONTENT, RES004_CONTENT, RES005_CONTENT, WL015_CONTENT } from "./policy-medium-depth-10";
+import { SAF019_CONTENT, SAF020_CONTENT, SAF013_ENHANCED, SAF016_ENHANCED } from "./policy-medication-specialist";
 import { EFF002_COMPREHENSIVE } from "./policy-flagship-eff002";
 import { SAF003_COMPREHENSIVE } from "./policy-flagship-saf003";
 import { EFF001_COMPREHENSIVE } from "./policy-flagship-eff001";
@@ -431,6 +432,26 @@ export const DOCUMENTS: Document[] = [
     version: "2.9", lastUpdated: "2026-02-28", status: "current", readTime: 10,
     tags: ["environment", "maintenance", "COSHH", "Legionella", "safety checks"],
     summary: "Policy for maintaining a safe physical environment, including maintenance schedules, COSHH management and Legionella risk control.",
+  },
+  {
+    id: "saf-019",
+    title: "PRN (As Required) Medication Policy",
+    category: "Safe", subcategory: "Medicines Management", keyQuestion: "Safe",
+    serviceTypes: ["Care & Nursing Home", "Supported Living", "Domiciliary Care"],
+    regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "1.0", lastUpdated: "2026-06-17", status: "current", readTime: 16,
+    tags: ["PRN", "as required", "medication", "pain assessment", "controlled drugs", "rescue medication", "anticipatory"],
+    summary: "Policy for the safe management of PRN (as required) medicines including assessment before administration, recording, reviewing patterns, CD PRN, and anticipatory end of life medications.",
+  },
+  {
+    id: "saf-020",
+    title: "Medication Error Reporting & Management Procedure",
+    category: "Safe", subcategory: "Medicines Management", keyQuestion: "Safe",
+    serviceTypes: ["Care & Nursing Home", "Supported Living", "Domiciliary Care"],
+    regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "1.0", lastUpdated: "2026-06-17", status: "current", readTime: 18,
+    tags: ["medication error", "near miss", "duty of candour", "CQC notification", "RIDDOR", "root cause analysis", "MHRA", "controlled drugs"],
+    summary: "Procedure for responding to, reporting, investigating and learning from medication errors and near misses, including Duty of Candour, CQC notification and MHRA Yellow Card requirements.",
   },
 
   // ─── EFFECTIVE ──────────────────────────────────────────────────────
@@ -1314,13 +1335,13 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
   "saf-014": SAF014_CONTENT,         // Pressure Ulcer Prevention & Management
   "eff-011": EFF011_CONTENT,         // Physical Health Monitoring (NEWS2)
   "wl-017": WL017_CONTENT,           // CQC Registration & Regulatory Compliance
-  "saf-013": SAF013_CONTENT,         // Controlled Drugs
+  "saf-013": SAF013_ENHANCED,         // Controlled Drugs (enhanced)
   "saf-011": SAF011_CONTENT,         // Violence & Aggression
   "wl-008": WL008_CONTENT,           // Staffing & Deployment
   "wl-013": WL013_CONTENT,           // Quality Improvement
   "eff-007": EFF007_CONTENT,         // Discharge & Transfer of Care
   "eff-010": EFF010_CONTENT,         // Dysphagia & Swallowing Difficulties
-  "saf-016": SAF016_CONTENT,         // Medicines Covert Administration
+  "saf-016": SAF016_ENHANCED,        // Medicines Covert Administration (enhanced)
   "wl-010": WL010_CONTENT,           // Disciplinary & Capability
   "eff-012": EFF012_CONTENT,         // Positive Behaviour Support
   "wl-014": WL014_CONTENT,           // Information Governance
@@ -1331,6 +1352,8 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
   "wl-018": WL018_CONTENT,           // Registered Manager Accountability
   "saf-017": SAF017_CONTENT,         // Skin Integrity & Wound Care
   "saf-018": SAF018_CONTENT,         // Environmental Safety & Maintenance
+  "saf-019": SAF019_CONTENT,         // PRN (As Required) Medication Policy
+  "saf-020": SAF020_CONTENT,         // Medication Error Reporting & Management
   "wl-011": WL011_CONTENT,           // Grievance Policy
   "wl-012": WL012_CONTENT,           // Absence Management
   "car-008": CAR008_CONTENT,         // Advocacy

@@ -62,7 +62,7 @@ export default function LandingPage() {
               <span style={{ color: "#2E6FFF" }}>With Confidence</span>
             </h1>
             <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-              Ziproh brings everything your team needs into one place — 87 auto-updated policies,
+              Ziproh brings everything your team needs into one place — 89 auto-updated policies,
               an AI compliance assistant, inspection prep tools, and more. Stay inspection-ready, every day.
             </p>
             <div className="flex flex-wrap gap-4">
@@ -97,7 +97,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <div className="text-sm font-bold text-gray-900">Compliance Centre</div>
-                    <div className="text-xs text-gray-500">87 policies • All up to date</div>
+                    <div className="text-xs text-gray-500">89 policies • All up to date</div>
                   </div>
                   <div className="ml-auto badge badge-green">✓ Compliant</div>
                 </div>
@@ -131,7 +131,7 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             {[
-              { value: "87", label: "Policies & Procedures" },
+              { value: "89", label: "Policies & Procedures" },
               { value: "24/7", label: "Access on Any Device" },
               { value: "4", label: "UK Regulators Covered" },
               { value: "AI", label: "Compliance Assistant" },
@@ -157,7 +157,7 @@ export default function LandingPage() {
               {
                 icon: "📋",
                 title: "Compliance Centre",
-                desc: "87 auto-updated policies and procedures aligned to CQC's 5 Key Questions. Download any policy as a branded PDF instantly.",
+                desc: "89 auto-updated policies and procedures aligned to CQC's 5 Key Questions. Download any policy as a branded PDF instantly.",
                 badge: "Core Feature",
               },
               {
@@ -259,7 +259,7 @@ export default function LandingPage() {
           <h2 className="text-4xl font-bold text-gray-900 mb-4">Ready to stay compliant?</h2>
           <p className="text-xl text-gray-500 mb-10">
             Start your 14-day free trial today. No credit card required.
-            All 87 policies, audit tools, and AI compliance assistant — included from day one.
+            All 89 policies, audit tools, and AI compliance assistant — included from day one.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/register" className="btn-primary text-base px-10 py-4">

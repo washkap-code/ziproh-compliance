@@ -31,7 +31,7 @@ export async function GET(_req: Request, { params }: { params: Promise<{ id: str
   if (staff && staff.length > 0) {
     const staffIds = staff.map(s => s.id);
     const { data: readRecords } = await sb.from("read_records").select("user_id, document_id").in("user_id", staffIds);
-    const TOTAL_POLICIES = 87;
+    const TOTAL_POLICIES = 89;
     const perStaff = staffIds.map(id => {
       const reads = (readRecords ?? []).filter(r => r.user_id === id).length;
       return Math.min(reads / TOTAL_POLICIES, 1) * 100;
