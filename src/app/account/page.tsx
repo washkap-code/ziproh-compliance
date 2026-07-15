@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import DashboardLayout from "@/components/DashboardLayout";
+import CareProfileForm from "@/components/CareProfileForm";
 import { createBrowserClient } from "@supabase/ssr";
 import type { Profile } from "@/lib/supabase";
 
@@ -327,6 +328,15 @@ export default function AccountPage() {
               </button>
             </div>
           </form>
+
+          {/* ── Care Setting Profile — drives automatic policy tailoring ── */}
+          <div className="card">
+            <h2 className="text-base font-bold text-gray-900 mb-1">Care Setting Profile</h2>
+            <p className="text-xs text-gray-400 mb-5">
+              These details automatically tailor every policy in your library to your service — terminology, regulations, named roles and setting-specific requirements.
+            </p>
+            <CareProfileForm />
+          </div>
 
           {/* ── Organisation Logo ── */}
           <div className="card space-y-5">

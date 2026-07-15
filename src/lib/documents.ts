@@ -31,6 +31,9 @@ import { GOV001_CONTENT, GOV002_CONTENT, GOV003_CONTENT, GOV004_CONTENT, GOV005_
 import { IGR001_CONTENT, IGR002_CONTENT, IGR003_CONTENT, IGR004_CONTENT, IGR005_CONTENT } from "./policy-new-igr";
 import { HR001_CONTENT, HR002_CONTENT, HR003_CONTENT, HR004_CONTENT, HR005_CONTENT, HR006_CONTENT, HR007_CONTENT } from "./policy-new-hr";
 import { COP001_CONTENT, COP002_CONTENT, COP003_CONTENT, COP004_CONTENT, COP005_CONTENT, COP006_CONTENT } from "./policy-new-cop";
+import { EXPANSION_2026_DOCS, EXPANSION_2026_CONTENT } from "./policy-expansion-2026";
+import { EXPANSION_2026B_DOCS, EXPANSION_2026B_CONTENT } from "./policy-expansion-2026b";
+import { EXPANSION_2026C_DOCS, EXPANSION_2026C_CONTENT } from "./policy-expansion-2026c";
 
 export type Document = {
   id: string;
@@ -107,6 +110,8 @@ export type DocumentContent = {
     title: string;
     description?: string;   // legacy
     content?: string;       // new-format
+    type?: "letter" | "form" | "checklist" | "template" | "flowchart";  // expansion-set
+    body?: string;                                                       // expansion-set template body
   }[];
   versionHistory?: {
     version: string;
@@ -1115,6 +1120,14 @@ export const DOCUMENTS: Document[] = [
     tags: ["choking", "dysphagia", "IDDSI", "Heimlich", "aspiration", "food texture", "mealtime"],
     summary: "Comprehensive choking prevention and emergency response procedure including IDDSI food texture framework (Levels 0-7), mealtime supervision, Resuscitation Council UK Heimlich technique, and post-incident review.",
   },
+
+  // ── 2026 Expansion Set (30 policies) ──
+  ...EXPANSION_2026_DOCS,
+
+  // ── 2026 Expansion Set B (Group 4: Health, Safety & Premises) ──
+  ...EXPANSION_2026B_DOCS,
+  // ── 2026 Expansion Set C (Group 5: Workforce & HR) ──
+  ...EXPANSION_2026C_DOCS,
 ];
 
 // ─── Document content (rich policy body) ──────────────────────────────────
@@ -1398,6 +1411,11 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
   "cop-004": COP004_CONTENT,
   "cop-005": COP005_CONTENT,
   "cop-006": COP006_CONTENT,
+
+  // 2026 Expansion Set
+  ...EXPANSION_2026_CONTENT,
+  ...EXPANSION_2026B_CONTENT,
+  ...EXPANSION_2026C_CONTENT,
 };
 
 export function getDocumentsByCategory(keyQuestion?: string): Document[] {
