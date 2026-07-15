@@ -20,7 +20,7 @@ const PLANS = [
     color: "#2E6FFF",
     highlight: true,
     features: [
-      "All 164 policies — always up to date",
+      "All 169 policies — always up to date",
       "Unlimited staff accounts",
       "Full audit trail & compliance record",
       "CQC inspection readiness tools",
@@ -173,7 +173,7 @@ export default function UpgradePage() {
         <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-gray-400">
           <span className="flex items-center gap-1.5">🔒 Secure payments via Stripe</span>
           <span className="flex items-center gap-1.5">✓ Cancel anytime</span>
-          <span className="flex items-center gap-1.5">📋 164 CQC-aligned policies</span>
+          <span className="flex items-center gap-1.5">📋 169 CQC-aligned policies</span>
           <span className="flex items-center gap-1.5">🇬🇧 UK-based support</span>
         </div>
 

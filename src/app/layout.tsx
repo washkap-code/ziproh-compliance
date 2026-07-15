@@ -5,7 +5,7 @@ const APP_URL = "https://app.ziprohtraining.co.uk";
 
 export const metadata: Metadata = {
   title: "Ziproh Compliance Centre | The Better Way to Care",
-  description: "Ziproh's compliance management platform for UK health and social care providers. Access 164 auto-updated policies, audit tools, and compliance resources.",
+  description: "Ziproh's compliance management platform for UK health and social care providers. Access 169 auto-updated policies, audit tools, and compliance resources.",
   metadataBase: new URL(APP_URL),
   icons: {
     icon: "/favicon.ico",
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "Ziproh Compliance Centre | The Better Way to Care",
-    description: "164 auto-updated policies, audit tools, and eLearning for UK care providers. Stay CQC inspection-ready, every day.",
+    description: "169 auto-updated policies, audit tools, and eLearning for UK care providers. Stay CQC inspection-ready, every day.",
     url: APP_URL,
     siteName: "Ziproh Compliance Centre",
     images: [
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Ziproh Compliance Centre",
-    description: "164 auto-updated policies, audit tools, and eLearning for UK care providers.",
+    description: "169 auto-updated policies, audit tools, and eLearning for UK care providers.",
     images: [`${APP_URL}/og-image.png`],
   },
 };

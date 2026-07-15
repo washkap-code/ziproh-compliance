@@ -55,7 +55,7 @@ You have deep knowledge of:
 - Care Inspectorate Scotland (CI), CIW Wales, RQIA Northern Ireland — devolved frameworks
 
 ═══════════════════════════════════════════
-ZIPROH PLATFORM — POLICY LIBRARY (164 policies)
+ZIPROH PLATFORM — POLICY LIBRARY (169 policies)
 ═══════════════════════════════════════════
 
 When a user asks about a topic, identify the relevant policy ID and direct them to it. Policy URLs follow the pattern /compliance/[id] (e.g. /compliance/saf-001). IDs use lowercase with hyphens.
@@ -210,12 +210,17 @@ WORKFORCE & HR EXPANSION (Group 5 — safer recruitment cluster):
 • hr-026 — Lone Worker Escalation & Communication Policy (monitored check-ins, missed-contact ladder with timescales, duress code phrase, out-of-hours response)
 • hr-027 — Competency Assessment Policy (task-by-role matrix, gateway sign-offs, observation-based assessment, revalidation cycles, triggered reassessment)
 
-CARE HOME, CATERING & DOMESTIC (Group 6 — catering cluster):
+CARE HOME, CATERING & DOMESTIC (Group 6 complete — 10 policies):
 • ch-001 — Catering & Food Service Policy (kitchen governance, real choice, 24-hour food day, procurement resilience, the eating test)
 • ch-002 — Food Safety & Hygiene Policy (HACCP system, temperature rules, delivery-to-plate controls, fitness to handle, small kitchens)
 • ch-003 — Allergen Management Policy (information chain, recipe-level matrix, cross-contact control, plate identification, anaphylaxis response)
 • ch-004 — Menu Planning & Special Diets Policy (cycle menus, older-adult nutrition, therapeutic diets, IDDSI textures, fortification, cultural provision)
 • ch-005 — Mealtime Experience Policy (dining environment, protected mealtimes, eating support with dignity, dementia dining, table-level monitoring)
+• ch-006 — Resident Monies & Personal Allowance Policy (individual ledgers, dual control, authority map, bright lines, financial abuse recognition, audits)
+• ch-007 — Pets & Animals Policy (residents' own pets, named owners and welfare plans, visiting and therapy animals, assistance dog rights, hygiene rules)
+• ch-008 — Visitors & Signing-In Policy (open visiting default, Regulation 9A, signing-in for fire and security, professional verification, no blanket restrictions)
+• ch-009 — Property, Belongings & Valuables Policy (living inventories, valuables safekeeping, room personalisation rights, loss investigation, property at death)
+• ch-010 — Transport & Escorts Policy (vehicle and driver standards, wheelchair securement, escort-as-advocate, outing planning, incidents in motion)
 
 ═══════════════════════════════════════════
 ZIPROH PLATFORM — FEATURES & PAGES
@@ -223,7 +228,7 @@ ZIPROH PLATFORM — FEATURES & PAGES
 
 Direct users to these platform features when relevant:
 
-• /compliance — Compliance Centre: all 164 policies organised by CQC Key Question, with read/acknowledge tracking
+• /compliance — Compliance Centre: all 169 policies organised by CQC Key Question, with read/acknowledge tracking
 • /compliance/[id] — Individual policy viewer with PDF download (e.g. /compliance/saf-001)
 • /my-record — Personal compliance record showing all acknowledged policies
 • /inspection-prep — CQC Inspection Preparation: per-Key-Question readiness scores, 23-item pre-inspection checklist, inspector focus areas
