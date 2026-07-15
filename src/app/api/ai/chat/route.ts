@@ -55,7 +55,7 @@ You have deep knowledge of:
 - Care Inspectorate Scotland (CI), CIW Wales, RQIA Northern Ireland — devolved frameworks
 
 ═══════════════════════════════════════════
-ZIPROH PLATFORM — POLICY LIBRARY (134 policies)
+ZIPROH PLATFORM — POLICY LIBRARY (139 policies)
 ═══════════════════════════════════════════
 
 When a user asks about a topic, identify the relevant policy ID and direct them to it. Policy URLs follow the pattern /compliance/[id] (e.g. /compliance/saf-001). IDs use lowercase with hyphens.
@@ -166,7 +166,7 @@ CARE OPERATIONS (6 policies — clinical procedures, domiciliary care, service u
 • cop-006 — Choking Risk Management Procedure (IDDSI Levels 0-7, mealtime supervision, Resuscitation Council UK Heimlich technique)
 
 
-HEALTH, SAFETY & PREMISES (15 policies — Group 4 expansion, buildings and equipment safety):
+HEALTH, SAFETY & PREMISES (20 policies — Group 4 complete, buildings and equipment safety):
 • saf-029 — Health & Safety Policy (Organisational) (policy statement, organisation of duties, arrangements, competent persons)
 • saf-030 — COSHH Policy (hazardous substance inventory, COSHH assessments, storage, spills, health surveillance)
 • saf-031 — Legionella & Water Safety Policy (water risk assessment, temperature monitoring, flushing, written scheme)
@@ -182,6 +182,11 @@ HEALTH, SAFETY & PREMISES (15 policies — Group 4 expansion, buildings and equi
 • saf-041 — Contractor Management Policy (vetting, DBS/accompaniment safeguarding, site induction, permits to work, hot work, fire impairments)
 • saf-042 — Smoking & Vaping Policy (smoke-free premises, individual smoking risk assessments, oxygen and emollient fire interactions, vaping rules)
 • saf-043 — First Aid Policy (needs assessment, first aider rostering FAW/EFAW, kit standards and checks, AED arrangements, recording chain)
+• saf-044 — Personal Protective Equipment (PPE) Policy (task-based selection, donning/doffing sequence, glove overuse, FFP3 fit testing, community use)
+• saf-045 — Outbreak Management Policy (declaration thresholds, first 24 hours, UKHSA/regulator notifications, isolation/cohorting, line list, stand-down)
+• saf-046 — Pandemic Preparedness & Response Policy (standing baseline, escalation framework, rights-balanced visiting, vaccination, recovery)
+• saf-047 — Needlestick & Inoculation Injury Policy (prevention, first five minutes, urgent risk assessment, PEP windows, source testing, follow-up serology, support)
+• saf-048 — Bed Rails & Bed Safety Policy (falls vs entrapment, alternatives first, bed/mattress/rail compatibility, gap checks, MCA/restraint, review)
 
 ═══════════════════════════════════════════
 ZIPROH PLATFORM — FEATURES & PAGES
@@ -189,7 +194,7 @@ ZIPROH PLATFORM — FEATURES & PAGES
 
 Direct users to these platform features when relevant:
 
-• /compliance — Compliance Centre: all 134 policies organised by CQC Key Question, with read/acknowledge tracking
+• /compliance — Compliance Centre: all 139 policies organised by CQC Key Question, with read/acknowledge tracking
 • /compliance/[id] — Individual policy viewer with PDF download (e.g. /compliance/saf-001)
 • /my-record — Personal compliance record showing all acknowledged policies
 • /inspection-prep — CQC Inspection Preparation: per-Key-Question readiness scores, 23-item pre-inspection checklist, inspector focus areas
