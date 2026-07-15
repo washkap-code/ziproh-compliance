@@ -51,6 +51,52 @@ export const EXPANSION_2026B_DOCS: Document[] = [
     tags: ["gas safety", "Gas Safe", "CP12", "carbon monoxide", "boilers"],
     summary: "Annual gas safety checks by Gas Safe engineers, landlord certificate duties, carbon monoxide detection, gas emergency response, and the arrangements for gas appliances in people's own homes in community settings.",
   },
+  {
+    id: "saf-034",
+    title: "Equipment Safety & Lifting Operations Policy (PUWER/LOLER)",
+    category: "Safe", subcategory: "Health & Safety", keyQuestion: "Safe",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "1.0", lastUpdated: "2026-07-15", status: "updated", readTime: 14,
+    tags: ["equipment", "LOLER", "PUWER", "hoists", "thorough examination", "maintenance"],
+    summary: "Work equipment and lifting equipment safety: the equipment register, six-monthly thorough examination of hoists and slings, pre-use checks staff really do, servicing versus examination, defect quarantine, and equipment owned by others in community settings.",
+  },
+  {
+    id: "saf-035",
+    title: "Medical Devices Management Policy",
+    category: "Safe", subcategory: "Health & Safety", keyQuestion: "Safe",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "1.0", lastUpdated: "2026-07-15", status: "updated", readTime: 13,
+    tags: ["medical devices", "MHRA", "safety alerts", "calibration", "adverse incidents"],
+    summary: "Managing medical devices from profiling beds and pressure mattresses to thermometers and glucometers: the device inventory, calibration and servicing, MHRA safety alert handling, adverse incident reporting, decontamination and end-of-life.",
+  },
+  {
+    id: "saf-036",
+    title: "Waste Management Policy",
+    category: "Safe", subcategory: "Health & Safety", keyQuestion: "Safe",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "1.0", lastUpdated: "2026-07-15", status: "updated", readTime: 12,
+    tags: ["waste", "duty of care", "segregation", "waste transfer notes", "offensive waste"],
+    summary: "The waste duty of care end to end: segregation streams and colour coding, safe internal storage, licensed carriers and transfer documentation, confidential waste, recycling, and what changes in domiciliary and supported living settings.",
+  },
+  {
+    id: "saf-037",
+    title: "Clinical Waste & Sharps Safety Policy",
+    category: "Safe", subcategory: "Infection Control", keyQuestion: "Safe",
+    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "1.0", lastUpdated: "2026-07-15", status: "updated", readTime: 13,
+    tags: ["clinical waste", "sharps", "needlestick", "colour coding", "consignment notes"],
+    summary: "Clinical waste and sharps from generation to disposal: the colour-coded stream system, sharps container discipline, safer sharps devices, the immediate needlestick response, medicines waste, and consignment note records.",
+  },
+  {
+    id: "saf-038",
+    title: "Laundry & Linen Management Policy",
+    category: "Safe", subcategory: "Infection Control", keyQuestion: "Safe",
+    serviceTypes: ["Care & Nursing Home", "Residential", "Nursing Home", "Supported Living", "Hospice"],
+    regulators: ["CQC", "CI", "CIW", "RQIA"],
+    version: "1.0", lastUpdated: "2026-07-15", status: "updated", readTime: 11,
+    tags: ["laundry", "linen", "infection control", "thermal disinfection", "segregation"],
+    summary: "Safe laundry from bedside to airing cupboard: segregation of used, foul and infectious linen, water-soluble bag discipline, thermal and chemical disinfection parameters, personal clothing care, uniforms, and machine maintenance.",
+  },
 ];
 
 export const EXPANSION_2026B_CONTENT: Record<string, DocumentContent> = {
@@ -301,6 +347,248 @@ export const EXPANSION_2026B_CONTENT: Record<string, DocumentContent> = {
 "Premises: ______   Manager tracks next-due dates (60-day horizon).\n\nColumns:\n- Appliance (type, make/model, location) + flue\n- Owner: [ ] Service  [ ] Landlord (community setting — see tenancy log)\n- Annual safety check: last date | engineer (Gas Safe no. verified) | certificate ref | defects & classification | remedials completed (evidence)\n- Servicing (manufacturer schedule): last | next\n- CO alarm covering this appliance: location | test schedule | last test | replace-by date\n- Emergency control valve location: ______\n\nTENANCY LOG (supported living/domiciliary):\nProperty | Landlord | Gas safety record confirmed current (date/evidence) | Concerns raised (date/outcome) | Shut-off location noted in care plan [ ]" },
       { title: "Gas Emergency & CO Response Card (display + induction drill)", type: "template", body:
 "SMELL GAS?\n✗ NO switches (on OR off) ✗ No flames ✗ No smoking ✗ No doorbells\n✓ OPEN doors and windows\n✓ MOVE people away from the area (evacuate per plan if strong/spreading)\n✓ SHUT OFF at emergency control valve if trained & safe — locations: ______\n✓ CALL National Gas Emergency: 0800 111 999 (free, 24h)\n✓ 999 if fire/explosion risk or casualties\n✓ Inform manager/on-call: ______\nNo re-entry/re-use until the engineer clears it.\n\nCO ALARM SOUNDING or CO SUSPECTED (headache, dizziness, nausea, drowsiness, confusion — clustering by room or improving outdoors):\n1. Treat as REAL. Ventilate. Move people out of the area.\n2. Appliances OFF. Gas emergency line as above.\n3. Symptomatic people → medical assessment — SAY 'possible carbon monoxide' (it changes the tests). 999 for collapse/severe symptoms.\n4. No re-occupation until cleared. Incident report + manager duties (RIDDOR check, notifications).\n\nAPPLIANCE WARNING SIGNS → report today, rest the appliance if combustion signs:\nlazy yellow flame | soot/staining | heavy condensation | pilot keeps dying" },
+    ],
+  },
+  "saf-034": {
+    purpose: "This policy keeps work equipment — and above all the equipment that lifts people — safe to use: selected for the task, maintained, examined by competent persons on the statutory cycle, checked before every use, and taken out of service the moment a defect appears. Hoist and sling failures cause deaths in care settings; this policy exists so ours never joins that list.",
+    scope: "Covers all work equipment provided by the organisation (hoists, standing aids, slings, bath lifts, profiling beds used as lifting equipment, wheelchairs, kitchen and laundry machinery, maintenance tools) and sets out the service's role for equipment owned by others — community equipment stores, landlords, families — that staff use in people's own homes.",
+    responsibilities: [
+      { role: "Registered Manager", duties: [
+        "Maintain the equipment register (Appendix A) covering every item: identity, location, servicing schedule, thorough examination due dates and reports",
+        "Contract competent persons for six-monthly thorough examination of all equipment that lifts people, and act on every report before the deadline it sets",
+        "Ensure equipment is selected for the task and the person — weight limits, sling compatibility, environment — before first use",
+        "Quarantine defective equipment immediately: labelled, removed from use, and not returned until repaired and re-checked",
+        "Ensure staff are trained on the specific models in use, not generic equipment, before using them unsupervised" ] },
+      { role: "All Staff", duties: [
+        "Complete the pre-use check (Appendix B) every time before using lifting equipment — no exceptions for equipment used an hour ago",
+        "Use equipment only as trained, within its safe working load, with the compatible sling in the right size and loop configuration from the person's moving and handling plan",
+        "Stop and report the moment something is wrong: fraying, stitching damage, error tones, unusual movement, missing labels — the item comes out of use, not into 'careful use'",
+        "Never improvise: no unapproved attachments, no mixing sling and hoist brands outside the compatibility statement, no exceeding load limits 'just this once'" ] },
+    ],
+    keyPoints: [
+      "Two different clocks run at once and both matter: servicing keeps equipment working (per manufacturer schedule); thorough examination is the statutory safety check by a competent person — six-monthly for equipment lifting people (hoists, slings, bath lifts) and after events that could affect safety",
+      "Slings are lifting equipment in their own right: each sling is individually identified on the register, examined six-monthly, checked before every use, and retired when the label is illegible or the fabric or stitching is suspect",
+      "Pre-use checks are the last line of defence: frame, boom, spreader bar, battery, emergency lower, brakes, sling fabric, stitching, clips and loops — thirty seconds that catch what six-monthly examination cannot",
+      "Defect means out of service now: a labelled quarantine, an incident report, and a replacement plan — a service short of hoists borrows or hires safely rather than nursing a defective one along",
+      "Compatibility is evidence-based: sling-to-hoist combinations follow the manufacturers' compatibility statements and the person's assessment; the mixing of brands without documented compatibility is prohibited",
+      "Thorough examination reports are acted on, not filed: defect timescales in the report are tracked to completion, and items failed by the examiner do not return to use until the remedial evidence exists",
+      "Equipment owned by others still gets our vigilance: in community settings staff pre-use check every hoist and sling they use, report defects to the owner and the manager the same day, and do not use equipment that fails the check — the person's plan holds the alternative",
+      "Training is model-specific and recorded: staff sign off on the actual makes and models in the service, refreshed when equipment changes and when competence is in doubt",
+    ],
+    legislation: [
+      "Lifting Operations and Lifting Equipment Regulations 1998 (LOLER)",
+      "Provision and Use of Work Equipment Regulations 1998 (PUWER)",
+      "Health and Safety at Work etc. Act 1974",
+      "Management of Health and Safety at Work Regulations 1999",
+      "Health and Social Care Act 2008 (Regulated Activities) Regulations 2014 — Regulations 12 and 15",
+      "RIDDOR 2013 (lifting equipment failures and injuries)",
+    ],
+    sections: [
+      { heading: "Selection and Acquisition", body: "Equipment enters service through a gate, not a delivery door: the need is defined (task, person, environment, loads), options are assessed against it, and the chosen item is commissioned — assembled per manufacturer, examined or certified as new, added to the register with its servicing and examination schedule, and covered by staff training before first use with a person. Second-hand, hired and loaned equipment passes the same gate: current thorough examination evidence travels with it or it does not come in. For person-specific provision (slings above all), sizing and configuration come from the moving and handling assessment, and the sling's identity is recorded in the person's plan so the right sling meets the right person every time." },
+      { heading: "Maintenance, Examination and Records", body: "The register drives three cycles. Servicing follows the manufacturer's schedule and keeps function. Thorough examination follows LOLER: six-monthly for equipment and accessories lifting people, twelve-monthly for other lifting equipment, and additionally after damage, major repair or events that could affect integrity. In-house checks fill the gaps: weekly visual checks of hoists and slings in heavy use, battery condition, and the pre-use check every time. Records are kept per item: examination reports (retained per the records schedule and at minimum until superseded by two subsequent reports), service records, defect and repair history, and the training matrix showing who may use what. The manager reviews the register monthly against due dates with a 60-day forward view." },
+      { heading: "Defects, Failures and Incidents", body: "A defect follows one path: stop use, isolate and label the item (quarantine tag — Appendix C), report to the manager, record the incident, arrange repair by a competent person, and return to use only with evidence — which for lifting equipment after significant repair means examination before use. Failures that caused or could have caused injury go through the incident procedure with duty-of-candour and regulator notifications assessed; certain lifting equipment failures are RIDDOR-reportable as dangerous occurrences even without injury, and the manager checks rather than assumes. Where a failure suggests a batch or design problem, the manager reports to the manufacturer and checks for safety alerts covering the model (see Medical Devices policy for alert handling)." },
+      { heading: "Community Settings", body: "In domiciliary care and supported living the equipment is usually provided by the community equipment service, the NHS, a landlord or the family — but staff safety duties and the person's safety do not change. The service confirms at care-planning stage who owns and maintains each item and that examination evidence exists for lifting equipment; the care plan records the owner and the fault-reporting route. Staff pre-use check every time, report defects same-day to both the owner and the manager, and never use failed equipment — the plan's contingency (second carer, alternative technique within the assessment, or visit rescheduling with welfare checks) applies until repair. Where owners fail to act on a reported defect, the manager escalates in writing and treats continued inaction as a safeguarding-relevant risk to be raised through commissioning or the local authority." },
+    ],
+    appendices: [
+      { title: "Equipment & Lifting Equipment Register", type: "template", body:
+"Item | ID/serial | Location | Owner (service/other) | SWL | Commissioned date\nServicing: schedule | last | next\nThorough examination (lifting equipment): interval (6m people-lifting / 12m other) | last report ref | defects & deadline | next due\nWeekly visual check log (heavy-use hoists/slings): date | initials | outcome\nTraining: models covered | staff signed off (see matrix)\nStatus: [ ] In service  [ ] Quarantined (tag ref, date)  [ ] Retired (date, disposal route)" },
+      { title: "Hoist & Sling Pre-Use Check Card", type: "checklist", body:
+"EVERY use. 30 seconds. Any NO = do not use, tag it, report it.\nHOIST: frame/boom cracks or distortion? castors & brakes work? battery charged? raise/lower smooth? emergency stop & emergency lower work? spreader bar/clip attachment secure? SWL label legible?\nSLING: correct sling for THIS person (ID matches plan)? size & loop config per plan? label legible (SWL, size)? fabric — no fraying, cuts, thinning? stitching intact — no broken threads at seams/loops? clips/loops undamaged? clean & dry?\nPERSON & SPACE: weight within SWL? area clear? second staff member present where the plan requires?\nAfter use: sling stored clean/dry per plan; hoist on charge if needed." },
+      { title: "Equipment Quarantine Tag & Defect Report", type: "form", body:
+"QUARANTINE TAG (attach to item):\nDO NOT USE — DEFECTIVE\nItem/ID: ______  Date/time: ______  Tagged by: ______\nDefect: ______\n\nDEFECT REPORT (to manager same shift):\nItem, ID, location | Defect found (how discovered: pre-use check / in use / weekly check) | Anyone at risk or harmed? (→ incident procedure, RIDDOR check for lifting failures) | Immediate substitution arrangements | Repairer contacted (date) | Repair/exam evidence before return to use | Manager sign-off & register updated" },
+    ],
+  },
+  "saf-035": {
+    purpose: "This policy manages every medical device the service uses — profiling beds, pressure-relieving mattresses, hoists' clinical cousins, thermometers, blood pressure monitors, pulse oximeters, glucometers, nebulisers, suction units, oxygen concentrators — so each is suitable, clean, calibrated, working, and used by trained staff; and so safety alerts and adverse incidents are handled as the early-warning system they are.",
+    scope: "Applies to all medical devices owned, hired or loaned to the service, and to staff use of devices owned by service users or supplied by the NHS in any setting. Covers acquisition, inventory, maintenance and calibration, cleaning and decontamination, training, safety alerts, adverse incident reporting and disposal.",
+    responsibilities: [
+      { role: "Registered Manager", duties: [
+        "Maintain the medical device inventory (Appendix A) with servicing, calibration and replacement dates for every device",
+        "Register to receive MHRA safety alerts (via the Central Alerting System or MHRA notifications) and operate the alert log (Appendix B): every alert assessed against the inventory, actions completed and evidenced",
+        "Ensure devices are serviced and calibrated per manufacturer schedules by competent providers, and that single-use and lifetime limits are respected",
+        "Report adverse incidents involving devices to the MHRA and the regulator as required, alongside the internal incident procedure",
+        "Ensure decontamination before service, repair or disposal, with the declaration the repairer needs" ] },
+      { role: "All Staff", duties: [
+        "Use devices only with training on the model in question, following the person's care plan and the manufacturer's instructions",
+        "Check devices before use: visibly clean, undamaged, in date for service/calibration (label), battery/power adequate, alarms functional where fitted",
+        "Clean devices between uses per the device's decontamination instructions and the IPC policy",
+        "Remove faulty devices from use immediately, label, and report — and report every device-involved incident, including near-misses, the same day",
+        "Never modify devices, silence alarms as a workaround, or use single-use items twice" ] },
+    ],
+    keyPoints: [
+      "The inventory is the control: a device the register does not know about is a device with no servicing, no calibration, no alert-matching and no training trail — everything in use is on the register, including hired, loaned and trial items",
+      "Calibration is clinical safety: thermometers, BP monitors, glucometers, oximeters and scales feed clinical decisions; out-of-calibration readings mislead — devices carry a next-due label and out-of-date devices come out of use",
+      "MHRA alerts are actioned, not read: each alert is checked against the inventory the week it arrives, applicable actions completed within the alert's deadline, and the outcome recorded even when the answer is 'none of our models affected'",
+      "Adverse incidents feed the national system: device-involved deaths, injuries and near-misses are reported to the MHRA (in addition to internal, safeguarding, RIDDOR and regulator routes) — under-reporting hides dangerous devices from everyone",
+      "Bed rails are medical devices with their own risk profile: assessment, correct fitting to the specific bed and mattress combination, gap checks, and review sit in the dedicated Bed Rails policy — this policy holds their inventory, maintenance and alerts",
+      "Decontamination brackets every transition: between users, before service or repair (with a contamination-status declaration), and before disposal — a device leaves the building clean or with its status declared",
+      "Single-use means once: items marked with the single-use symbol are never reprocessed; single-patient-use items stay with that person and are replaced per instructions",
+      "User-owned devices get a defined role: staff may support use of a person's own device where the care plan says so, after a suitability check — condition, instructions available, servicing status known — with concerns escalated rather than improvised around",
+    ],
+    legislation: [
+      "Medical Devices Regulations 2002 (as amended, UK)",
+      "Health and Social Care Act 2008 (Regulated Activities) Regulations 2014 — Regulations 12, 15 and 17",
+      "Provision and Use of Work Equipment Regulations 1998",
+      "Electricity at Work Regulations 1989 (powered devices)",
+      "RIDDOR 2013 (where device incidents meet thresholds)",
+      "MHRA guidance: Managing Medical Devices",
+    ],
+    sections: [
+      { heading: "Acquisition, Inventory and Lifecycle", body: "Devices enter through assessment of need and suitability — intended purpose matches the clinical task, the population, the environment and the cleaning regime the service can actually deliver. On arrival: commissioning check, register entry (identity, serial, location or person, servicing and calibration schedule, expected lifetime), instructions filed and accessible, and training arranged before first clinical use. Through life: the register tracks servicing, calibration, repairs, alert actions and condition reviews. At end of life: decontaminate, deregister, and dispose via the waste policy's routes (WEEE for electricals, clinical waste rules for contaminated items) — with data-bearing devices (some monitors store readings) cleared per the data policies." },
+      { heading: "Maintenance, Calibration and Daily Checks", body: "Three layers keep devices dependable. Planned: servicing and calibration by competent providers on manufacturer schedules, evidenced by reports and calibration certificates, with next-due labels on the device. Periodic: the manager's monthly register review against due dates, plus battery replacement programmes and mattress audits (pressure-relieving mattresses checked for cell function, cover integrity and pump alarms on a set cycle). Point of use: the staff pre-use check — clean, intact, in date, powered, alarming where it should. Devices failing any layer are removed, labelled and reported; loan-stock replacements protect care continuity while repairs happen." },
+      { heading: "Safety Alerts and Adverse Incidents", body: "The manager (with a named deputy for absence) receives MHRA and CAS alerts and runs each through the log within the week: does any alert cover a make/model/lot on the inventory or in use by a person we support? If yes — actions per the alert (quarantine, check, modify use, replace), completed inside its deadline, evidenced, and shared with staff who use the device. If no — recorded as checked and not applicable. Going the other way, the service reports device-involved adverse incidents to the MHRA: deaths and serious injuries always; malfunctions and near-misses that could have caused harm too. The internal incident review asks the device questions — right device, working, calibrated, used as trained, alarm settings appropriate — and feeds lessons into training and purchasing." },
+      { heading: "Training and Competence", body: "Every device class in the inventory maps to a training requirement, and the matrix shows who is signed off on what — induction covers the devices the role touches; new devices trigger training before deployment; and competence is checked, not assumed, after incidents, after long absence, and when practice drifts (alarms silenced, cuffs mis-sized, probes uncovered). Training covers the device in its care context: not just button-pressing but when readings should prompt escalation (linking to the Deterioration policy), what alarm settings mean for this person, and the cleaning standard between uses. Agency and bank staff use devices only after orientation to the models in the service." },
+    ],
+    appendices: [
+      { title: "Medical Device Inventory & Maintenance Log", type: "template", body:
+"Device | Make/model | Serial/asset no. | Location or person | Owner (service/NHS/person/hire)\nServicing: schedule | provider | last | next (label on device [ ])\nCalibration (if applicable): last cert ref | next due (label [ ])\nBattery/consumables programme: ______\nExpected lifetime / replace by: ______\nHistory: repairs, alert actions, incidents (refs)\nDecontamination status: between-users method | last deep clean\nTraining requirement: course/sign-off ref (see matrix)\nStatus: [ ] In service [ ] Quarantined [ ] Retired (decontaminated [ ], data cleared [ ], disposal route)" },
+      { title: "MHRA/CAS Safety Alert Action Log", type: "template", body:
+"Alert ref & title | Date received | Reviewed by/date (within 7 days [ ])\nApplicability: models/lots on inventory checked [ ] — Affected items: ______ / None [ ]\nActions required by alert & deadline: ______\nActions taken (quarantine/check/modify/replace) with evidence & dates: ______\nStaff informed (who/how/date): ______\nClosed by manager (signature/date): ______\nRetention: log kept per records schedule; available at inspection." },
+      { title: "Device Adverse Incident Report Prompt", type: "checklist", body:
+"Use alongside the incident form when ANY device is involved in an incident or near-miss.\n[ ] Person safe — clinical needs met first; device removed from use & quarantined UNALTERED (settings, consumables, packaging kept — do not clean or reset until decided; it is evidence)\n[ ] Photograph device, settings, labels, lot/serial\n[ ] Internal incident report completed; manager informed\n[ ] MHRA report needed? (death/serious injury: YES; malfunction or near-miss with harm potential: YES) — submitted via MHRA reporting route, ref: ______\n[ ] Manufacturer informed (they may request the device — record what leaves the building)\n[ ] RIDDOR / regulator notification / safeguarding / duty of candour each assessed\n[ ] Register & alert log updated; similar devices in service checked\n[ ] Learning: training, purchasing, care plan changes — recorded in governance review" },
+    ],
+  },
+  "saf-036": {
+    purpose: "This policy discharges the waste duty of care: everything the service throws away is classified correctly, segregated at the point it becomes waste, stored without risk, handed only to authorised carriers, and documented so the trail survives an inspection or an environment agency query. Done well, waste management is invisible; done badly, it is an infection risk, a dignity issue, a fire load and a prosecution.",
+    scope: "Covers all waste streams the service produces: domestic and recycling, offensive/hygiene waste, clinical and medicines waste (detail in the Clinical Waste & Sharps policy), confidential paper, food waste, WEEE and bulky items. Applies to all premises and to waste handled by staff in people's own homes.",
+    responsibilities: [
+      { role: "Registered Manager", duties: [
+        "Hold the waste inventory: which streams the service produces, in what volumes, and the disposal route and contractor for each",
+        "Verify carriers' registration and disposal sites' permits before contracting, and keep waste transfer/consignment documentation per statutory retention periods",
+        "Provide the right containers in the right places, and keep the segregation guide (Appendix A) displayed where waste decisions happen",
+        "Ensure external storage is secure, animal-proof, and separated from routes people use; and that internal storage never accumulates in corridors or fire escapes",
+        "Audit segregation quarterly and act on misclassification — clinical waste in domestic bags and domestic waste in clinical bags both cost the service" ] },
+      { role: "All Staff", duties: [
+        "Segregate at source using the colour system — the decision happens at the bedside or kitchen, not at the bin store",
+        "Never overfill bags or containers (two-thirds and tie), never decant or compress by hand, and never carry waste bags against the body",
+        "Wear PPE appropriate to the stream and wash hands after every handling",
+        "Route confidential paper to the confidential stream — nothing with a name on it goes in an open bin",
+        "Report overflowing stores, damaged containers, spills and missed collections the same day" ] },
+    ],
+    keyPoints: [
+      "Classification drives everything: waste is assessed by what it actually is and where it came from — offensive/hygiene waste (non-infectious continence products, PPE from people without infection) is not clinical waste, and the distinction is a large cost and compliance difference made correctly at the point of disposal",
+      "The duty of care follows the waste after it leaves: carriers are checked against the public register, transfer notes (or annual season tickets) describe the waste accurately with the right codes, and documentation is retained — two years for transfer notes, three for hazardous consignment notes",
+      "Segregation is a bedside decision: colour-coded containers sit where the waste arises, the guide is on the wall, and the default for genuinely unsure items is the more cautious stream with a question to the senior, not a guess",
+      "Storage protects people: internal holding is short, closed and away from food, care areas and escape routes; external stores are locked, hard-standing, pest-resistant, and sized so collections keep pace with production — including holiday schedules",
+      "Dignity travels with the waste: continence waste is bagged and removed promptly, never visible or odorous in living areas, and never discussed in front of others",
+      "Confidential waste has a chain of custody: consoles or locked holding, a shredding contractor with certificates of destruction, and no records in skips — the data policies' retention decisions feed this stream",
+      "Community settings adapt, not exempt: small volumes of offensive waste in a person's home can usually go double-bagged into their domestic waste per local authority arrangements; clinical waste needs a collection arranged — the care plan records the route for each person, and staff never transport clinical waste in cars unless the service is registered to do so",
+      "Waste is a fire and pest risk: accumulations are removed, bins kept away from buildings per fire guidance, and the pest control policy links here — food waste discipline is pest prevention",
+    ],
+    legislation: [
+      "Environmental Protection Act 1990 — section 34 duty of care",
+      "Waste (England and Wales) Regulations 2011",
+      "Hazardous Waste Regulations 2005",
+      "Controlled Waste Regulations 2012",
+      "Health and Social Care Act 2008 (Regulated Activities) Regulations 2014 — Regulations 12 and 15",
+      "Health Technical Memorandum 07-01: Safe and sustainable management of healthcare waste",
+    ],
+    sections: [
+      { heading: "Streams and Segregation", body: "The service operates a defined set of streams, each with its container and colour (Appendix A): domestic (black), recycling (clear or per local scheme), offensive/hygiene (yellow-and-black 'tiger' bags), infectious clinical waste and sharps (per the Clinical Waste & Sharps policy), medicines waste (returned or consigned per the medication policies), confidential paper (console/locked), food waste (per local arrangements), and WEEE/bulky (arranged collections). The stream decision is made where the waste arises by the person disposing of it; containers are provided at that point, because segregation fails wherever staff must walk to do it right. Quarterly audits sample bags visually (unopened) at the store and check container placement, signage, fill levels and documentation." },
+      { heading: "Storage and Internal Movement", body: "Waste moves along defined routes at defined times — ideally not through food preparation or dining areas, and never left staged in corridors, stairwells or fire exits. Internal holding areas are cleanable, ventilated and closed. The external store is locked and secure against children, vandals and animals; bags go in containers, not on the ground; and the store sits on an impermeable surface away from windows, air intakes and the building line (fire load separation). Collection frequency matches production with headroom; the manager escalates missed collections the same day because an overfull store degrades every discipline upstream of it." },
+      { heading: "Carriers, Documentation and the Paper Trail", body: "Before any contractor takes waste: registration checked on the public register of carriers, and for consigned streams the destination site's permit confirmed. Every movement is documented — waste transfer notes for non-hazardous streams (annual notes acceptable for regular identical collections), consignment notes for hazardous streams — with accurate descriptions and codes; the manager signs only what is true. Retention: transfer notes two years, consignment notes three years, certificates of destruction for confidential waste per the records schedule. The documentation lives where an inspector can find it, and the quarterly audit checks it exists for every stream leaving the premises." },
+      { heading: "Spills, Incidents and Community Working", body: "Waste spills follow the stream's rules: domestic — clear and clean; offensive or clinical — PPE, absorb/contain, disinfect per the IPC policy, and re-bag into the correct stream; sharps found loose — never by hand, see the sharps policy. Incidents involving waste (injuries, exposures, fly-tipping of service waste, carrier failures) go through the incident procedure and, where thresholds are met, to RIDDOR or the environmental regulator. In domiciliary and supported living, staff manage waste inside the person's home per the care plan: offensive waste double-bagged into domestic collections where local rules allow, clinical waste through arranged healthcare collections, sharps in the person's own container — and problems (hoarded waste, pest signs, collection failures) reported as wellbeing concerns, not just logistics." },
+    ],
+    appendices: [
+      { title: "Waste Segregation Guide (display at point of disposal)", type: "template", body:
+"BLACK — Domestic: general non-recyclable, non-offensive waste. NO continence products, NO medicines, NO records.\nCLEAR/local scheme — Recycling: clean packaging per local list. Nothing soiled.\nTIGER (yellow/black) — Offensive/hygiene: continence pads & PPE from people WITHOUT known/suspected infection. Two-thirds full, tie, no free liquid.\nORANGE/YELLOW — Infectious clinical: see Clinical Waste & Sharps policy.\nSHARPS — container at point of use only. Never any bag.\nMEDICINES — return/consign per medication policy. Never domestic or clinical bags. CDs per CD procedure.\nCONFIDENTIAL — console/locked bin: anything with a name or identifier on it.\nFOOD — per local arrangements; lidded, emptied daily (pest prevention).\nUNSURE? Choose the more cautious stream and ask the senior — do not guess into black." },
+      { title: "Waste Management Compliance Log", type: "template", body:
+"STREAM ROSTER: stream | container/colour | points provided | contractor | collection frequency\nCARRIER CHECKS: contractor | carrier registration no. | checked on public register (date) | destination permit confirmed (consigned streams)\nDOCUMENTATION: transfer notes (2-yr retention) [ ] | consignment notes (3-yr) [ ] | confidential destruction certificates [ ] — filed at: ______\nQUARTERLY AUDIT: segregation sample findings | store condition (locked/pest-free/not overfull) | corridor/escape-route check clear | misclassification actions | auditor/date\nINCIDENTS: missed collections, spills, exposures — refs & outcomes\nCOMMUNITY: per-person waste routes recorded in care plans [ ]" },
+    ],
+  },
+  "saf-037": {
+    purpose: "This policy controls the service's highest-consequence waste: infectious clinical waste and sharps. It exists so that contaminated items never meet unprotected hands, sharps never wait loose to be found, containers never overfill, and a needlestick — should one happen — meets a rehearsed response in the first minutes that determine whether an exposure becomes an infection.",
+    scope: "Applies to all clinical waste generation, handling, storage and disposal, and all sharps use and disposal, in every setting the service works — including people's own homes. Read with the Waste Management, Infection Prevention & Control and Medication policies; the fuller post-exposure clinical pathway sits in the Needlestick & Inoculation Injury policy.",
+    responsibilities: [
+      { role: "Registered Manager", duties: [
+        "Ensure the clinical waste stream is correctly classified, containered, stored and consigned, with three-year retention of consignment notes",
+        "Provide sharps containers sized and sited for actual use — at the point of care, never remote from it",
+        "Substitute safer sharps devices wherever reasonably practicable, and record the assessment where conventional sharps remain",
+        "Ensure the post-exposure response (Appendix B) is trained at induction, displayed, and rehearsed — including the out-of-hours route to risk assessment and prophylaxis",
+        "Investigate every sharps and exposure incident for the system cause: device, container placement, workload, technique, lighting" ] },
+      { role: "All Staff", duties: [
+        "Segregate clinical waste at the point of generation into the correct colour stream — never into domestic or tiger bags",
+        "Assemble, label and date sharps containers correctly; fill only to the line; lock and consign when due",
+        "Never recap, bend or break needles; carry sharps in a receiver, not hands; dispose immediately at the point of use",
+        "Know the first-five-minutes exposure response by heart: bleed, wash, cover, report, assess — urgently",
+        "Report every exposure and every near-miss (loose sharp found, overfull container, bag leak) the same day" ] },
+    ],
+    keyPoints: [
+      "Colour is classification: orange for infectious waste suitable for alternative treatment, yellow for waste requiring incineration (including medicinally-contaminated items), purple-lidded sharps for medicinally-contaminated sharps, orange/yellow-lidded per contents — the service maps its actual streams in Appendix A and staff follow the map, not habit",
+      "Sharps discipline is point-of-use discipline: the container comes to the procedure, the sharp goes straight in as one motion, and nothing sharp is ever left on a tray, a bed, or a pocket 'for a second'",
+      "Containers have rules of their own: correctly assembled (lid clicked home), labelled with location and date opened, filled to the fill line only, temporarily closed between uses, permanently locked at the line or at three months, and stored off the floor away from public reach",
+      "No recapping, ever: the single highest-yield behavioural rule in sharps safety — used needles go into the container as they are",
+      "Safer sharps first: needle-free and safety-engineered devices are the default where they exist for the task; where conventional sharps remain, the documented assessment says why",
+      "The first minutes after a needlestick are clinical time: encourage bleeding (do not suck), wash with soap and running water, cover, and get to risk assessment (occupational health/ED) urgently — source assessment and any post-exposure prophylaxis are time-critical decisions that belong to clinicians, not to the staff member's optimism",
+      "Loose sharps are recovered by procedure, not bravery: visual search, pick up with forceps/dustpan — never fingers, straight to a container, incident report, and a search for how it escaped the system",
+      "Home settings keep the same standards with adapted logistics: the person's own sharps container, stored safely away from children and confusion risk, collected via the arranged healthcare route — staff never transport sharps or clinical waste in vehicles unless the service is explicitly set up and permitted to do so",
+    ],
+    legislation: [
+      "Health and Safety (Sharp Instruments in Healthcare) Regulations 2013",
+      "Environmental Protection Act 1990 and Hazardous Waste Regulations 2005",
+      "Health Technical Memorandum 07-01",
+      "COSHH Regulations 2002 (biological agents)",
+      "Health and Social Care Act 2008 (Regulated Activities) Regulations 2014 — Regulation 12",
+      "RIDDOR 2013 (reportable exposures)",
+    ],
+    sections: [
+      { heading: "Classification and the Stream Map", body: "The service assesses which clinical streams it actually produces and maps each to a container and route (Appendix A): infectious soft waste (dressings, heavily contaminated PPE, items from people with known/suspected infection), sharps in their variants (medicinally contaminated or not — lid colour differs), medicines waste (never into clinical bags; per medication policy routes, with controlled drugs denatured per the CD procedure), and anatomical or highly infectious categories in the rare cases they arise (specific containers and advice from the contractor). Offensive waste is deliberately kept out of the clinical stream — the assessment of infection status at the point of care decides tiger versus orange, and seniors support that judgement rather than defaulting everything to clinical." },
+      { heading: "Sharps in Use", body: "Sharps safety is designed before it is trained: safer devices purchased where available; sharps-requiring tasks planned with the container in reach; trays/receivers used for any carry; adequate lighting and space; no rushed sharps tasks — interruptions during injections are treated like interruptions during medication rounds. In use: hands never cross a used sharp, needles are not recapped or removed from syringes (devices go in whole), and disposal is immediate and personal — the user of the sharp disposes of the sharp. Containers: assembled per manufacturer, dated and located, at height and position that people we support (especially children and people with cognitive impairment) cannot reach, filled to the line, locked and consigned on schedule. Community staff carry the person's plan for where sharps work happens in the home and where the container lives." },
+      { heading: "Exposure Response", body: "The response card (Appendix B) is displayed and trained: immediate first aid (bleed gently, wash under running water with soap, no sucking or scrubbing, waterproof cover; splashes to eyes/mouth — irrigate copiously); then urgent risk assessment the same shift via occupational health in hours or the emergency department out of hours, because source testing and post-exposure prophylaxis for blood-borne viruses are time-sensitive. The manager supports: source identification and consent conversations where the source person is known, incident recording, RIDDOR assessment (certain exposures are reportable), and follow-up serology per clinical advice. The debrief asks system questions — device, placement, task design, workload — and fixes what it finds; the fuller pathway, counselling and follow-up schedule sit in the Needlestick & Inoculation Injury policy." },
+      { heading: "Storage, Consignment and Audit", body: "Clinical waste holds in rigid, lidded, labelled UN-approved containers or designated locked areas — separate from other streams, cleaned on a schedule, and never accessible to residents, children or animals. Consignment notes describe the waste accurately (codes, quantities) and are retained three years; pre-acceptance audit requirements from the disposal contractor are met and refreshed as required. The quarterly waste audit gives clinical streams extra attention: fill discipline, lock-outs, dating, storage security, note completeness — and sharps containers get a standing item in environmental walk-rounds (placement, fill level, tamper signs). Exposure and near-miss trends go to the governance review with the incident data, because a cluster of near-misses is the system asking for redesign." },
+    ],
+    appendices: [
+      { title: "Clinical Waste Stream Map & Container Guide", type: "template", body:
+"Service streams in use (mark & localise):\n[ ] ORANGE bag — infectious soft waste (alternative treatment route). Points: ______\n[ ] YELLOW bag — incineration-only (incl. medicinally contaminated non-sharps). Points: ______\n[ ] SHARPS, orange/yellow lid — sharps NOT medicinally contaminated. Points: ______\n[ ] SHARPS, purple lid — medicinally contaminated sharps (cytotoxic/cytostatic where applicable). Points: ______\n[ ] Medicines waste — per medication policy: route ______ | CDs denatured per CD procedure [ ]\n[ ] Other (anatomical/high-risk — contractor advice): ______\nContainer rules: assembled & clicked [ ] dated & located [ ] fill line respected [ ] temporary closure between uses [ ] locked at line or 3 months [ ] off floor, out of reach [ ]\nContractor: ______ | consignment notes filed (3 yrs): ______\nCommunity: per-person container & collection route in care plan [ ]" },
+      { title: "Sharps/Splash Exposure — First Response Card (display + induction)", type: "template", body:
+"NEEDLESTICK / BITE / CUT with contaminated item:\n1. BLEED it gently — do NOT suck or scrub\n2. WASH under running water with soap\n3. COVER with waterproof dressing\nSPLASH to eyes/nose/mouth: IRRIGATE copiously (remove contact lenses)\n4. TELL the senior/manager NOW — do not finish the shift first\n5. URGENT risk assessment: occupational health (in hours): ______ / Emergency Department (out of hours) — SAME DAY. Source assessment & any prophylaxis are TIME-CRITICAL.\n6. Incident report today. Manager: source consent conversation, RIDDOR check, follow-up plan per clinical advice.\nNEAR-MISSES (loose sharp found, overfull container) are reportable too — they are the warning we get before the injury.\nLoose sharp recovery: forceps/dustpan — NEVER fingers → container → report → find out how it escaped." },
+    ],
+  },
+  "saf-038": {
+    purpose: "This policy makes laundry an infection control process rather than a domestic chore: used, foul and infectious linen segregated at the bedside, processed at parameters that actually disinfect, and returned clean, dry and stored off the floor — while people's own clothing is treated with the care that dignity requires, because losing or ruining someone's clothes is a harm too.",
+    scope: "Covers all linen and clothing processed by or for the service: bed linen, towels, personal clothing, staff uniforms, and items sent to external laundries. Applies to on-site laundries and to laundry done by staff in people's own homes. Read with the Infection Prevention & Control and Cleaning & Decontamination policies.",
+    responsibilities: [
+      { role: "Registered Manager", duties: [
+        "Provide a laundry flow that separates dirty from clean — physically or by time — with equipment capable of thermal or verified chemical disinfection",
+        "Ensure segregation materials are available at the point of care: colour-coded bags and water-soluble bags for foul/infectious linen",
+        "Maintain laundry equipment: servicing, temperature verification (Appendix B log), filters and venting (fire risk), and sluice cycle function",
+        "Set the external laundry contract (where used) to healthcare standards and audit returns",
+        "Protect personal clothing: labelling with consent, correct-programme washing, and a lost-property procedure that takes losses seriously" ] },
+      { role: "All Staff", duties: [
+        "Segregate at the bedside: used linen into the standard stream; foul/infectious linen straight into a water-soluble bag then the outer bag — never carried loose, never sorted by hand afterwards",
+        "Hold linen away from the body; never place used linen on floors, furniture or clean surfaces; no shaking (aerosolises contamination)",
+        "Wear PPE for foul/infectious linen handling and wash hands after any linen handling",
+        "Run the machine programmes as set — no shortening disinfection cycles to save time",
+        "Return and store clean linen covered/enclosed, off the floor, and handle it with clean hands" ] },
+    ],
+    keyPoints: [
+      "Three streams, decided at the bedside: used (dry, not visibly soiled), foul/soiled (body fluids), and infectious (from people with known/suspected infection) — the latter two go into water-soluble bags at the point of removal so no one handles them again before the machine",
+      "Disinfection is parameters, not appearance: thermal disinfection at 65°C held for at least 10 minutes or 71°C for at least 3 minutes (within the load), or a verified chemical disinfection process for heat-sensitive items — 'it looks clean' is not a standard",
+      "Water-soluble bags are the hand-protection technology: foul linen is never re-sorted, rinsed by hand, or sluiced manually — the bag goes in whole and the machine's sluice cycle does the dirty work",
+      "Clean and dirty never meet: one-way flow in the laundry (dirty in one side, clean out the other) or strict time separation with cleaning between; trolleys and bags for clean linen never used for used linen",
+      "Dryness matters: damp linen grows organisms — full drying before storage, and storage enclosed, off the floor, in a clean area, first-in-first-out",
+      "Personal clothing is personal: labelled with consent and discretion, washed per garment needs (with thermal disinfection balanced against fabric survival — and the person's preference in the conversation), returned to the right person, and losses investigated and made right",
+      "Uniforms carry the workplace home unless managed: where staff launder their own, the standard is a separate wash at the hottest fabric-appropriate temperature, washed after every shift, and transported to/from work covered",
+      "Machines are equipment too: lint filters cleared (fire), venting maintained, temperatures verified on a schedule, sluice cycles tested, and breakdowns escalated with a contingency (contract laundry) so linen never backlogs into a hygiene problem",
+    ],
+    legislation: [
+      "Health and Social Care Act 2008 — Code of Practice on the prevention and control of infections (criterion on linen)",
+      "Health Technical Memorandum 01-04: Decontamination of linen for health and social care",
+      "COSHH Regulations 2002 (laundry chemicals)",
+      "Health and Safety at Work etc. Act 1974",
+      "Health and Social Care Act 2008 (Regulated Activities) Regulations 2014 — Regulations 12 and 15",
+    ],
+    sections: [
+      { heading: "Segregation and Handling", body: "The decision is made where the linen comes off the bed or the person: used linen into the standard laundry stream; anything soiled with body fluids, and anything from a person with known or suspected infection (including during outbreaks), into a water-soluble bag sealed at the bedside, then into the outer colour-coded bag (Appendix A shows the service's colours). Handling rules protect the handler and the environment: no shaking, no holding against the body, no floor staging, gloves and apron for foul/infectious handling, hand hygiene after all handling. Bags are tied, not overfilled, and moved along the dirty route promptly — used linen does not queue in corridors or bathrooms. Sharps checks matter here too: pockets and folds have injured laundry staff in every kind of service; items from rooms where sharps are used get a visual check discipline at removal." },
+      { heading: "Processing", body: "On-site processing runs to parameters: sluice/pre-wash for foul loads (water-soluble bags in whole), then thermal disinfection — 65°C for 10+ minutes or 71°C for 3+ minutes within the load, allowing mixing time — or a verified chemical disinfection programme for heat-intolerant fabrics. Temperatures are verified on a schedule (Appendix B), because dial settings and drum reality diverge as machines age. Loads are not crammed (disinfection needs circulation), programmes are not shortened, and detergents/disinfectants are used per COSHH assessments. External laundries process to healthcare linen standards under a contract that says so; returns are audited for condition and packaging. Domestic-style laundering in supported living and domiciliary settings follows the same logic scaled down: the person's own machine, hottest fabric-appropriate wash, separate processing of foul items, staff PPE and hand hygiene, and the care plan recording who does laundry and how infectious episodes change it." },
+      { heading: "Clean Linen and Storage", body: "Clean linen is handled with clean hands, transported covered or in dedicated clean containers (never the used-linen trolley), and stored enclosed, dry, off the floor, away from used-linen routes — with stock rotated first-in-first-out and par levels set so shortages never tempt corner-cutting. Beds are made with clean technique: linen for one person's bed is not staged on another's furniture, and unused linen taken into an isolation room during an outbreak is treated as used. Airing cupboards and linen stores are cleaned on the environmental schedule and kept free of everything that is not clean linen." },
+      { heading: "Personal Clothing, Uniforms and Equipment Care", body: "Personal clothing is inventoried on admission (updated as wardrobes change), labelled with the person's consent and in a discreet way, washed on programmes matched to garments — involving the person and family in choices where delicate items cannot survive disinfection-grade processing — and returned promptly to the right wardrobe. Losses and damage are logged, investigated, apologised for and made right; a pattern of losses is a quality indicator the governance review sees. Uniform rules: changed daily and when contaminated, laundered separately at the hottest appropriate temperature (staff home-laundering guidance issued in writing), and covered in transit. The laundry itself is maintained: machine servicing, daily lint filter clearing (a real fire cause), venting checks, sluice cycle verification, COSHH storage for chemicals, and a written contingency for machine failure so the service never chooses between hygiene and supply." },
+    ],
+    appendices: [
+      { title: "Linen Segregation Guide (display in care areas & laundry)", type: "template", body:
+"AT THE BEDSIDE — decide as it comes off:\nUSED (dry, not soiled) → [colour: ______] bag → standard wash\nFOUL/SOILED (body fluids) → WATER-SOLUBLE bag, sealed at bedside → outer [colour: ______] bag → sluice + disinfection wash. NEVER hand-rinse or re-sort.\nINFECTIOUS (known/suspected infection, outbreaks) → WATER-SOLUBLE bag → outer [colour: ______] bag → disinfection wash\nRULES: no shaking | hold away from body | never on floors or clean surfaces | tie at 2/3 | PPE for foul/infectious | hand hygiene after ALL handling | pocket/sharps awareness\nDISINFECTION PARAMETERS: 65°C ≥10 min OR 71°C ≥3 min (in-load), or verified chemical programme for heat-sensitive items.\nCLEAN LINEN: clean hands | covered transport | enclosed storage off floor | FIFO" },
+      { title: "Laundry Verification & Maintenance Log", type: "template", body:
+"TEMPERATURE VERIFICATION (schedule: ______): date | machine | programme | temp achieved (in-load method) | hold time | pass/fail | action if fail (machine out of use for disinfection loads until fixed)\nMACHINE CARE: lint filter cleared daily (initials) | venting checked | sluice cycle test | service dates | breakdown & contingency used (contract laundry: ______)\nCHEMICALS: COSHH assessments current [ ] | storage locked [ ] | dosing per product [ ]\nEXTERNAL LAUNDRY (if used): contract specifies healthcare processing [ ] | returns audit (condition/packaging): date/findings\nPERSONAL CLOTHING: inventory on admission [ ] | labelling consent recorded [ ] | lost property log ref: ______ | losses reviewed in governance [ ]" },
     ],
   },
 };
