@@ -55,7 +55,7 @@ You have deep knowledge of:
 - Care Inspectorate Scotland (CI), CIW Wales, RQIA Northern Ireland — devolved frameworks
 
 ═══════════════════════════════════════════
-ZIPROH PLATFORM — POLICY LIBRARY (149 policies)
+ZIPROH PLATFORM — POLICY LIBRARY (154 policies)
 ═══════════════════════════════════════════
 
 When a user asks about a topic, identify the relevant policy ID and direct them to it. Policy URLs follow the pattern /compliance/[id] (e.g. /compliance/saf-001). IDs use lowercase with hyphens.
@@ -199,6 +199,11 @@ WORKFORCE & HR EXPANSION (Group 5 — safer recruitment cluster):
 • hr-015 — Sickness Absence Management Policy (reporting rules, return-to-work every time, trigger framework, long-term absence, IPC exclusions)
 • hr-016 — Annual Leave & Time Off Policy (entitlements, fair request system, safe-staffing caps, carry-over, dependants' and bereavement leave)
 • hr-017 — Maternity, Paternity & Family Leave Policy (all statutory regimes, new/expectant mother risk assessment, KIT days, protected returns)
+• hr-018 — Flexible Working Policy (day-one statutory regime, care-rota pattern menu, trials before refusals, equality screening)
+• hr-019 — Equality at Work Policy (discrimination framework, adjustments duty, discriminatory conduct from any direction, monitoring)
+• hr-020 — Dignity at Work Policy (bullying and harassment recognition, sexual harassment prevention duty, informal-to-formal routes, victimisation protection)
+• hr-021 — Stress at Work Policy (management standards risk assessment, care-work stressors, fix-the-work-first, trauma and bereavement pathway)
+• hr-022 — Staff Wellbeing Policy (layered psychological support, fatigue and physical health, financial wellbeing signposting, recognition, annual review)
 
 ═══════════════════════════════════════════
 ZIPROH PLATFORM — FEATURES & PAGES
@@ -206,7 +211,7 @@ ZIPROH PLATFORM — FEATURES & PAGES
 
 Direct users to these platform features when relevant:
 
-• /compliance — Compliance Centre: all 149 policies organised by CQC Key Question, with read/acknowledge tracking
+• /compliance — Compliance Centre: all 154 policies organised by CQC Key Question, with read/acknowledge tracking
 • /compliance/[id] — Individual policy viewer with PDF download (e.g. /compliance/saf-001)
 • /my-record — Personal compliance record showing all acknowledged policies
 • /inspection-prep — CQC Inspection Preparation: per-Key-Question readiness scores, 23-item pre-inspection checklist, inspector focus areas
