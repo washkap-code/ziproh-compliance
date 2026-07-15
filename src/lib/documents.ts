@@ -34,6 +34,7 @@ import { COP001_CONTENT, COP002_CONTENT, COP003_CONTENT, COP004_CONTENT, COP005_
 import { EXPANSION_2026_DOCS, EXPANSION_2026_CONTENT } from "./policy-expansion-2026";
 import { EXPANSION_2026B_DOCS, EXPANSION_2026B_CONTENT } from "./policy-expansion-2026b";
 import { EXPANSION_2026C_DOCS, EXPANSION_2026C_CONTENT } from "./policy-expansion-2026c";
+import { EXPANSION_2026D_DOCS, EXPANSION_2026D_CONTENT } from "./policy-expansion-2026d";
 
 export type Document = {
   id: string;
@@ -1128,6 +1129,8 @@ export const DOCUMENTS: Document[] = [
   ...EXPANSION_2026B_DOCS,
   // ── 2026 Expansion Set C (Group 5: Workforce & HR) ──
   ...EXPANSION_2026C_DOCS,
+  // ── 2026 Expansion Set D (Group 6: Care Home, Catering & Domestic) ──
+  ...EXPANSION_2026D_DOCS,
 ];
 
 // ─── Document content (rich policy body) ──────────────────────────────────
@@ -1416,6 +1419,7 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
   ...EXPANSION_2026_CONTENT,
   ...EXPANSION_2026B_CONTENT,
   ...EXPANSION_2026C_CONTENT,
+  ...EXPANSION_2026D_CONTENT,
 };
 
 export function getDocumentsByCategory(keyQuestion?: string): Document[] {
