@@ -13,6 +13,7 @@ import {
 } from "@/lib/documents";
 import Link from "next/link";
 import { createBrowserClient } from "@supabase/ssr";
+import { profileFromRow, tailorContent, settingConfig } from "@/lib/tailoring";
 
 // ─── Colour map ────────────────────────────────────────────────────────────────
 const KQ_COLOR: Record<string, string> = {
@@ -285,6 +286,8 @@ export default function DocumentPage() {
   const id      = params?.id ?? "";
 
   const [orgName,    setOrgName]    = useState("Your Organisation");
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [profileRow, setProfileRow] = useState<any>(null);
   const [orgLoaded,  setOrgLoaded]  = useState(false);
   const [pdfLoading, setPdfLoading] = useState(false);
   const [tocOpen,    setTocOpen]    = useState(false);
@@ -382,7 +385,7 @@ export default function DocumentPage() {
       setUserId(user.id);
 
       const [profileRes, ackRes, adoptRes, annotRes] = await Promise.all([
-        supabase.from("profiles").select("org_name, plan").eq("id", user.id).single(),
+        supabase.from("profiles").select("*").eq("id", user.id).single(),
         supabase.from("read_records")
           .select("read_at")
           .eq("user_id", user.id)
@@ -397,6 +400,7 @@ export default function DocumentPage() {
       ]);
 
       if (profileRes.data?.org_name) setOrgName(profileRes.data.org_name);
+      if (profileRes.data) setProfileRow(profileRes.data);
       if (profileRes.data?.plan) setPlan(profileRes.data.plan);
       if (annotRes?.annotation) {
         setAnnotation(annotRes.annotation);
@@ -462,7 +466,11 @@ export default function DocumentPage() {
   }
 
   const rawContent = DOCUMENT_CONTENT[id] ?? DEFAULT_CONTENT;
-  const content    = orgLoaded ? applyOrgName(rawContent, orgName) : rawContent;
+  // Full care-setting tailoring when the org has a profile; org-name substitution as fallback
+  const tailored   = orgLoaded && profileRow?.service_type
+    ? tailorContent(applyOrgName(rawContent, orgName), profileFromRow(profileRow), doc)
+    : null;
+  const content    = tailored ? tailored.content : (orgLoaded ? applyOrgName(rawContent, orgName) : rawContent);
   const color      = KQ_COLOR[doc.keyQuestion] || "#2E6FFF";
 
   // Parse related doc IDs from content (e.g. "saf-001 — Safeguarding...") for smart sidebar
@@ -628,6 +636,13 @@ export default function DocumentPage() {
 
                 <div className="flex items-start gap-2 flex-wrap mb-2">
                   <h1 className="text-2xl font-bold text-gray-900 leading-tight">{doc.title}</h1>
+                  {tailored && (
+                    <span className="self-start mt-1 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold"
+                      style={{ backgroundColor: "#16a34a15", color: "#16a34a", border: "1px solid #16a34a30" }}
+                      title={tailored.applied.join(" • ")}>
+                      🎯 Tailored for {orgName} · {settingConfig(profileFromRow(profileRow)).label}
+                    </span>
+                  )}
                   {FLAGSHIP_IDS.has(id) && (
                     <span className="self-start mt-1 inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold"
                       style={{ backgroundColor: "#2E6FFF15", color: "#2E6FFF", border: "1px solid #2E6FFF30" }}>
@@ -1107,6 +1122,35 @@ export default function DocumentPage() {
                 </div>
               );
             })()}
+
+            {/* Appendices — template letters, forms, checklists (expansion-set policies) */}
+            {content.appendices && content.appendices.length > 0 && (
+              <div className="pt-5 border-t border-gray-50">
+                <h2 className="text-lg font-bold text-gray-900 mb-1 flex items-center gap-2">
+                  <span className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold"
+                    style={{ backgroundColor: `${color}15`, color }}>📎</span>
+                  Appendices &amp; Working Documents
+                </h2>
+                <p className="text-xs text-gray-400 mb-4">Ready-to-use templates that support this policy. Copy, print or adapt for your records.</p>
+                <div className="space-y-3">
+                  {content.appendices.map((a, i) => (
+                    <details key={i} className="rounded-xl overflow-hidden" style={{ border: "1px solid #e2e8f0" }}>
+                      <summary className="cursor-pointer px-4 py-3 text-sm font-semibold text-gray-800 flex items-center gap-2"
+                        style={{ backgroundColor: "#f8faff" }}>
+                        {a.type && (
+                          <span className="text-xs font-bold px-2 py-0.5 rounded-full uppercase tracking-wide"
+                            style={{ backgroundColor: `${color}15`, color }}>{a.type}</span>
+                        )}
+                        Appendix {String.fromCharCode(65 + i)} — {a.title}
+                      </summary>
+                      <div className="px-4 py-4 bg-white">
+                        <pre className="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap font-sans">{a.body ?? a.content ?? a.description ?? ""}</pre>
+                      </div>
+                    </details>
+                  ))}
+                </div>
+              </div>
+            )}
 
             {/* Body sections (procedure or legacy sections) */}
             {bodySections.map((sec, i) => {

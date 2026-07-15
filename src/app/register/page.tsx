@@ -39,7 +39,7 @@ const PLANS = [
     price: "£49",
     desc: "For new or small providers",
     features: [
-      "89 policies & procedures",
+      "119 policies & procedures",
       "CQC England aligned",
       "2 user accounts",
       "Audit Centre",
@@ -52,7 +52,7 @@ const PLANS = [
     price: "£99",
     desc: "Most popular for single-site providers",
     features: [
-      "89 policies & procedures",
+      "119 policies & procedures",
       "All 4 UK regulators",
       "10 user accounts",
       "Full Audit Centre",
