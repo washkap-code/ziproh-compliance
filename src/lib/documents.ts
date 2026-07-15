@@ -32,6 +32,7 @@ import { IGR001_CONTENT, IGR002_CONTENT, IGR003_CONTENT, IGR004_CONTENT, IGR005_
 import { HR001_CONTENT, HR002_CONTENT, HR003_CONTENT, HR004_CONTENT, HR005_CONTENT, HR006_CONTENT, HR007_CONTENT } from "./policy-new-hr";
 import { COP001_CONTENT, COP002_CONTENT, COP003_CONTENT, COP004_CONTENT, COP005_CONTENT, COP006_CONTENT } from "./policy-new-cop";
 import { EXPANSION_2026_DOCS, EXPANSION_2026_CONTENT } from "./policy-expansion-2026";
+import { EXPANSION_2026B_DOCS, EXPANSION_2026B_CONTENT } from "./policy-expansion-2026b";
 
 export type Document = {
   id: string;
@@ -1121,6 +1122,9 @@ export const DOCUMENTS: Document[] = [
 
   // ── 2026 Expansion Set (30 policies) ──
   ...EXPANSION_2026_DOCS,
+
+  // ── 2026 Expansion Set B (Group 4: Health, Safety & Premises) ──
+  ...EXPANSION_2026B_DOCS,
 ];
 
 // ─── Document content (rich policy body) ──────────────────────────────────
@@ -1407,6 +1411,7 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
 
   // 2026 Expansion Set
   ...EXPANSION_2026_CONTENT,
+  ...EXPANSION_2026B_CONTENT,
 };
 
 export function getDocumentsByCategory(keyQuestion?: string): Document[] {
