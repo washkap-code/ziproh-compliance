@@ -35,6 +35,7 @@ import { EXPANSION_2026_DOCS, EXPANSION_2026_CONTENT } from "./policy-expansion-
 import { EXPANSION_2026B_DOCS, EXPANSION_2026B_CONTENT } from "./policy-expansion-2026b";
 import { EXPANSION_2026C_DOCS, EXPANSION_2026C_CONTENT } from "./policy-expansion-2026c";
 import { EXPANSION_2026D_DOCS, EXPANSION_2026D_CONTENT } from "./policy-expansion-2026d";
+import { EXPANSION_2026E_DOCS, EXPANSION_2026E_CONTENT } from "./policy-expansion-2026e";
 
 export type Document = {
   id: string;
@@ -1131,6 +1132,8 @@ export const DOCUMENTS: Document[] = [
   ...EXPANSION_2026C_DOCS,
   // ── 2026 Expansion Set D (Group 6: Care Home, Catering & Domestic) ──
   ...EXPANSION_2026D_DOCS,
+  // ── 2026 Expansion Set E (Group 7: Domiciliary Care & Supported Living) ──
+  ...EXPANSION_2026E_DOCS,
 ];
 
 // ─── Document content (rich policy body) ──────────────────────────────────
@@ -1420,6 +1423,7 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
   ...EXPANSION_2026B_CONTENT,
   ...EXPANSION_2026C_CONTENT,
   ...EXPANSION_2026D_CONTENT,
+  ...EXPANSION_2026E_CONTENT,
 };
 
 export function getDocumentsByCategory(keyQuestion?: string): Document[] {
