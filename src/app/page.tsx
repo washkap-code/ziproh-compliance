@@ -97,7 +97,7 @@ export default function LandingPage() {
                   </div>
                   <div>
                     <div className="text-sm font-bold text-gray-900">Compliance Centre</div>
-                    <div className="text-xs text-gray-500">199 policies • All up to date</div>
+                    <div className="text-xs text-gray-500">204 policies • All up to date</div>
                   </div>
                   <div className="ml-auto badge badge-green">✓ Compliant</div>
                 </div>
@@ -259,7 +259,7 @@ export default function LandingPage() {
           <h2 className="text-4xl font-bold text-gray-900 mb-4">Ready to stay compliant?</h2>
           <p className="text-xl text-gray-500 mb-10">
             Start your 14-day free trial today. No credit card required.
-            All 199 policies, audit tools, and AI compliance assistant — included from day one.
+            All 204 policies, audit tools, and AI compliance assistant — included from day one.
           </p>
           <div className="flex flex-wrap justify-center gap-4">
             <Link href="/register" className="btn-primary text-base px-10 py-4">

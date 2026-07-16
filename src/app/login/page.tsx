@@ -74,7 +74,7 @@ export default function LoginPage() {
             Stay Compliant.<br />Stay Confident.
           </h2>
           <p className="text-blue-100 text-lg leading-relaxed mb-10">
-            Access 199 auto-updated policies, audit tools, reading lists, and compliance resources — all in one place.
+            Access 204 auto-updated policies, audit tools, reading lists, and compliance resources — all in one place.
           </p>
           <div className="space-y-4">
             {[
