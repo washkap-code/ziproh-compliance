@@ -39,7 +39,7 @@ import { EXPANSION_2026E_DOCS, EXPANSION_2026E_CONTENT } from "./policy-expansio
 import { EXPANSION_2026F_DOCS, EXPANSION_2026F_CONTENT } from "./policy-expansion-2026f";
 import { EXPANSION_2026G_DOCS, EXPANSION_2026G_CONTENT } from "./policy-expansion-2026g";
 import { EXPANSION_2026H_DOCS, EXPANSION_2026H_CONTENT } from "./policy-expansion-2026h";
-import { SAF001_ADDITIONAL_SECTIONS, SAF001_FULL_APPENDICES, HR007_CONTENT_V2, GOV005_CONTENT_V2, GOV001_CONTENT_V2, GOV003_CONTENT_V2, GOV004_CONTENT_V2, IGR003_CONTENT_V2, IGR004_CONTENT_V2, COP001_CONTENT_V2, COP002_CONTENT_V2, COP003_CONTENT_V2, COP004_CONTENT_V2, COP006_CONTENT_V2, HR001_CONTENT_V2, HR002_CONTENT_V2, HR003_CONTENT_V2, HR005_CONTENT_V2, HR006_CONTENT_V2, HR004_CONTENT_V2, WL010_CONTENT_V2, WL011_CONTENT_V2, IGR001_CONTENT_V2, IGR002_CONTENT_V2, GOV002_CONTENT_V2, GOV006_CONTENT_V2, GOV007_CONTENT_V2, IGR005_CONTENT_V2, COP005_CONTENT_V2 } from "./policy-deepening-2026";
+import { SAF001_ADDITIONAL_SECTIONS, SAF001_FULL_APPENDICES, HR007_CONTENT_V2, GOV005_CONTENT_V2, GOV001_CONTENT_V2, GOV003_CONTENT_V2, GOV004_CONTENT_V2, IGR003_CONTENT_V2, IGR004_CONTENT_V2, COP001_CONTENT_V2, COP002_CONTENT_V2, COP003_CONTENT_V2, COP004_CONTENT_V2, COP006_CONTENT_V2, HR001_CONTENT_V2, HR002_CONTENT_V2, HR003_CONTENT_V2, HR005_CONTENT_V2, HR006_CONTENT_V2, HR004_CONTENT_V2, WL010_CONTENT_V2, WL011_CONTENT_V2, IGR001_CONTENT_V2, IGR002_CONTENT_V2, GOV002_CONTENT_V2, GOV006_CONTENT_V2, GOV007_CONTENT_V2, IGR005_CONTENT_V2, COP005_CONTENT_V2, RES002_CONTENT_V2, RES004_CONTENT_V2, RES005_CONTENT_V2, RES006_CONTENT_V2 } from "./policy-deepening-2026";
 
 export type Document = {
   id: string;
@@ -667,15 +667,6 @@ export const DOCUMENTS: Document[] = [
     version: "2.9", lastUpdated: "2026-02-20", status: "current", readTime: 8,
     tags: ["involvement", "participation", "co-production", "feedback"],
     summary: "Policy to ensure service users are meaningfully involved in decisions about their care and the running of the service.",
-  },
-  {
-    id: "res-003",
-    title: "Compliments & Feedback Policy",
-    category: "Responsive", subcategory: "Service User Involvement", keyQuestion: "Responsive",
-    serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
-    version: "2.0", lastUpdated: "2026-01-12", status: "current", readTime: 6,
-    tags: ["compliments", "feedback", "survey", "satisfaction"],
-    summary: "Policy for capturing and acting on compliments, suggestions and feedback from service users, families and staff.",
   },
   {
     id: "res-004",
@@ -1371,10 +1362,10 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
   "wl-016": WL016_CONTENT,           // Learning & Development Strategy
   "car-004": CAR004_CONTENT,         // Relationships & Sexuality
   "car-005": CAR005_CONTENT,         // Spiritual & Religious Care
-  "res-002": RES002_CONTENT,         // Service User Involvement
+  "res-002": RES002_CONTENT_V2, // Deepening Batch 7         // Service User Involvement
   "res-003": RES003_CONTENT,         // Compliments & Feedback
-  "res-004": RES004_CONTENT,         // Flexible Service Delivery
-  "res-005": RES005_CONTENT,         // Hospital Admission & Discharge Liaison
+  "res-004": RES004_CONTENT_V2, // Deepening Batch 7         // Flexible Service Delivery
+  "res-005": RES005_CONTENT_V2, // Deepening Batch 7         // Hospital Admission & Discharge Liaison
   "wl-015": WL015_CONTENT,           // Equality & Human Rights (Employment)
   // ── New priority policies — Governance & Quality ───────────────────────────
   "gov-001": GOV001_CONTENT_V2, // Deepening Batch 2
@@ -1415,6 +1406,9 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
   ...EXPANSION_2026F_CONTENT,
   ...EXPANSION_2026G_CONTENT,
   ...EXPANSION_2026H_CONTENT,
+
+  // Deepening overrides (must follow expansion spreads)
+  "res-006": RES006_CONTENT_V2, // Deepening Batch 7
 };
 
 export function getDocumentsByCategory(keyQuestion?: string): Document[] {
@@ -1437,6 +1431,7 @@ export function searchDocuments(query: string): Document[] {
 // so old links, bookmarks and acknowledgement histories continue to work.
 export const SUPERSEDED_IDS: Record<string, string> = {
   "eff-006": "saf-014", // duplicate Pressure Ulcer policy merged into saf-014 (Prevention & Management)
+  "res-003": "res-006", // Compliments & Feedback merged into res-006 (Compliments, Concerns & Feedback)
   "saf-018": "saf-029", // Environmental Safety & Maintenance superseded by the Group 4 H&S suite (saf-029 COSHH saf-030, Legionella saf-031, Electrical saf-032, Gas saf-033)
 };
 

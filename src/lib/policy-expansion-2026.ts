@@ -151,7 +151,7 @@ export const EXPANSION_2026_DOCS: Document[] = [
     serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
     version: "1.0", lastUpdated: "2026-07-15", status: "updated", readTime: 13,
     tags: ["feedback", "compliments", "concerns", "you said we did", "surveys"],
-    summary: "Capturing and acting on the everyday feedback that never becomes a formal complaint: concerns resolved early, compliments analysed for what works, surveys, accessible feedback routes and closing the loop with 'you said, we did'.",
+    summary: "Capturing and acting on the everyday feedback that never becomes a formal complaint: concerns resolved early, compliments analysed for what works, surveys, accessible feedback routes and closing the loop with 'you said, we did'. (Consolidated policy — the former separate Compliments & Feedback policy, res-003, is merged here.)",
   },
   {
     id: "eff-017",
