@@ -39,7 +39,7 @@ import { EXPANSION_2026E_DOCS, EXPANSION_2026E_CONTENT } from "./policy-expansio
 import { EXPANSION_2026F_DOCS, EXPANSION_2026F_CONTENT } from "./policy-expansion-2026f";
 import { EXPANSION_2026G_DOCS, EXPANSION_2026G_CONTENT } from "./policy-expansion-2026g";
 import { EXPANSION_2026H_DOCS, EXPANSION_2026H_CONTENT } from "./policy-expansion-2026h";
-import { SAF001_ADDITIONAL_SECTIONS, SAF001_FULL_APPENDICES, HR007_CONTENT_V2, GOV005_CONTENT_V2, GOV001_CONTENT_V2, GOV003_CONTENT_V2, GOV004_CONTENT_V2, IGR003_CONTENT_V2, IGR004_CONTENT_V2, COP001_CONTENT_V2, COP002_CONTENT_V2, COP003_CONTENT_V2, COP004_CONTENT_V2, COP006_CONTENT_V2, HR001_CONTENT_V2, HR002_CONTENT_V2, HR003_CONTENT_V2, HR005_CONTENT_V2, HR006_CONTENT_V2, HR004_CONTENT_V2, WL010_CONTENT_V2, WL011_CONTENT_V2, IGR001_CONTENT_V2, IGR002_CONTENT_V2, GOV002_CONTENT_V2, GOV006_CONTENT_V2, GOV007_CONTENT_V2, IGR005_CONTENT_V2, COP005_CONTENT_V2, RES002_CONTENT_V2, RES004_CONTENT_V2, RES005_CONTENT_V2, RES006_CONTENT_V2 } from "./policy-deepening-2026";
+import { SAF001_ADDITIONAL_SECTIONS, SAF001_FULL_APPENDICES, HR007_CONTENT_V2, GOV005_CONTENT_V2, GOV001_CONTENT_V2, GOV003_CONTENT_V2, GOV004_CONTENT_V2, IGR003_CONTENT_V2, IGR004_CONTENT_V2, COP001_CONTENT_V2, COP002_CONTENT_V2, COP003_CONTENT_V2, COP004_CONTENT_V2, COP006_CONTENT_V2, HR001_CONTENT_V2, HR002_CONTENT_V2, HR003_CONTENT_V2, HR005_CONTENT_V2, HR006_CONTENT_V2, HR004_CONTENT_V2, WL010_CONTENT_V2, WL011_CONTENT_V2, IGR001_CONTENT_V2, IGR002_CONTENT_V2, GOV002_CONTENT_V2, GOV006_CONTENT_V2, GOV007_CONTENT_V2, IGR005_CONTENT_V2, COP005_CONTENT_V2, RES002_CONTENT_V2, RES004_CONTENT_V2, RES005_CONTENT_V2, RES006_CONTENT_V2, CAR003_CONTENT_V2, CAR004_CONTENT_V2, CAR005_CONTENT_V2, CAR006_CONTENT_V2, CAR007_CONTENT_V2 } from "./policy-deepening-2026";
 
 export type Document = {
   id: string;
@@ -1347,7 +1347,7 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
   "wl-014": WL014_CONTENT,           // Information Governance
   "eff-013": EFF013_CONTENT,         // Mental Health & Wellbeing
   "wl-007": WL007_CONTENT,           // Business Continuity
-  "car-003": CAR003_CONTENT,         // Communication
+  "car-003": CAR003_CONTENT_V2, // Deepening Batch 8         // Communication
   "eff-008": EFF008_CONTENT,         // Continence Management
   "wl-018": WL018_CONTENT,           // Registered Manager Accountability
   "saf-017": SAF017_CONTENT,         // Skin Integrity & Wound Care
@@ -1357,11 +1357,11 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
   "wl-012": WL012_CONTENT,           // Absence Management
   "car-008": CAR008_CONTENT,         // Advocacy
   "eff-009": EFF009_CONTENT,         // Oral Health & Dental Care
-  "car-006": CAR006_CONTENT,         // Activities & Social Engagement
-  "car-007": CAR007_CONTENT,         // Family & Carer Involvement
+  "car-006": CAR006_CONTENT_V2, // Deepening Batch 8         // Activities & Social Engagement
+  "car-007": CAR007_CONTENT_V2, // Deepening Batch 8         // Family & Carer Involvement
   "wl-016": WL016_CONTENT,           // Learning & Development Strategy
-  "car-004": CAR004_CONTENT,         // Relationships & Sexuality
-  "car-005": CAR005_CONTENT,         // Spiritual & Religious Care
+  "car-004": CAR004_CONTENT_V2, // Deepening Batch 8         // Relationships & Sexuality
+  "car-005": CAR005_CONTENT_V2, // Deepening Batch 8         // Spiritual & Religious Care
   "res-002": RES002_CONTENT_V2, // Deepening Batch 7         // Service User Involvement
   "res-003": RES003_CONTENT,         // Compliments & Feedback
   "res-004": RES004_CONTENT_V2, // Deepening Batch 7         // Flexible Service Delivery
