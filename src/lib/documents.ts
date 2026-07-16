@@ -39,7 +39,7 @@ import { EXPANSION_2026E_DOCS, EXPANSION_2026E_CONTENT } from "./policy-expansio
 import { EXPANSION_2026F_DOCS, EXPANSION_2026F_CONTENT } from "./policy-expansion-2026f";
 import { EXPANSION_2026G_DOCS, EXPANSION_2026G_CONTENT } from "./policy-expansion-2026g";
 import { EXPANSION_2026H_DOCS, EXPANSION_2026H_CONTENT } from "./policy-expansion-2026h";
-import { SAF001_ADDITIONAL_SECTIONS, SAF001_FULL_APPENDICES, HR007_CONTENT_V2, GOV005_CONTENT_V2, GOV001_CONTENT_V2, GOV003_CONTENT_V2, GOV004_CONTENT_V2, IGR003_CONTENT_V2, IGR004_CONTENT_V2, COP001_CONTENT_V2, COP002_CONTENT_V2, COP003_CONTENT_V2, COP004_CONTENT_V2, COP006_CONTENT_V2, HR001_CONTENT_V2, HR002_CONTENT_V2, HR003_CONTENT_V2, HR005_CONTENT_V2, HR006_CONTENT_V2, HR004_CONTENT_V2, WL010_CONTENT_V2, WL011_CONTENT_V2, IGR001_CONTENT_V2, IGR002_CONTENT_V2 } from "./policy-deepening-2026";
+import { SAF001_ADDITIONAL_SECTIONS, SAF001_FULL_APPENDICES, HR007_CONTENT_V2, GOV005_CONTENT_V2, GOV001_CONTENT_V2, GOV003_CONTENT_V2, GOV004_CONTENT_V2, IGR003_CONTENT_V2, IGR004_CONTENT_V2, COP001_CONTENT_V2, COP002_CONTENT_V2, COP003_CONTENT_V2, COP004_CONTENT_V2, COP006_CONTENT_V2, HR001_CONTENT_V2, HR002_CONTENT_V2, HR003_CONTENT_V2, HR005_CONTENT_V2, HR006_CONTENT_V2, HR004_CONTENT_V2, WL010_CONTENT_V2, WL011_CONTENT_V2, IGR001_CONTENT_V2, IGR002_CONTENT_V2, GOV002_CONTENT_V2, GOV006_CONTENT_V2, GOV007_CONTENT_V2, IGR005_CONTENT_V2, COP005_CONTENT_V2 } from "./policy-deepening-2026";
 
 export type Document = {
   id: string;
@@ -1378,18 +1378,18 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
   "wl-015": WL015_CONTENT,           // Equality & Human Rights (Employment)
   // ── New priority policies — Governance & Quality ───────────────────────────
   "gov-001": GOV001_CONTENT_V2, // Deepening Batch 2
-  "gov-002": GOV002_CONTENT,
+  "gov-002": GOV002_CONTENT_V2, // Deepening Batch 6
   "gov-003": GOV003_CONTENT_V2, // Deepening Batch 2
   "gov-004": GOV004_CONTENT_V2, // Deepening Batch 2
   "gov-005": GOV005_CONTENT_V2, // Deepening Batch 1 (was GOV005_CONTENT)
-  "gov-006": GOV006_CONTENT,
-  "gov-007": GOV007_CONTENT,
+  "gov-006": GOV006_CONTENT_V2, // Deepening Batch 6
+  "gov-007": GOV007_CONTENT_V2, // Deepening Batch 6
   // ── New priority policies — Information & Records ──────────────────────────
   "igr-001": IGR001_CONTENT_V2, // Deepening Batch 5
   "igr-002": IGR002_CONTENT_V2, // Deepening Batch 5
   "igr-003": IGR003_CONTENT_V2, // Deepening Batch 2
   "igr-004": IGR004_CONTENT_V2, // Deepening Batch 2
-  "igr-005": IGR005_CONTENT,
+  "igr-005": IGR005_CONTENT_V2, // Deepening Batch 6
   // ── New priority policies — Workforce & HR ─────────────────────────────────
   "hr-001": HR001_CONTENT_V2, // Deepening Batch 4
   "hr-002": HR002_CONTENT_V2, // Deepening Batch 4
@@ -1403,7 +1403,7 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
   "cop-002": COP002_CONTENT_V2, // Deepening Batch 3
   "cop-003": COP003_CONTENT_V2, // Deepening Batch 3
   "cop-004": COP004_CONTENT_V2, // Deepening Batch 3
-  "cop-005": COP005_CONTENT,
+  "cop-005": COP005_CONTENT_V2, // Deepening Batch 6
   "cop-006": COP006_CONTENT_V2, // Deepening Batch 3
 
   // 2026 Expansion Set
