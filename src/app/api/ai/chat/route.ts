@@ -55,12 +55,12 @@ You have deep knowledge of:
 - Care Inspectorate Scotland (CI), CIW Wales, RQIA Northern Ireland — devolved frameworks
 
 ═══════════════════════════════════════════
-ZIPROH PLATFORM — POLICY LIBRARY (214 policies)
+ZIPROH PLATFORM — POLICY LIBRARY (212 policies)
 ═══════════════════════════════════════════
 
-When a user asks about a topic, identify the relevant policy ID and direct them to it. Policy URLs follow the pattern /compliance/[id] (e.g. /compliance/saf-001). IDs use lowercase with hyphens.
+When a user asks about a topic, identify the relevant policy ID and direct them to it. Note: eff-006 (duplicate pressure ulcer policy) is merged into saf-014, and saf-018 (environmental safety) is superseded by the Health, Safety & Premises suite (saf-029 onwards) — old links to either redirect automatically. Policy URLs follow the pattern /compliance/[id] (e.g. /compliance/saf-001). IDs use lowercase with hyphens.
 
-SAFE (18 policies — protecting people from avoidable harm):
+SAFE (17 policies — protecting people from avoidable harm; premises safety now in the Health, Safety & Premises section below):
 • saf-001 — Safeguarding Adults at Risk Policy (Care Act 2014 s.42, abuse types, referral process)
 • saf-002 — Safeguarding Children Policy (Children Act 1989/2004, reporting, multi-agency)
 • saf-003 — Medication Management Policy (ordering, storage, administration, MAR, controlled drugs)
@@ -78,15 +78,13 @@ SAFE (18 policies — protecting people from avoidable harm):
 • saf-015 — Accident & Incident Reporting Policy (RIDDOR, Datix, investigation, learning)
 • saf-016 — Medicines Covert Administration Policy (lack of capacity, best interests, disguised medication)
 • saf-017 — Skin Integrity & Wound Care Policy (wound assessment, dressings, tissue viability referral)
-• saf-018 — Environmental Safety & Maintenance Policy (COSHH, Legionella, maintenance schedules)
 
-EFFECTIVE (13 policies — ensuring outcomes for people):
+EFFECTIVE (12 policies — ensuring outcomes for people; pressure ulcer care consolidated in saf-014):
 • eff-001 — Care Planning Policy (person-centred assessment, care plan development, review cycles)
 • eff-002 — Mental Capacity Act Policy (5 principles, capacity assessments, best interests, DoLS/LPS)
 • eff-003 — Nutrition & Hydration Policy (MUST screening, malnutrition, mealtime support, dietary assessment)
 • eff-004 — End of Life Care Policy (advance care planning, DNACPR, palliative care, bereavement)
 • eff-005 — Dementia Care Policy (person-centred dementia, cognitive assessment, environment)
-• eff-006 — Pressure Ulcer Prevention Policy (Waterlow/Braden, repositioning, skin integrity)
 • eff-007 — Discharge & Transfer of Care Policy (safe discharge, handover documentation, continuity)
 • eff-008 — Continence Management Policy (continence assessment, catheter care, dignity)
 • eff-009 — Oral Health & Dental Care Policy (daily mouth care, dental referrals, dentures)
@@ -279,7 +277,7 @@ ZIPROH PLATFORM — FEATURES & PAGES
 
 Direct users to these platform features when relevant:
 
-• /compliance — Compliance Centre: all 214 policies organised by CQC Key Question, with read/acknowledge tracking
+• /compliance — Compliance Centre: all 212 policies organised by CQC Key Question, with read/acknowledge tracking
 • /compliance/[id] — Individual policy viewer with PDF download (e.g. /compliance/saf-001)
 • /my-record — Personal compliance record showing all acknowledged policies
 • /inspection-prep — CQC Inspection Preparation: per-Key-Question readiness scores, 23-item pre-inspection checklist, inspector focus areas

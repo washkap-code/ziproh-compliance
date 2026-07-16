@@ -245,7 +245,7 @@ export const SAF008_CONTENT: DocumentContent = {
   relatedDocuments: [
     "saf-006 — Risk Assessment Policy",
     "saf-015 — Accident & Incident Reporting Policy",
-    "saf-018 — Environmental Safety & Maintenance Policy",
+    "saf-029 — Health & Safety Policy (Organisational), with the premises suite saf-030–033",
     "wl-007 — Business Continuity Policy",
     "wl-009 — Induction & Mandatory Training Policy",
   ],

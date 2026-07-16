@@ -263,7 +263,7 @@ export const WL007_CONTENT: DocumentContent = {
     "wl-017 — CQC Registration & Regulatory Compliance Policy",
     "saf-008 — Fire Safety Policy",
     "wl-008 — Staffing & Deployment Policy",
-    "saf-018 — Environmental Safety & Maintenance Policy",
+    "saf-029 — Health & Safety Policy (Organisational), with the premises suite saf-030–033",
   ],
   appendices: [
     { title: "Appendix A — Business Continuity Risk Register", content: "Tabular register: risk category; scenario description; likelihood (1–5); impact (1–5); risk score; current controls; contingency plan reference; owner; last reviewed." },

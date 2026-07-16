@@ -14,8 +14,8 @@ import { SAF004_CONTENT, SAF010_CONTENT, SAF014_CONTENT, EFF011_CONTENT, WL017_C
 import { SAF013_CONTENT, SAF011_CONTENT, WL008_CONTENT, WL013_CONTENT, EFF007_CONTENT } from "./policy-medium-depth-5";
 import { EFF010_CONTENT, SAF016_CONTENT, WL010_CONTENT, EFF012_CONTENT, WL014_CONTENT } from "./policy-medium-depth-6";
 import { EFF013_CONTENT, WL007_CONTENT, CAR003_CONTENT, EFF008_CONTENT, WL018_CONTENT } from "./policy-medium-depth-7";
-import { SAF017_CONTENT, SAF018_CONTENT, WL011_CONTENT, WL012_CONTENT, CAR008_CONTENT } from "./policy-medium-depth-8";
-import { EFF006_CONTENT, EFF009_CONTENT, CAR006_CONTENT, CAR007_CONTENT, WL016_CONTENT } from "./policy-medium-depth-9";
+import { SAF017_CONTENT, WL011_CONTENT, WL012_CONTENT, CAR008_CONTENT } from "./policy-medium-depth-8";
+import { EFF009_CONTENT, CAR006_CONTENT, CAR007_CONTENT, WL016_CONTENT } from "./policy-medium-depth-9";
 import { CAR004_CONTENT, CAR005_CONTENT, RES002_CONTENT, RES003_CONTENT, RES004_CONTENT, RES005_CONTENT, WL015_CONTENT } from "./policy-medium-depth-10";
 import { SAF019_CONTENT, SAF020_CONTENT, SAF013_ENHANCED, SAF016_ENHANCED } from "./policy-medication-specialist";
 import { EFF002_COMPREHENSIVE } from "./policy-flagship-eff002";
@@ -252,7 +252,7 @@ export const DOCUMENTS: Document[] = [
     serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
     version: "4.2", lastUpdated: "2026-06-01", status: "updated", readTime: 15,
     tags: ["safeguarding", "adults", "abuse", "prevention"],
-    summary: "Sets out responsibilities for protecting adults at risk from abuse, neglect and exploitation. Aligned to the Care Act 2014 and local authority safeguarding procedures.",
+    summary: "Sets out responsibilities for protecting adults at risk from abuse, neglect and exploitation. Aligned to the Care Act 2014 and local authority safeguarding procedures. Read with the specialist safeguarding suite: allegations against staff (saf-021), closed culture prevention (saf-022), Prevent (saf-023), sexual safety (bb-005) and financial abuse (ch-006/dc-011).",
     changelog: [
       "Updated to reflect 2024 DHSC safeguarding review recommendations.",
       "New guidance added on online/digital abuse and financial exploitation via social media.",
@@ -401,7 +401,7 @@ export const DOCUMENTS: Document[] = [
     regulators: ["CQC", "CI", "CIW", "RQIA"],
     version: "4.2", lastUpdated: "2026-04-05", status: "current", readTime: 15,
     tags: ["pressure ulcer", "Waterlow", "repositioning", "skin care"],
-    summary: "Policy to prevent and manage pressure ulcers, including risk assessment using validated tools, repositioning schedules and wound care.",
+    summary: "Policy to prevent and manage pressure ulcers, including risk assessment using validated tools, repositioning schedules and wound care. (Consolidated policy — the former separate Pressure Ulcer Prevention policy, eff-006, is merged here.)",
   },
   {
     id: "saf-015",
@@ -431,16 +431,6 @@ export const DOCUMENTS: Document[] = [
     version: "3.0", lastUpdated: "2026-04-22", status: "current", readTime: 13,
     tags: ["wound care", "skin integrity", "dressings", "tissue viability"],
     summary: "Policy for the assessment and management of wounds and skin integrity issues, including referral pathways to tissue viability nurses.",
-  },
-  {
-    id: "saf-018",
-    title: "Environmental Safety & Maintenance Policy",
-    category: "Safe", subcategory: "Health & Safety", keyQuestion: "Safe",
-    serviceTypes: ["Care & Nursing Home", "Supported Living"],
-    regulators: ["CQC", "CI", "CIW", "RQIA"],
-    version: "2.9", lastUpdated: "2026-02-28", status: "current", readTime: 10,
-    tags: ["environment", "maintenance", "COSHH", "Legionella", "safety checks"],
-    summary: "Policy for maintaining a safe physical environment, including maintenance schedules, COSHH management and Legionella risk control.",
   },
   {
     id: "saf-019",
@@ -511,16 +501,6 @@ export const DOCUMENTS: Document[] = [
     version: "3.8", lastUpdated: "2026-04-20", status: "current", readTime: 18,
     tags: ["dementia", "cognitive", "person-centred", "environment"],
     summary: "Policy for providing high-quality, person-centred care to those living with dementia, including assessment, activity and environmental guidance.",
-  },
-  {
-    id: "eff-006",
-    title: "Pressure Ulcer Prevention Policy",
-    category: "Effective", subcategory: "Pressure Ulcer Prevention", keyQuestion: "Effective",
-    serviceTypes: ["Care & Nursing Home", "Domiciliary Care"],
-    regulators: ["CQC", "CI", "CIW", "RQIA"],
-    version: "4.2", lastUpdated: "2026-04-05", status: "current", readTime: 15,
-    tags: ["pressure ulcer", "Waterlow", "repositioning", "skin care"],
-    summary: "Policy to prevent and manage pressure ulcers, including risk assessment using Waterlow or Braden scales, repositioning schedules and wound care.",
   },
   {
     id: "eff-007",
@@ -617,7 +597,7 @@ export const DOCUMENTS: Document[] = [
     serviceTypes: ["All"], regulators: ["CQC", "CI", "CIW", "RQIA"],
     version: "2.5", lastUpdated: "2026-01-30", status: "current", readTime: 9,
     tags: ["communication", "language", "accessible", "interpreter"],
-    summary: "Policy to ensure effective communication with service users, families and other professionals, including accessible formats and interpreter services.",
+    summary: "Policy to ensure effective communication with service users, families and other professionals, including accessible formats and interpreter services. Read with car-010, which covers the Accessible Information Standard in depth.",
   },
   {
     id: "car-004",
@@ -1376,13 +1356,11 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
   "eff-008": EFF008_CONTENT,         // Continence Management
   "wl-018": WL018_CONTENT,           // Registered Manager Accountability
   "saf-017": SAF017_CONTENT,         // Skin Integrity & Wound Care
-  "saf-018": SAF018_CONTENT,         // Environmental Safety & Maintenance
   "saf-019": SAF019_CONTENT,         // PRN (As Required) Medication Policy
   "saf-020": SAF020_CONTENT,         // Medication Error Reporting & Management
   "wl-011": WL011_CONTENT,           // Grievance Policy
   "wl-012": WL012_CONTENT,           // Absence Management
   "car-008": CAR008_CONTENT,         // Advocacy
-  "eff-006": EFF006_CONTENT,         // Pressure Ulcer Prevention
   "eff-009": EFF009_CONTENT,         // Oral Health & Dental Care
   "car-006": CAR006_CONTENT,         // Activities & Social Engagement
   "car-007": CAR007_CONTENT,         // Family & Carer Involvement
@@ -1450,8 +1428,18 @@ export function searchDocuments(query: string): Document[] {
   );
 }
 
+// Superseded policy IDs — retired documents resolve to their canonical successors
+// so old links, bookmarks and acknowledgement histories continue to work.
+export const SUPERSEDED_IDS: Record<string, string> = {
+  "eff-006": "saf-014", // duplicate Pressure Ulcer policy merged into saf-014 (Prevention & Management)
+  "saf-018": "saf-029", // Environmental Safety & Maintenance superseded by the Group 4 H&S suite (saf-029 COSHH saf-030, Legionella saf-031, Electrical saf-032, Gas saf-033)
+};
+
 export function getDocumentById(id: string): Document | undefined {
-  return DOCUMENTS.find((d) => d.id === id);
+  const doc = DOCUMENTS.find((d) => d.id === id);
+  if (doc) return doc;
+  const successor = SUPERSEDED_IDS[id];
+  return successor ? DOCUMENTS.find((d) => d.id === successor) : undefined;
 }
 
 export function getDocumentContent(id: string): DocumentContent | undefined {
