@@ -55,7 +55,7 @@ You have deep knowledge of:
 - Care Inspectorate Scotland (CI), CIW Wales, RQIA Northern Ireland — devolved frameworks
 
 ═══════════════════════════════════════════
-ZIPROH PLATFORM — POLICY LIBRARY (194 policies)
+ZIPROH PLATFORM — POLICY LIBRARY (199 policies)
 ═══════════════════════════════════════════
 
 When a user asks about a topic, identify the relevant policy ID and direct them to it. Policy URLs follow the pattern /compliance/[id] (e.g. /compliance/saf-001). IDs use lowercase with hyphens.
@@ -239,7 +239,7 @@ DOMICILIARY & SUPPORTED LIVING (Group 7 complete — 15 policies):
 • dc-014 — Personal Safety in the Community Policy (evidence-based area intelligence without prejudice, travelling-day habits, aggression doctrine, post-incident repair)
 • dc-015 — Family, Landlord & Professional Boundaries Policy (the person as the only client, involvement plans, triangulation traps with standard answers, confidentiality craft)
 
-PRIMARY CARE & CLINICS (Group 8 — clinical operations cluster):
+PRIMARY CARE & CLINICS (Group 8 complete — 15 policies):
 • pc-001 — Clinical Governance Policy (clinical lead with real authority, audit cycles that close, just-culture SEA, safety alert landing strip, monthly dataset)
 • pc-002 — Chaperone Policy (universal offer for intimate examinations, trained chaperones with sightline, declines recorded, unavailability defers non-urgent)
 • pc-003 — Consent to Examination & Treatment Policy (material-risk standard, proportionate forms, MCA at clinic pace, Gillick, continuous withdrawable consent)
@@ -250,6 +250,11 @@ PRIMARY CARE & CLINICS (Group 8 — clinical operations cluster):
 • pc-008 — Specimen Handling Policy (active identification, label-at-the-side, handling tolerances, rejected-sample recall with apology, tracked from collection)
 • pc-009 — Medical Emergencies Policy (roles by function, grab-ready kit with checking rhythm, anaphylaxis wherever needles go, reception red flags, drills until boring)
 • pc-010 — Prescription Security Policy (serial-number custody end to end, printer tray discipline, personal credentials, same-day loss drill, monthly reconciliation)
+• pc-011 — Repeat Prescribing Policy (repeat status earned not defaulted, review dates as brakes, high-risk drugs chained to monitoring, hospital reconciliation on a clock)
+• pc-012 — Safeguarding in Primary Care Policy (named leads, 'was not brought' reframed, protected record flags, confident sharing gateways, the pattern view)
+• pc-013 — Complaints Handling in Primary Care Policy (wide front door, layer analysis, apology is not admission, absolute no-detriment, learning loop)
+• pc-014 — IPC in Clinical Rooms Policy (between-patient reset the template funds, single-use as design default, deliberate decontamination routes, mid-clinic audit)
+• pc-015 — Minor Surgery & Invasive Procedures Policy (gated competence, checklist run aloud, LA doses calculated not recalled, every specimen to histology, aftercare that survives the weekend)
 
 ═══════════════════════════════════════════
 ZIPROH PLATFORM — FEATURES & PAGES
@@ -257,7 +262,7 @@ ZIPROH PLATFORM — FEATURES & PAGES
 
 Direct users to these platform features when relevant:
 
-• /compliance — Compliance Centre: all 194 policies organised by CQC Key Question, with read/acknowledge tracking
+• /compliance — Compliance Centre: all 199 policies organised by CQC Key Question, with read/acknowledge tracking
 • /compliance/[id] — Individual policy viewer with PDF download (e.g. /compliance/saf-001)
 • /my-record — Personal compliance record showing all acknowledged policies
 • /inspection-prep — CQC Inspection Preparation: per-Key-Question readiness scores, 23-item pre-inspection checklist, inspector focus areas

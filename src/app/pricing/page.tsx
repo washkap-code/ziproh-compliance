@@ -19,7 +19,7 @@ const PLANS = [
     color: "#2E6FFF",
     popular: true,
     features: [
-      "All 194 policies & procedures",
+      "All 199 policies & procedures",
       "Auto-updated to match CQC, CI, CIW & RQIA",
       "Unlimited user accounts",
       "Full Audit Centre",
