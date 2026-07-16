@@ -702,3 +702,313 @@ export const COP006_CONTENT_V2: DocumentContent = {
   monitoring: "Choking plans verified present-and-current at ch-005's mealtime audits; response competence through hr-027's gateway and pc-009's drill programme (choking scenario at least annually); every event and near-miss through the incident machinery with quarterly pattern mining; policy reviewed annually against current Resuscitation Council guidance.",
   relatedDocuments: ["eff-010 — Dysphagia & Swallowing Difficulties Policy", "ch-004 — Menu Planning & Special Diets (IDDSI)", "ch-005 — Mealtime Experience Policy", "pc-009 — Medical Emergencies Policy", "saf-043 — First Aid Policy", "hr-027 — Competency Assessment Policy", "gov-001/gov-005 — Candour & Notifications"],
 };
+
+// ============================================================
+// DEEPENING BATCH 4 — Thin HR set (issued 16 Jul 2026, ahead of 28 Jul slot)
+// ============================================================
+
+export const HR001_CONTENT_V2: DocumentContent = {
+  statement: "Induction is where this organisation's standards stop being words on a page and become the way a new colleague actually works. We treat the first weeks of employment as the highest-leverage safety intervention we have: a person who is inducted properly carries good habits for years, and a person who is left to absorb practice by osmosis carries whatever they happened to see. No new starter delivers unsupervised care until their induction competencies are signed off, and no shortcut through that principle is available to any manager under any staffing pressure.",
+  purpose: "To define what must happen between the moment a job offer is accepted and the moment a new colleague works unsupervised: the pre-employment gateway, the structure and content of induction, the supernumerary period, the Care Certificate pathway for staff new to care, the adapted route for experienced recruits and agency workers, and the link into probation and competency assessment.",
+  scope: "All new starters in every role — care and non-care, permanent, fixed-term, bank, and (in adapted form) agency and volunteers. 'Induction' here means the whole programme from offer to competency sign-off, not the first-day paperwork session.",
+  keyPoints: [
+    "Nobody starts work before the pre-employment gateway is complete: DBS at the right level, two verified references, right-to-work, identity, qualification checks, and health screening where the role requires it.",
+    "New starters are supernumerary until sign-off — they appear on the rota as additional to the safe staffing number, never as part of it.",
+    "Staff new to care complete the Care Certificate's fifteen standards within twelve weeks; experienced recruits evidence equivalence rather than repeating what they can already demonstrate.",
+    "Induction ends with observed competency sign-off under hr-027, not with the passage of time. Week twelve arriving does not mean induction is finished; competence demonstrated means induction is finished.",
+    "Agency and temporary workers receive a documented local orientation before their first shift — every time, at every location, however experienced they are elsewhere."
+  ],
+  procedure: [
+    {
+      heading: "Before day one — the pre-employment gateway",
+      body: "Induction begins before employment does. The recruiting manager confirms, against the checklist at Appendix A, that every pre-employment check has been completed and verified: enhanced DBS with the appropriate barred-list check for the role (hr-008), two references including the most recent care-sector employer with any gaps explored (hr-009), right-to-work evidence, identity verification against original documents, professional registration where the role requires it, and confirmation of any qualifications the person was appointed on the strength of.\n\nA start date is not booked until the gateway is closed. Where a check is delayed, the start date moves — we do not start people 'pending DBS' with conditions attached, because conditions erode under rota pressure and the first person to discover the erosion is usually an inspector. The registered manager personally authorises every start and signs the gateway checklist; that signature is an assertion that they have seen the evidence, not that someone told them it exists.\n\nBetween offer and start, the new colleague receives a welcome pack: contract, job description, the staff handbook, the code of conduct (hr-003), their induction programme with named supervisor, and first-week practicalities. People who know what their first day looks like arrive able to learn rather than anxious about logistics."
+    },
+    {
+      heading: "The shape of the programme",
+      body: "Induction has three layers, and all three are documented in the individual induction record.\n\nThe organisational layer covers who we are and how we work: our values, the services we provide, safeguarding (saf-001 — delivered on day one, before any care contact), whistleblowing and how to raise concerns (hr-007), health and safety essentials including fire procedures for the specific building, infection prevention, records and confidentiality (igr-001), and the code of conduct. This layer is completed before the first shift on the floor.\n\nThe role layer covers the specific job: the policies that govern the person's daily tasks, the documentation systems they will write in, the people they will support — starting with care plans read and discussed, not skimmed — and the equipment they will use, with practical instruction on each item before first use.\n\nThe competency layer is the longest: the staged demonstration, under observation, that the person can actually do the job to our standard. It is structured by the competency framework in hr-027 and it, not the calendar, determines when induction ends."
+    },
+    {
+      heading: "Supernumerary status — the rule that protects everyone",
+      body: "Until competency sign-off, a new starter is supernumerary: they appear on the rota in addition to the safe staffing number, never within it. This is the induction rule most vulnerable to erosion, because a rota gap and a keen new starter present the rota planner with an obvious temptation. We name the temptation in order to refuse it.\n\nA new starter counted into the numbers stops being a learner and becomes a lone worker with gaps in their knowledge that nobody has yet found. The cost of holding the line is a few weeks of paying for an extra pair of hands; the cost of dropping it is discovered at the worst possible moment, in the form of a medication error, a moving-and-handling injury, or a safeguarding signal missed because nobody had yet taught the person what to look for.\n\nShadow shifts are structured, not decorative. The supervising colleague knows they are supervising, knows which competencies this week's shifts are meant to develop, and records what was observed. 'They followed me around for a fortnight' is not an induction; it is an alibi."
+    },
+    {
+      heading: "Staff new to care — the Care Certificate pathway",
+      body: "A new starter with no prior care experience completes the Care Certificate: fifteen standards covering the fundamentals from duty of care and person-centred working through safeguarding, medication awareness, and basic life support. Our expectation is completion within twelve weeks of starting, combining workbook learning with observed practice — the certificate is awarded on demonstrated competence in the workplace, not on workbook completion alone.\n\nThe assigned assessor holds the standard steady: it is a genuine assessment, and 'not yet competent' is a normal, respectable finding that triggers more support and another observation, not a mark against the person. Where twelve weeks proves insufficient, the programme extends with a written support plan; what does not happen is quiet sign-off of competencies nobody observed.\n\nStaff who arrive with the Care Certificate already completed elsewhere have it verified with the issuing employer and then validated by observation here — the certificate travels, but our obligation to see competence with our own eyes does not transfer."
+    },
+    {
+      heading: "Experienced recruits — equivalence, not repetition",
+      body: "An experienced care worker or nurse joining us does not repeat a beginner's programme, and pretending otherwise wastes their goodwill and our money. Their induction is built on a mapping exercise: qualifications, training records, and references are assessed against our competency framework, credit is given where evidence is solid, and the programme concentrates on what is genuinely new — our people, our documentation, our medication system, our building, our way of working.\n\nTwo things are never waived for experience: the organisational layer (every employer's safeguarding thresholds, escalation routes, and culture differ, and assuming ours are the same as the last place is precisely the assumption that hurts people) and observed competency sign-off in the tasks the person will actually perform here. Experience shortens induction; it never bypasses its gates."
+    },
+    {
+      heading: "Agency and temporary workers",
+      body: "Agency staff receive a local orientation before their first shift, documented on the checklist at Appendix B: fire procedures and emergency exits for this building, how to summon help, who is in charge of the shift, the whereabouts of care plans and how to read our documentation, safeguarding reporting routes, and introductions to the people they will support, including anything critical — choking risk plans, diabetes protocols, communication needs — that cannot wait to be discovered.\n\nThe agency profile (qualifications, DBS assurance, training record) is checked before the shift is confirmed, not after it has started. A returning agency worker at the same location needs the profile check refreshed per hr-010 but not the full orientation repeated; an agency worker new to the location always gets the orientation, however many shifts they have worked elsewhere in the organisation. Fifteen minutes of orientation is the cheapest incident prevention we buy."
+    },
+    {
+      heading: "Probation, problems, and the honest exit",
+      body: "Induction runs inside the probation period (hr-013) and feeds it: the probation reviews at weeks four, eight, and twelve draw directly on the induction record and competency observations, so neither the new starter nor the manager arrives at a review without evidence.\n\nWhen induction reveals problems — competencies not developing, values not aligning, conduct concerns — the response is early and honest. Support is increased first: more shadowing, a different supervisor if the pairing is not working, targeted training, extended timescales in writing. But induction is also the point of the probation system: it exists to answer the question 'should this appointment be confirmed?' and sometimes the honest answer is no. Confirming a marginal appointment because recruitment is hard exports the problem to the people we support, who will receive that person's care for years. A safeguarding or conduct concern during induction is never held for the next scheduled review; it goes through saf-001 or hr-004 immediately."
+    },
+    {
+      heading: "Records",
+      body: "Each new starter has an induction record holding the signed gateway checklist, the programme with dates and delivering staff, workbook and Care Certificate evidence, every competency observation with the observer's name, probation review notes, and the final sign-off authorising unsupervised practice. The record is completed as induction proceeds, not reconstructed afterwards, and it is the file an inspector reads to test whether our recruitment and induction actually work. Induction records are retained for the duration of employment plus the period set in igr-004."
+    }
+  ],
+  responsibilities: [
+    { role: "Registered Manager", duties: ["Authorise every start against the completed pre-employment gateway", "Protect supernumerary status against rota pressure", "Confirm or decline appointments at probation on evidence", "Report induction compliance to governance"] },
+    { role: "Recruiting/Line Manager", duties: ["Build the individual induction programme and assign supervisor and assessor", "Hold weekly check-ins with the new starter", "Act early when induction reveals problems", "Keep the induction record current"] },
+    { role: "Induction Supervisor / Assessor", duties: ["Deliver structured shadow shifts with recorded observations", "Assess Care Certificate and competency standards honestly", "Escalate concerns rather than accommodating them"] },
+    { role: "New Starter", duties: ["Engage with the programme and complete workbook elements", "Work only within signed-off competencies", "Raise anything they do not understand — asking is the culture, not the exception"] }
+  ],
+  training: "Induction supervisors and assessors are trained in observation and assessment before taking on the role, with hr-027 competency assessor preparation. Managers are trained in the gateway requirements and probation management.",
+  monitoring: "Gateway checklist audit on every file at start plus quarterly sample audit; induction completion and Care Certificate timeliness reported quarterly to governance; new-starter feedback gathered at week twelve and themed; leavers within the first year analysed for induction-related causes.",
+  relatedDocuments: ["hr-008 — DBS & Recruitment Checks", "hr-009 — References & Employment History", "hr-010 — Agency & Bank Worker Standards", "hr-013 — Probation Policy", "hr-027 — Competency Assessment Policy", "hr-002 — Statutory & Mandatory Training", "saf-001 — Safeguarding Adults", "hr-003 — Staff Conduct"],
+  versionHistory: [
+    { version: "2.0", date: "2026-07-16", changes: "Full-standard rebuild: pre-employment gateway, supernumerary rule with rationale, Care Certificate pathway, experienced-recruit equivalence route, agency orientation, probation linkage and honest-exit section." },
+    { version: "1.0", date: "2025-11-04", changes: "Initial policy." }
+  ]
+};
+
+export const HR002_CONTENT_V2: DocumentContent = {
+  statement: "The training matrix is safety infrastructure, in exactly the way the fire alarm system is: invisible when it works, catastrophic when it silently degrades. This policy exists to make sure every member of staff holds current, role-appropriate training at all times; that 'trained' means demonstrated competence rather than attendance; and that the organisation notices an expiring certificate before an incident does.",
+  purpose: "To define the statutory and mandatory training required for each role, the frequencies at which it must be refreshed, how it is delivered and evidenced, the compliance thresholds the organisation holds itself to, and what happens when training lapses.",
+  scope: "All staff — permanent, bank, fixed-term — and, through the assurance route in hr-010, agency workers. Volunteers complete the subset of the matrix relevant to their role.",
+  definitions: [
+    { term: "Statutory training", definition: "Training the law requires the employer to provide — fire safety, health and safety, moving and handling where the role involves it, and equivalents arising from specific legislation." },
+    { term: "Mandatory training", definition: "Training this organisation requires for a role because the regulator, commissioners, or our own risk assessment demands it — safeguarding, medication, infection prevention, basic life support, MCA/DoLS and the rest of the matrix." },
+    { term: "Compliance", definition: "The percentage of required training items, across all staff in scope, that are in date on the day of measurement." }
+  ],
+  keyPoints: [
+    "Every role has a defined training profile in the matrix; every member of staff can see their own record and expiry dates.",
+    "Refresher training is booked before expiry, not after — the system warns at eight weeks and escalates at four.",
+    "E-learning is acceptable for knowledge; it is never acceptable as the sole method for practical competencies such as moving and handling, basic life support, or medication administration.",
+    "Compliance below the organisational threshold of 95%, or any individual working with lapsed critical training, is a governance matter, not an administrative one.",
+    "Attendance is not the outcome. The outcome is changed, competent practice — which is why the matrix connects to competency assessment under hr-027."
+  ],
+  procedure: [
+    {
+      heading: "The training matrix",
+      body: "The matrix maps every role to its required subjects and frequencies. For care roles the core set is: safeguarding adults (and children where relevant) — annually; moving and handling with practical assessment — annually; basic life support — annually; fire safety — annually with participation in drills; infection prevention and control — annually; medication administration with competency assessment — annually, for those who administer; MCA and DoLS/LPS — every two years; health and safety, food hygiene, and information governance — every two years; first aid at work for designated first aiders — three-yearly qualification with annual skills refresh; plus service-specific subjects (dysphagia awareness, diabetes, epilepsy and buccal midazolam, PBS, falls) where the people we support make them necessary.\n\nNon-care roles carry the subset that matches their exposure: everyone gets safeguarding, fire, health and safety, and information governance, because everyone works in the building and around the people we support.\n\nThe matrix itself is a governed document: reviewed annually against regulation and guidance, and amended whenever a new service user's needs introduce a competency the team does not yet hold — the admission process in cop-005 asks that question explicitly."
+    },
+    {
+      heading: "Delivery — matching method to subject",
+      body: "Method follows subject. Knowledge subjects may be delivered by e-learning, and e-learning done properly has real advantages: consistency, flexibility around rotas, an automatic completion record. But no practical competency is ever signed off on e-learning alone. Moving and handling requires hands on equipment with an instructor watching; basic life support requires compressions on a manikin; medication competency requires observed administration rounds. The rule is simple: if the skill is performed with the hands, it is assessed with the eyes.\n\nFace-to-face sessions are booked into the rota as working time, and the rota (hr-006) is planned around training rather than training cancelled for the rota — a session cancelled for 'operational pressure' more than once a quarter is itself reported to governance, because it means the staffing model cannot fund its own safety obligations.\n\nTrainers are competent for what they deliver: in-house trainers hold a training qualification or assessed equivalence and their sessions are quality-checked annually; external providers are verified for relevant accreditation before first use and reviewed on renewal."
+    },
+    {
+      heading: "New starters and the first-shift rule",
+      body: "The induction programme (hr-001) front-loads the matrix: safeguarding, fire safety for the specific building, and health and safety essentials are completed before any floor work; moving and handling and basic life support before the person participates in transfers or is counted on for emergency response; medication training and assessment before any involvement in administration. The training system opens a record for every new starter on day one so that nothing waits for a monthly reconciliation to be noticed."
+    },
+    {
+      heading: "Expiry, escalation, and the lapse rule",
+      body: "The training system warns the individual and their manager eight weeks before any item expires, and escalates to the registered manager at four weeks if no booking exists. This buffer is the design: refreshers are booked inside the warning window, and expiry should be an event the system has already prevented.\n\nWhen a critical item nonetheless lapses — safeguarding, moving and handling, basic life support, medication — the default is that the member of staff does not perform the activity the training covers until it is restored. A carer with lapsed moving-and-handling training is redeployed away from transfers; a lapsed medication competency means removal from the administration rota. The registered manager may authorise a short, written, risk-assessed exception where the lapse is administrative (a course cancelled by the provider, evidence in transit) and competence is not actually in doubt — but the exception has an end date measured in days, and 'we were short-staffed' is not grounds for one.\n\nPersistent failure to attend booked training is a conduct matter under hr-003/hr-004, because it is a colleague electing to keep working with expired safety knowledge."
+    },
+    {
+      heading: "Compliance thresholds and reporting",
+      body: "The organisational standard is 95% matrix compliance, measured monthly, reported quarterly to governance with a per-subject and per-team breakdown — because an overall 95% can hide a team at 70% on safeguarding, and it is the hidden cluster that hurts someone. Any critical subject below 90% in any team triggers a recovery plan with dates.\n\nCompliance reporting includes agency assurance: hr-010 requires evidence of equivalent training before an agency profile is accepted, and the monthly report samples those profiles to confirm the assurance is real."
+    },
+    {
+      heading: "Records and inspection readiness",
+      body: "The training record for each person shows subject, date, provider, method, expiry, and — for practical subjects — the competency assessment that accompanied it. Certificates are held in the system, not in drawers. On request, the organisation can produce within one working day: the matrix, current compliance by team and subject, any individual's full record, and the trainer-verification file. That one-day standard is tested twice a year as part of inspection readiness, because the ability to evidence training is nearly as important as the training itself.",
+      warningBox: "A training record that says 'completed' with no date, provider, or assessment evidence behind it is treated as not completed. Inspectors take the same view, and so do coroners."
+    },
+    {
+      heading: "Beyond the matrix — development that follows need",
+      body: "The matrix is the floor, not the horizon. Training needs above it are identified in supervision and appraisal, from competency observations, and from changes in the service — a first admission of a person with a tracheostomy creates a training need the day the referral is accepted, and the admission does not proceed until the team holds the competency. Specialist and accredited development — diplomas, medication leadership, train-the-trainer, management qualifications — is supported against a simple test: will this make the care better or the service stronger? Requests are answered in writing, and a declined request is declined with reasons, not silence. Development investment is also retention strategy, and the annual training plan is reviewed alongside turnover data so the connection stays visible.",
+    },
+    {
+      heading: "Did it work? — evaluating transfer to practice",
+      body: "Attendance data answers the wrong question. The question that matters is whether practice changed, and the organisation checks it three ways: competency observations under hr-027 (the direct test), incident and audit patterns read against the training calendar (medication errors that persist after medication refreshers indicate a training design problem, not a staff problem), and staff feedback on whether sessions addressed the situations they actually face. Training that does not transfer is redesigned — more scenario work, different method, better trainer — rather than simply re-run."
+    }
+  ],
+  responsibilities: [
+    { role: "Registered Manager", duties: ["Own the matrix and its annual review", "Hold the 95% standard and act on escalations", "Authorise (rarely, in writing, briefly) any lapse exception", "Report compliance to governance quarterly"] },
+    { role: "Line Managers", duties: ["Book refreshers inside the warning window and protect training time in the rota", "Restrict duties on lapse of critical items", "Follow up non-attendance same-week"] },
+    { role: "Training Coordinator", duties: ["Run the matrix, warnings, and records", "Verify trainers and providers", "Produce compliance reporting and the inspection evidence pack"] },
+    { role: "All Staff", duties: ["Attend what is booked, complete what is assigned", "Check their own record and flag errors", "Tell their manager when they feel unconfident in a trained skill — that request is always answered with support"] }
+  ],
+  training: "This policy is itself covered at induction; managers receive session on matrix management and the lapse rule as part of management induction.",
+  monitoring: "Monthly compliance measurement; quarterly governance report with team/subject breakdown and agency sampling; annual matrix review against regulation; twice-yearly one-day evidence test; training-transfer review woven into hr-027 observation cycles and incident pattern analysis.",
+  relatedDocuments: ["hr-001 — Induction & Onboarding", "hr-027 — Competency Assessment Policy", "hr-010 — Agency & Bank Worker Standards", "hr-006 — Staff Rota & Rostering", "saf-001 — Safeguarding Adults", "med-001 — Medication Management", "wl-008 — Safe Staffing"],
+  versionHistory: [
+    { version: "2.0", date: "2026-07-16", changes: "Full-standard rebuild: statutory/mandatory definitions, full matrix with frequencies, method-follows-subject delivery rule, lapse-and-restriction rule, 95% threshold with per-team breakdown, one-day evidence standard, transfer-to-practice evaluation." },
+    { version: "1.0", date: "2025-11-04", changes: "Initial policy." }
+  ]
+};
+
+export const HR003_CONTENT_V2: DocumentContent = {
+  statement: "The people we support let our staff into their homes, their finances, their bodies and their confidence. That access is the whole basis of care work, and it is only tolerable because it comes wrapped in standards of conduct that every member of staff holds all the time — including when no one is watching, which in this sector is most of the time. This policy states those standards plainly, draws the boundary lines brightly, and explains what happens when they are crossed.",
+  purpose: "To set out the standards of personal and professional conduct expected of everyone who works for this organisation; to define professional boundaries and the specific situations — gifts, money, relationships, social media — where boundaries most often erode; and to be clear about which breaches end employment.",
+  scope: "All staff, bank workers, volunteers, and students on placement. Agency workers are held to the same standards through the terms in hr-010. The policy applies at work, and outside work wherever conduct touches the organisation, the people we support, or public confidence in the service.",
+  keyPoints: [
+    "Conduct standards exist for the protection of the people we support first, colleagues second, and the organisation third — in that order.",
+    "Boundaries erode gradually, through small kindnesses that grow, which is why disclosure of small things is the habit that prevents big things.",
+    "Money and the property of service users are subject to absolute rules with no informal exceptions.",
+    "The gross misconduct list is published so that nobody can honestly claim not to have known where the lines were.",
+    "Reporting a colleague's misconduct is itself a conduct obligation — silence in the face of harm is a breach of this policy."
+  ],
+  procedure: [
+    {
+      heading: "The standards — what we expect every day",
+      body: "Staff treat the people we support, their families, and colleagues with dignity, courtesy and honesty. They arrive fit for work and on time, work within their training and competency sign-offs, follow care plans and speak up when a plan seems wrong rather than silently departing from it, record truthfully and contemporaneously, protect confidentiality (igr-001), and present themselves in a way that is safe and appropriate for the work.\n\nHonesty deserves its own sentence: this organisation treats an error owned up to as the system working, and an error concealed as a conduct matter far graver than the error itself. The duty of candour (gov-001) is a legal duty for the organisation, but it begins as a personal habit in each member of staff."
+    },
+    {
+      heading: "Professional boundaries — where care work gets difficult",
+      body: "A care relationship is warm, personal and one-directional: it exists for the benefit of the person supported, and its warmth never converts into benefit for the worker. The detailed framework is in dc-007; the essentials every member of staff carries are these.\n\nGifts: small tokens (a box of chocolates at Christmas, a card) may be accepted and are declared to the manager and logged. Anything of more than token value, and any money in any amount, is declined with warmth and reported. Where declining would cause real distress, the item is accepted 'for the team' and handed to the manager to resolve.\n\nWills, loans and financial involvement: staff never accept a bequest they learn of, never witness a will, never lend to or borrow from a person we support or their family, never sell to or buy from them, and never involve themselves in their financial decisions beyond what a care plan authorises. Any hint that a person intends to benefit a member of staff is reported immediately so it can be handled properly and openly.\n\nPersonal relationships: a romantic or sexual relationship between a member of staff and a person currently supported by the service is never acceptable — the power imbalance makes real consent structurally doubtful, and the situation is treated as a safeguarding matter, not a private one. Friendships and social contact outside work with people we support or their families are declared to the manager, who assesses and records how the dual relationship will be managed.\n\nThe pattern to watch, in yourself and in colleagues, is exceptionalism: 'I'm the only one who understands her', visits off-shift, secrets kept from the team, favouritism in time and attention. Each step feels like devotion; the trajectory is how boundary violations, and sometimes abuse, actually happen. The protective habit is disclosure — a worker who mentions the small stuff to their supervisor is a worker whose boundaries stay healthy."
+    },
+    {
+      heading: "Service users' money and property",
+      body: "Where a role involves handling a person's money — shopping, bills, cash withdrawals — the handling follows the person's care plan and the financial procedures exactly: receipts for everything, records at the time, two signatures where the procedure requires them, and the person's own involvement maximised. Staff never mix a service user's money with their own even momentarily, never 'borrow from the tin', never round in either direction, and never use a person's loyalty cards, vouchers or accounts for any personal benefit however trivial. Property is handled with the same discipline. Every discrepancy is reported the day it is found, whoever it might implicate — including the finder.",
+      warningBox: "Financial abuse is the most common category of abuse of adults at risk, and it usually starts small. There is no de minimis threshold in this policy: taking fifty pence is the same breach as taking fifty pounds."
+    },
+    {
+      heading: "Social media, phones and photography",
+      body: "Staff never identify the people we support, or post anything that could identify them, on any personal account — including 'private' groups and disappearing formats. Personal phones are not used to photograph the people we support or their documents; where photography is part of care (wound monitoring, activity records with consent), the organisation's equipment and consent procedures are used. Staff do not accept or send friend requests or private messages with people we support or their close family; existing pre-employment connections are declared. Commentary about the workplace online is subject to the same standards as speech anywhere else — nothing that breaches confidentiality, nothing that would undermine a reasonable person's confidence in the service. Frustrations belong in supervision or the grievance procedure (hr-005), where they can actually be fixed."
+    },
+    {
+      heading: "Conduct outside work",
+      body: "Private life is private, and this organisation has no interest in policing it. Conduct outside work becomes an employment matter only where it touches the work: criminal charges or convictions (which must be declared under hr-008's ongoing obligation), conduct incompatible with a position of trust, public behaviour that identifiably damages confidence in the service, or outside employment that leaves a person unfit for their shifts (see the fatigue provisions of hr-006). Where such a matter arises it is assessed on its actual relevance to the role — the test is the connection to the work, not the organisation's embarrassment."
+    },
+    {
+      heading: "Conduct within the team",
+      body: "Colleagues are entitled to the same courtesy as the people we support. Bullying, harassment, discrimination and victimisation are addressed under hr-020 and the disciplinary procedure. Two team behaviours get special mention because they endanger service users rather than merely bruising colleagues: covering for a colleague's misconduct or impairment, and pressuring a colleague not to report. Both are themselves gross misconduct, because a team that closes ranks is the single environment in which abuse reliably survives."
+    },
+    {
+      heading: "The bright lines — gross misconduct",
+      body: "The following are gross misconduct, for which the expected outcome after due process (hr-004) is dismissal: abuse or wilful neglect of a person we support in any form; theft or financial abuse in any amount; falsification of records, qualifications or time claims; breach of the relationship boundary with a person supported; attending work under the influence of alcohol or non-prescribed drugs; serious breach of confidentiality; deliberate failure to report abuse or a colleague's gross misconduct; violence or serious harassment; and actions deliberately concealing any of the above. The list is published so the lines are known in advance; it is illustrative, not exhaustive, and due process is never skipped however clear a case appears — process protects the wrongly accused as much as it condemns the guilty."
+    },
+    {
+      heading: "Raising concerns and how breaches are handled",
+      body: "A member of staff who sees conduct that endangers or exploits a person we support reports it that day — to their manager, or through hr-007 if the manager is the problem. This is an obligation of the role, not an optional virtue, and the organisation's non-retaliation commitments in hr-007 apply in full.\n\nBreaches of this policy are handled proportionately: minor lapses through supervision and support, patterns and serious matters through hr-004, safeguarding matters always and immediately through saf-001 with referral to the local authority and, where the threshold is met, to the DBS and any professional regulator. Proportionality cuts both ways — small things are treated as small, and the things on the bright-line list are never treated as small."
+    }
+  ],
+  responsibilities: [
+    { role: "Registered Manager", duties: ["Model the standards visibly", "Log and resolve gift, relationship and dual-relationship declarations", "Ensure breaches are handled proportionately and safeguarding routes used", "Make DBS and regulator referrals where thresholds are met"] },
+    { role: "Line Managers", duties: ["Make disclosure easy — respond to small declarations with thanks, not suspicion", "Watch for exceptionalism patterns in supervision", "Act on concerns the day they arrive"] },
+    { role: "All Staff", duties: ["Hold the standards when unobserved", "Declare gifts, connections and dual relationships", "Report breaches — including their own", "Never accept a colleague's request to stay silent"] }
+  ],
+  training: "Code of conduct at induction before floor work, with boundary scenarios; refreshed within annual safeguarding training; managers additionally trained on handling declarations and the exceptionalism pattern.",
+  monitoring: "Declaration log reviewed quarterly; conduct-related incidents themed annually for policy and training gaps; exit interviews screened for conduct culture signals; supervision records sampled for evidence boundaries are actually discussed.",
+  relatedDocuments: ["dc-007 — Professional Boundaries", "hr-004 — Disciplinary Policy", "hr-007 — Raising Concerns at Work", "hr-020 — Bullying & Harassment", "saf-001 — Safeguarding Adults", "gov-001 — Duty of Candour", "igr-001 — Confidentiality", "hr-006 — Staff Rota & Rostering"],
+  versionHistory: [
+    { version: "2.0", date: "2026-07-16", changes: "Full-standard rebuild: everyday standards with candour, boundary framework (gifts/wills/relationships/exceptionalism), absolute money rules, social media, outside-work test, team conduct including closing-ranks clause, published bright-line list, reporting obligations." },
+    { version: "1.0", date: "2025-11-04", changes: "Initial policy." }
+  ]
+};
+
+export const HR005_CONTENT_V2: DocumentContent = {
+  statement: "A grievance procedure is the organisation's promise that a member of staff with a genuine complaint will be heard properly, answered honestly, and protected from any comeback for having spoken. Where that promise is kept, problems surface early and small; where it is not, they surface late, large, and often in an employment tribunal. This procedure follows the Acas Code of Practice and improves on it where fairness suggests.",
+  purpose: "To give every member of staff a clear route for raising concerns about their own employment — and to give managers a fair, prompt, consistent method for resolving them.",
+  scope: "All employees and workers. It covers complaints about working conditions, workload, treatment by managers or colleagues, application of policies, pay and terms discrepancies, and working relationships.",
+  definitions: [
+    { term: "Grievance", definition: "A concern, problem or complaint a worker raises about their own employment. Distinguish: concerns about danger or wrongdoing affecting others are whistleblowing (hr-007); bullying and harassment complaints may use the dedicated route in hr-020; and a complaint about a disciplinary sanction is an appeal under hr-004, not a grievance." }
+  ],
+  keyPoints: [
+    "Most grievances should be resolved informally, quickly, and close to where they arose — the formal procedure is the backstop, not the front door.",
+    "Formal grievances are acknowledged within three working days, investigated by someone impartial, heard within ten working days of receipt wherever practicable, and answered in writing with reasons.",
+    "Every worker has the right to be accompanied at a grievance hearing by a colleague or trade union representative.",
+    "Raising a grievance in good faith never results in detriment. Ever. A manager who retaliates faces the disciplinary procedure.",
+    "Grievance themes are governance data: what staff complain about is a map of what will eventually harm service quality."
+  ],
+  procedure: [
+    {
+      heading: "First, the right route",
+      body: "Before the procedure engages, the concern is routed correctly, and managers help with the routing rather than bouncing people between policies. A concern about risk to service users or wrongdoing in the service is whistleblowing — hr-007 — and attracts its specific protections. Bullying or harassment may be raised under hr-020, which provides trained contacts and specialised handling, or as a grievance if the person prefers. Disagreement with a disciplinary outcome is an appeal under hr-004. Everything else about your own employment belongs here. Where a single situation contains both — a rota complaint that is also a safe-staffing concern, say — both routes run, and the safety strand is never held up by the employment strand."
+    },
+    {
+      heading: "Informal resolution",
+      body: "Most problems are best fixed by naming them early to the person who can fix them — usually the line manager, or the next manager up if the line manager is the issue. The manager who receives an informal concern treats it as work, not as noise: they hear it fully, look into it, and come back within a week with an answer or a plan. Informal does not mean unrecorded — a brief note of the concern and the outcome protects both sides and lets patterns be seen.\n\nInformal resolution is the preferred route because it is fast and preserves relationships. It is never a barrier: a worker may go formal immediately if the matter is serious, if informality has failed, or simply if they choose to, and no one is criticised for the choice."
+    },
+    {
+      heading: "The formal procedure",
+      body: "Stage one — the grievance in writing. The worker sets out the complaint and, where they can, the outcome they seek, to their line manager (or that manager's manager, where the grievance concerns the line manager). Support with writing is available from HR for anyone who wants it; the quality of the prose has no bearing on the merits.\n\nStage two — acknowledgement and investigation. Receipt is acknowledged within three working days, naming the hearing manager — always someone without prior involvement in the matter. Where facts are disputed, an impartial investigation gathers documents and speaks to relevant people first, proportionate to the matter: a pay discrepancy might need an afternoon, an interpersonal grievance might need a fortnight. The worker is told the expected timescale and given updates if it moves.\n\nStage three — the hearing. Held within ten working days of receipt wherever practicable, with the right to be accompanied by a colleague or trade union representative. The hearing manager listens, tests the evidence, asks what resolution the worker seeks, and adjourns to decide rather than announcing a verdict from the chair.\n\nStage four — the outcome. Written, within five working days of the hearing, with reasons: what was found, what is upheld, not upheld, or partly upheld, what will change and by when, and the right of appeal. An upheld grievance produces action with named owners and dates — an apology and a commitment that evaporates is worse than an honest 'no'."
+    },
+    {
+      heading: "Appeal",
+      body: "A worker dissatisfied with the outcome may appeal in writing within ten working days, stating the grounds — new evidence, a flaw in the process, or an unreasonable conclusion. The appeal is heard by a more senior manager (or an independent person where the organisation's size makes seniority impossible) who was not involved in the original decision, again with the right to be accompanied. The appeal decision, given in writing with reasons within five working days of the appeal hearing, is final within the internal procedure."
+    },
+    {
+      heading: "Mediation",
+      body: "Where a grievance is at heart a broken working relationship, mediation — a structured, voluntary conversation facilitated by someone trained and neutral — often fixes what a formal finding cannot: a formal outcome declares a winner, mediation rebuilds a relationship. It may be offered at any stage, never imposed, and declining it never counts against anyone. Agreement reached in mediation is recorded and honoured like any other outcome."
+    },
+    {
+      heading: "Special situations",
+      body: "Collective grievances — the same complaint from several workers — are handled once, with the group nominating a spokesperson, rather than fragmented into parallel cases that can be answered inconsistently.\n\nA grievance raised during a disciplinary process is assessed on its relationship to the disciplinary: where it alleges the disciplinary itself is tainted (bias, discrimination, victimisation), the disciplinary pauses while the grievance is examined; where it is unrelated, the two proceed in parallel with different managers.\n\nGrievances about the registered manager go to the nominated individual or director; grievances about the most senior person go to the board or owning body. No one hears a complaint about themselves.\n\nA grievance from a worker who has already left is still answered — briefly, in writing, after proportionate enquiry — both because fairness does not expire on the last day of employment and because leavers' complaints are unusually honest data."
+    },
+    {
+      heading: "Support for everyone involved",
+      body: "A grievance is stressful on both sides of it. The worker raising one has access to HR for procedural guidance, their companion for the hearing, and the employee assistance route where the matter is taking a personal toll. The person complained about — who has been accused of something, sometimes wrongly — receives the same access to support, is told promptly what is alleged so uncertainty does not do damage the process never intended, and is treated as a colleague in good standing unless and until a finding says otherwise. Managers watch both parties' wellbeing during a live case, and a process that is dragging is escalated for that reason alone: justice delayed in a small team is atmosphere poisoned for everyone, including the people we support, who feel staff tension long before anyone names it.",
+    },
+    {
+      heading: "Confidentiality, no detriment, and records",
+      body: "Grievance information is shared only with those who need it to investigate and decide. The subject of a grievance is told what they need to respond to fairly — a person cannot answer an accusation they are not allowed to hear — but wider circulation is a breach of igr-001.\n\nNo detriment attaches to a good-faith grievance, whatever its outcome: not in shifts, not in appraisal, not in atmosphere. Managers are told this plainly, and retaliation is a disciplinary matter. A grievance found to be fabricated in bad faith — rare, and distinct from one that is merely not upheld — may itself be a conduct matter.\n\nRecords of formal grievances, evidence, outcomes and actions are retained confidentially per igr-004, separately from routine personnel files, and themed annually for governance: recurring subjects, recurring teams, and recurring respondents are patterns leadership is expected to see and act on.",
+      warningBox: "The most expensive grievance is the one nobody raised. If the annual staff survey shows problems the grievance log does not, the procedure is not trusted — and that finding goes to the board."
+    }
+  ],
+  responsibilities: [
+    { role: "Registered Manager / Nominated Individual", duties: ["Ensure impartial allocation of hearing and appeal managers", "Act on upheld outcomes and verify completion", "Review annual grievance themes alongside survey data"] },
+    { role: "Hearing Managers", duties: ["Meet the timescales or explain slippage in writing", "Decide on evidence with reasons", "Protect complainants from detriment"] },
+    { role: "All Staff", duties: ["Raise concerns early and through the right route", "Engage honestly with investigations", "Respect the confidentiality of processes they are part of"] }
+  ],
+  training: "All managers are trained in grievance handling — routing, investigation basics, hearing skills, the accompaniment right — before they hear a case; refresher at least three-yearly or after any procedurally flawed case.",
+  monitoring: "Timescale compliance tracked per case; outcomes and action completion audited quarterly; annual theming to governance with cross-reference to survey, turnover and exit data; procedure reviewed against the current Acas Code annually.",
+  relatedDocuments: ["hr-007 — Raising Concerns at Work (Whistleblowing)", "hr-020 — Bullying & Harassment", "hr-004 — Disciplinary Policy", "hr-003 — Staff Conduct", "igr-001 — Confidentiality", "igr-004 — Records Retention", "wl-011 — Supporting HR Procedures"],
+  versionHistory: [
+    { version: "2.0", date: "2026-07-16", changes: "Full-standard rebuild: routing guide, informal stage with recording, four-stage formal procedure with timescales and accompaniment, appeal, mediation, collective/during-disciplinary/about-the-manager/post-employment situations, no-detriment rule, governance theming." },
+    { version: "1.0", date: "2025-11-04", changes: "Initial policy." }
+  ]
+};
+
+export const HR006_CONTENT_V2: DocumentContent = {
+  statement: "The rota is not an administrative artefact; it is the instrument through which the organisation delivers — or fails to deliver — safe staffing, continuity of care, and lawful working conditions, one week at a time. Every serious incident review in this sector eventually reads the rota for the day in question. This policy exists so that when ours is read, it shows a service staffed by design rather than by luck.",
+  purpose: "To define how staffing requirements are determined, how rotas are planned and published, the working-time rules that constrain them, what happens when a shift cannot be covered, and how the whole system is monitored as part of safe-staffing governance.",
+  scope: "All rostered staff across all services, including bank and agency workers placed onto our rotas. The safe-staffing methodology itself is governed by wl-008; this policy operationalises it.",
+  keyPoints: [
+    "Staffing numbers and skill mix are derived from the current dependency of the people we support, reviewed whenever dependency changes — never from 'what we've always had' or what the budget wishes were true.",
+    "Rotas are published at least four weeks ahead. Late change is sometimes unavoidable; habitual late change is a planning failure and is treated as one.",
+    "Working Time Regulations limits — rest breaks, daily and weekly rest, the 48-hour average, night-work provisions — are planned into the rota, not reconciled afterwards.",
+    "No shift runs below the safe minimum. When cover fails, the escalation ladder operates until the gap is closed or the service's commitments are formally reduced — quietly running short is never one of the options.",
+    "Continuity is a quality outcome in its own right: the people we support should be cared for by people who know them."
+  ],
+  procedure: [
+    {
+      heading: "Determining what safe looks like",
+      body: "Each service holds a staffing statement, produced under wl-008, that translates the current needs of the people we support into numbers and skill mix per shift: how many staff, what competencies must be present (medication-trained, moving-and-handling for specific equipment, epilepsy-trained where rescue medication is prescribed), and what supervision or one-to-one commitments are in force. The statement is recalculated on every admission, every discharge, and every material change in a person's dependency — a deterioration that adds two hours of care per day is a rota fact from the day it is assessed, not from the next planning cycle.\n\nThe rota planner works from the staffing statement as a floor, not a target. Planning above the floor to absorb predictable friction — training (hr-002), supervision, annual leave seasons — is competent planning; treating the floor as the ceiling guarantees that the first sickness absence of the week puts the shift into deficit."
+    },
+    {
+      heading: "Planning principles",
+      body: "Rotas are published at least four weeks in advance, because the people who work for us have lives, childcare, and second commitments that deserve better than a fortnight's notice. Published means fixed in reasonable expectation: changes after publication are made with consent wherever possible and with maximum notice always.\n\nSkill mix is planned per shift, not per week — an adequate weekly average that leaves Tuesday night without a medication-competent member of staff is a failed rota. Every shift has a designated senior who holds the shift-leadership responsibilities, and the rota shows who that is.\n\nContinuity is planned deliberately: consistent small teams around each person we support, especially where relationships carry the care — dementia care, autism support, end of life. The measure is simple and reported: how many different faces did this person see this month? A rising count is an early warning of quality erosion that no audit of tasks will catch.\n\nFairness is part of safety, because resentment corrodes teams: unpopular shifts, weekends and nights are distributed transparently, preferences are gathered and honoured where they can be, and the planner's own shifts are subject to the same rules as everyone else's."
+    },
+    {
+      heading: "Working time — the legal architecture",
+      body: "The rota is built inside the Working Time Regulations, and compliance is designed in at planning, not discovered at audit. In-shift rest breaks of at least twenty minutes for shifts over six hours are scheduled and actually taken — a break worked through is recorded and compensated, and a pattern of worked-through breaks is a staffing-statement problem, not a badge of dedication. Daily rest of eleven hours between shifts is protected in the pattern itself: the planner does not roster a late finish into an early start, and ad-hoc swaps that would break the eleven hours are declined. Weekly rest, paid annual leave, and the special provisions for night workers — including the health assessment offered before night work begins and periodically thereafter — are applied as written.\n\nThe 48-hour average weekly limit is monitored across everything we know about: staff with second jobs are asked to declare them (hr-003) so total hours can be assessed honestly. Individual opt-outs from the 48-hour average are voluntary, written, revocable, and never a condition of employment or advancement — and an opt-out changes the legal limit, not the fatigue physiology, so opted-out staff are still watched for the overwork pattern.",
+      warningBox: "Fatigue is a clinical risk factor with a strong evidence trail into medication errors, falls during transfers, and missed deterioration. A rota that is lawful but exhausting is still a dangerous rota."
+    },
+    {
+      heading: "When cover fails — the escalation ladder",
+      body: "Absence is normal; the system's job is to absorb it without dropping below safe. When a gap opens, the ladder runs in order, each rung documented: first, offer to existing part-time staff and the bank — the people who already know the service; second, adjust deployment across the day or across nearby services where competencies allow; third, agency, through the assured route in hr-010 with the pre-shift orientation required by hr-001; fourth, management cover by staff who hold current competencies for the work being covered — a manager who has not administered medication in a year does not count as the medication-competent member of staff.\n\nIf the ladder is exhausted and the shift will still run below the staffing statement, the registered manager (or on-call, out of hours) decides what the service stops doing, explicitly: non-essential activities stand down first, essential care is prioritised and re-sequenced, and where the shortfall is severe the service's commitments are formally reduced — a domiciliary round rescheduled with calls to the people affected, an admission deferred, in extremity commissioners notified. What never happens is the silent version: the same commitments 'delivered' by staff running at unsafe intensity, with the shortfall visible only in what got missed. Every below-statement shift is logged as an incident and reviewed; three in a month is a governance escalation under wl-008."
+    },
+    {
+      heading: "Swaps, short notice and self-managed change",
+      body: "Shift swaps between staff are supported — they are how adults manage their lives — subject to approval before the swap takes effect, so the planner can check competencies, skill mix, rest rules, and hours totals. A swap that leaves Tuesday night without its medication-competent cover is declined however willing the two swappers are.\n\nShort-notice absence is reported by phone (not text, not message-left-with-a-colleague) to the shift senior or on-call, at the earliest possible moment, so the ladder gets maximum run-up. Absence management itself is handled under the sickness absence provisions; the rota system's concern is coverage, and the two processes are kept distinct so that staff are never deterred from reporting genuine sickness by rota guilt."
+    },
+    {
+      heading: "Agency and bank workers on the rota",
+      body: "Bank workers are part of our workforce: matrix-compliant (hr-002), inducted (hr-001), known. Agency workers arrive through hr-010's assurance route and receive the location orientation before first shift, every location, every time. The rota shows agency placements distinctly, because the proportion of agency hours per service per month is a board-level quality indicator: agency staff can be excellent, but a service run on strangers cannot deliver continuity, and a rising agency line is the earliest honest signal that recruitment and retention need attention. Where agency use is sustained, the same workers are requested repeatedly by name — familiarity is recoverable even inside agency supply."
+    },
+    {
+      heading: "Records and monitoring",
+      body: "The worked rota — as delivered, with every change, swap, absence and cover decision — is retained per igr-004 as a care governance record, because it is one: it is the document that proves, months later, who was present, in what numbers, with what competencies. Planned-versus-worked variance, below-statement shifts, breaks missed, eleven-hour breaches, agency proportion, and the continuity measure are reported monthly through wl-008 governance. The rota planner's work is quality-assured quarterly by the registered manager against this policy — including the fairness provisions, which staff are explicitly invited to challenge through hr-005 if they see them failing."
+    }
+  ],
+  responsibilities: [
+    { role: "Registered Manager", duties: ["Own the staffing statement and its dependency-led recalculation", "Authorise below-statement operation decisions and their service reductions", "Review rota governance data monthly and the planner's work quarterly"] },
+    { role: "Rota Planner", duties: ["Plan to the statement floor with competency mix per shift", "Publish four weeks ahead and manage change with notice", "Build in working-time compliance and run the escalation ladder"] },
+    { role: "Shift Seniors / On-Call", duties: ["Receive absence reports and run the ladder out of hours", "Log below-statement shifts as incidents", "Ensure breaks are actually taken"] },
+    { role: "All Staff", duties: ["Report absence by phone at earliest opportunity", "Seek approval before swaps", "Declare second employment", "Take breaks and flag fatigue honestly"] }
+  ],
+  training: "Rota planners and shift seniors trained on this policy, the staffing statement methodology, working-time rules, and the escalation ladder before taking on the role; on-call managers trained in below-statement decision-making.",
+  monitoring: "Monthly wl-008 dashboard (variance, below-statement shifts, breaks, rest breaches, agency proportion, continuity measure); below-statement shifts incident-reviewed with monthly pattern check; quarterly planner QA; annual policy review against current working-time law and staffing guidance.",
+  relatedDocuments: ["wl-008 — Safe Staffing & Dependency", "hr-010 — Agency & Bank Worker Standards", "hr-001 — Induction & Onboarding", "hr-002 — Statutory & Mandatory Training", "hr-003 — Staff Conduct (second jobs)", "hr-005 — Grievance Policy", "dc-005 — Missed & Late Visits (domiciliary)", "igr-004 — Records Retention"],
+  versionHistory: [
+    { version: "2.0", date: "2026-07-16", changes: "Full-standard rebuild: dependency-led staffing statement, planning principles with continuity measure, working-time architecture with fatigue framing, four-rung escalation ladder with explicit service-reduction step, swap governance, agency-proportion indicator, worked-rota-as-governance-record." },
+    { version: "1.0", date: "2025-11-04", changes: "Initial policy." }
+  ]
+};

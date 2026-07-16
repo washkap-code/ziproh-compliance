@@ -39,7 +39,7 @@ import { EXPANSION_2026E_DOCS, EXPANSION_2026E_CONTENT } from "./policy-expansio
 import { EXPANSION_2026F_DOCS, EXPANSION_2026F_CONTENT } from "./policy-expansion-2026f";
 import { EXPANSION_2026G_DOCS, EXPANSION_2026G_CONTENT } from "./policy-expansion-2026g";
 import { EXPANSION_2026H_DOCS, EXPANSION_2026H_CONTENT } from "./policy-expansion-2026h";
-import { SAF001_ADDITIONAL_SECTIONS, SAF001_FULL_APPENDICES, HR007_CONTENT_V2, GOV005_CONTENT_V2, GOV001_CONTENT_V2, GOV003_CONTENT_V2, GOV004_CONTENT_V2, IGR003_CONTENT_V2, IGR004_CONTENT_V2, COP001_CONTENT_V2, COP002_CONTENT_V2, COP003_CONTENT_V2, COP004_CONTENT_V2, COP006_CONTENT_V2 } from "./policy-deepening-2026";
+import { SAF001_ADDITIONAL_SECTIONS, SAF001_FULL_APPENDICES, HR007_CONTENT_V2, GOV005_CONTENT_V2, GOV001_CONTENT_V2, GOV003_CONTENT_V2, GOV004_CONTENT_V2, IGR003_CONTENT_V2, IGR004_CONTENT_V2, COP001_CONTENT_V2, COP002_CONTENT_V2, COP003_CONTENT_V2, COP004_CONTENT_V2, COP006_CONTENT_V2, HR001_CONTENT_V2, HR002_CONTENT_V2, HR003_CONTENT_V2, HR005_CONTENT_V2, HR006_CONTENT_V2 } from "./policy-deepening-2026";
 
 export type Document = {
   id: string;
@@ -1391,12 +1391,12 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
   "igr-004": IGR004_CONTENT_V2, // Deepening Batch 2
   "igr-005": IGR005_CONTENT,
   // ── New priority policies — Workforce & HR ─────────────────────────────────
-  "hr-001": HR001_CONTENT,
-  "hr-002": HR002_CONTENT,
-  "hr-003": HR003_CONTENT,
+  "hr-001": HR001_CONTENT_V2, // Deepening Batch 4
+  "hr-002": HR002_CONTENT_V2, // Deepening Batch 4
+  "hr-003": HR003_CONTENT_V2, // Deepening Batch 4
   "hr-004": HR004_CONTENT,
-  "hr-005": HR005_CONTENT,
-  "hr-006": HR006_CONTENT,
+  "hr-005": HR005_CONTENT_V2, // Deepening Batch 4
+  "hr-006": HR006_CONTENT_V2, // Deepening Batch 4
   "hr-007": HR007_CONTENT_V2, // Deepening Batch 1 (was HR007_CONTENT)
   // ── New priority policies — Care Operations ────────────────────────────────
   "cop-001": COP001_CONTENT_V2, // Deepening Batch 3
