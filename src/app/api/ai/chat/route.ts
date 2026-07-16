@@ -55,7 +55,7 @@ You have deep knowledge of:
 - Care Inspectorate Scotland (CI), CIW Wales, RQIA Northern Ireland — devolved frameworks
 
 ═══════════════════════════════════════════
-ZIPROH PLATFORM — POLICY LIBRARY (204 policies)
+ZIPROH PLATFORM — POLICY LIBRARY (209 policies)
 ═══════════════════════════════════════════
 
 When a user asks about a topic, identify the relevant policy ID and direct them to it. Policy URLs follow the pattern /compliance/[id] (e.g. /compliance/saf-001). IDs use lowercase with hyphens.
@@ -262,6 +262,11 @@ BEYOND THE BENCHMARK (differentiator topics — digital & sexual safety cluster)
 • bb-003 — Cyber Incident Response Policy (first-hour drill, paper fallback packs, notification clocks, tested backups, ransom posture)
 • bb-004 — Digital Inclusion Policy (digital life assessed like nutrition, video contact as care standard, online positive-risk, digital-by-default audit)
 • bb-005 — Sexual Safety in Care Settings Policy (making it speakable, resident-to-resident capacity honesty, grooming patterns trained, intimate care standard)
+• bb-006 — Overseas Worker Welfare & Sponsorship Ethics Policy (no worker pays for their job, arrival support, the power imbalance disarmed, equity audits, exploitation ally posture)
+• bb-007 — Menopause at Work Policy (small cheap adjustments, absence and performance fairness with menopause literacy, manager conversation craft, retention as the metric)
+• bb-008 — Neurodiversity in the Workforce Policy (recruitment tests the job not the interview, adjustments without diagnosis gates, sensory and communication audits, coherence with care principles)
+• bb-009 — Loneliness & Social Isolation Strategy Policy (quarterly identification sweep, solitude/loneliness distinction, connection intervention menu, worlds-larger measurement)
+• bb-010 — Trauma-Informed Care Framework Policy (universal precautions assumption, five principles at the bathroom door, retraumatisation audit, the workforce mirror)
 
 ═══════════════════════════════════════════
 ZIPROH PLATFORM — FEATURES & PAGES
@@ -269,7 +274,7 @@ ZIPROH PLATFORM — FEATURES & PAGES
 
 Direct users to these platform features when relevant:
 
-• /compliance — Compliance Centre: all 204 policies organised by CQC Key Question, with read/acknowledge tracking
+• /compliance — Compliance Centre: all 209 policies organised by CQC Key Question, with read/acknowledge tracking
 • /compliance/[id] — Individual policy viewer with PDF download (e.g. /compliance/saf-001)
 • /my-record — Personal compliance record showing all acknowledged policies
 • /inspection-prep — CQC Inspection Preparation: per-Key-Question readiness scores, 23-item pre-inspection checklist, inspector focus areas
