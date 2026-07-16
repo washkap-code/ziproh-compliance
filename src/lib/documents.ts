@@ -39,6 +39,7 @@ import { EXPANSION_2026E_DOCS, EXPANSION_2026E_CONTENT } from "./policy-expansio
 import { EXPANSION_2026F_DOCS, EXPANSION_2026F_CONTENT } from "./policy-expansion-2026f";
 import { EXPANSION_2026G_DOCS, EXPANSION_2026G_CONTENT } from "./policy-expansion-2026g";
 import { EXPANSION_2026H_DOCS, EXPANSION_2026H_CONTENT } from "./policy-expansion-2026h";
+import { SAF001_ADDITIONAL_SECTIONS, SAF001_FULL_APPENDICES, HR007_CONTENT_V2, GOV005_CONTENT_V2 } from "./policy-deepening-2026";
 
 export type Document = {
   id: string;
@@ -1380,7 +1381,7 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
   "gov-002": GOV002_CONTENT,
   "gov-003": GOV003_CONTENT,
   "gov-004": GOV004_CONTENT,
-  "gov-005": GOV005_CONTENT,
+  "gov-005": GOV005_CONTENT_V2, // Deepening Batch 1 (was GOV005_CONTENT)
   "gov-006": GOV006_CONTENT,
   "gov-007": GOV007_CONTENT,
   // ── New priority policies — Information & Records ──────────────────────────
@@ -1396,7 +1397,7 @@ export const DOCUMENT_CONTENT: Record<string, DocumentContent> = {
   "hr-004": HR004_CONTENT,
   "hr-005": HR005_CONTENT,
   "hr-006": HR006_CONTENT,
-  "hr-007": HR007_CONTENT,
+  "hr-007": HR007_CONTENT_V2, // Deepening Batch 1 (was HR007_CONTENT)
   // ── New priority policies — Care Operations ────────────────────────────────
   "cop-001": COP001_CONTENT,
   "cop-002": COP002_CONTENT,
@@ -1438,6 +1439,17 @@ export const SUPERSEDED_IDS: Record<string, string> = {
   "eff-006": "saf-014", // duplicate Pressure Ulcer policy merged into saf-014 (Prevention & Management)
   "saf-018": "saf-029", // Environmental Safety & Maintenance superseded by the Group 4 H&S suite (saf-029 COSHH saf-030, Legionella saf-031, Electrical saf-032, Gas saf-033)
 };
+
+// ── Deepening Batch 1: saf-001 enrichment (additional procedure sections + full-bodied appendices) ──
+{
+  const saf001 = DOCUMENT_CONTENT["saf-001"];
+  if (saf001?.procedure) {
+    saf001.procedure = [...saf001.procedure, ...SAF001_ADDITIONAL_SECTIONS];
+  }
+  if (saf001) {
+    saf001.appendices = SAF001_FULL_APPENDICES;
+  }
+}
 
 export function getDocumentById(id: string): Document | undefined {
   const doc = DOCUMENTS.find((d) => d.id === id);
