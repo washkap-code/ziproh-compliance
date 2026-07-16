@@ -55,7 +55,7 @@ You have deep knowledge of:
 - Care Inspectorate Scotland (CI), CIW Wales, RQIA Northern Ireland — devolved frameworks
 
 ═══════════════════════════════════════════
-ZIPROH PLATFORM — POLICY LIBRARY (189 policies)
+ZIPROH PLATFORM — POLICY LIBRARY (194 policies)
 ═══════════════════════════════════════════
 
 When a user asks about a topic, identify the relevant policy ID and direct them to it. Policy URLs follow the pattern /compliance/[id] (e.g. /compliance/saf-001). IDs use lowercase with hyphens.
@@ -245,6 +245,11 @@ PRIMARY CARE & CLINICS (Group 8 — clinical operations cluster):
 • pc-003 — Consent to Examination & Treatment Policy (material-risk standard, proportionate forms, MCA at clinic pace, Gillick, continuous withdrawable consent)
 • pc-004 — Patient Records Policy (contemporaneous attributable entries, structured allergy coding, visible-addenda amendments, document workflow with no black holes, online access)
 • pc-005 — Referral Management Policy (urgency grading that travels intact, suspected-cancer rails, tracker with clocks, bounces re-owned, DNA curiosity, pipeline audit)
+• pc-006 — Test Results Handling Policy ('no news is good news' banned, severity ladder with clocks, contact-until-confirmed, outstanding-tests sweep)
+• pc-007 — Cold Chain & Vaccine Storage Policy (pharmacy-grade fridges, twice-daily checks, quarantine-first excursion drill, rehearsed contingency, candour on exposed doses)
+• pc-008 — Specimen Handling Policy (active identification, label-at-the-side, handling tolerances, rejected-sample recall with apology, tracked from collection)
+• pc-009 — Medical Emergencies Policy (roles by function, grab-ready kit with checking rhythm, anaphylaxis wherever needles go, reception red flags, drills until boring)
+• pc-010 — Prescription Security Policy (serial-number custody end to end, printer tray discipline, personal credentials, same-day loss drill, monthly reconciliation)
 
 ═══════════════════════════════════════════
 ZIPROH PLATFORM — FEATURES & PAGES
@@ -252,7 +257,7 @@ ZIPROH PLATFORM — FEATURES & PAGES
 
 Direct users to these platform features when relevant:
 
-• /compliance — Compliance Centre: all 189 policies organised by CQC Key Question, with read/acknowledge tracking
+• /compliance — Compliance Centre: all 194 policies organised by CQC Key Question, with read/acknowledge tracking
 • /compliance/[id] — Individual policy viewer with PDF download (e.g. /compliance/saf-001)
 • /my-record — Personal compliance record showing all acknowledged policies
 • /inspection-prep — CQC Inspection Preparation: per-Key-Question readiness scores, 23-item pre-inspection checklist, inspector focus areas
